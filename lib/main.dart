@@ -1,54 +1,47 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(App());
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
+      title: "My first App",
       home: MyFirstStatefulWidget(),
     );
   }
 }
 
-// int callsCount = 0;
+class MyFirstStatelessWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    Type getContextType() => context.runtimeType;
 
-// class MyFirstStatelessWidget extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     callsCount++;
+    print(getContextType());
 
-//     print("build called: $callsCount");
-
-//     return Container(
-//       child: Center(
-//         child: Text("Hello!"),
-//       ),
-//     );
-//   }
-// }
+    return Container(
+      child: Center(
+        child: Text("Hello!"),
+      ),
+    );
+  }
+}
 
 class MyFirstStatefulWidget extends StatefulWidget {
+  // Type getContextType() => context.runtimeType;
+
   @override
   _MyFirstStatefulWidgetState createState() => _MyFirstStatefulWidgetState();
 }
 
 class _MyFirstStatefulWidgetState extends State<MyFirstStatefulWidget> {
-  int callsCount = 0;
-
   @override
   Widget build(BuildContext context) {
-    callsCount++;
+    Type getContextType() => context.runtimeType;
 
-    print("build called: $callsCount");
+    print(getContextType());
 
     return Container(
       child: Center(
