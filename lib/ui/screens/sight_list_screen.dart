@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:places/utils/consts.dart';
+
 class SightListScreen extends StatefulWidget {
   @override
   _SightListScreenState createState() => _SightListScreenState();
@@ -10,10 +12,10 @@ class _SightListScreenState extends State<SightListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Scaffold appBar title"),
+        title: const Text(sightListScreenAppBarTitle),
       ),
       body: Center(
-        child: Text("Scaffold body"),
+        child: const Text(sightListScreenBody),
       ),
       drawer: Container(
         width: 250,
@@ -21,7 +23,7 @@ class _SightListScreenState extends State<SightListScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Scaffold drawer"),
+            const Text(sightListScreenDrawer),
           ],
         ),
       ),
@@ -35,7 +37,7 @@ class _SightListScreenState extends State<SightListScreen> {
         shape: const CircularNotchedRectangle(),
         child: Container(
           height: 50.0,
-          child: Text("Scaffold bottomNavigationBar"),
+          child: const Text(sightListScreenBottomNavigationBar),
         ),
       ),
     );
