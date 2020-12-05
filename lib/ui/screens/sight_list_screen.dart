@@ -11,14 +11,44 @@ class _SightListScreenState extends State<SightListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: sightListScreenBackgroundColor,
       appBar: AppBar(
-        title: const Text(sightListScreenAppBarTitle),
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        toolbarHeight: 136.0,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(60.0),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 120.0),
+                  child: const Text(
+                    sightListScreenAppBarTitle,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 32.0,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Roboto",
+                      color: Color(0xFF3B3E5B),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
       body: Center(
         child: const Text(sightListScreenBody),
       ),
       drawer: Container(
-        width: 250,
+        width: 250.0,
         color: Colors.blue,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
