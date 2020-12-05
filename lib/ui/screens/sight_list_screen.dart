@@ -27,15 +27,45 @@ class _SightListScreenState extends State<SightListScreen> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 120.0),
-                  child: const Text(
-                    sightListScreenAppBarTitle,
+                  child: RichText(
                     maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 32.0,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "Roboto",
-                      color: Color(0xFF3B3E5B),
+                    text: TextSpan(
+                      style: TextStyle(
+                        fontSize: 32.0,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "Roboto",
+                        color: sightListScreenTitleColor,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: "C",
+                          style: TextStyle(
+                            color: Colors.green,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: "писок",
+                              style: TextStyle(
+                                color: sightListScreenTitleColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                        TextSpan(
+                          text: "\nи",
+                          style: TextStyle(
+                            color: Colors.amberAccent,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: "нтересных мест",
+                              style: TextStyle(
+                                color: sightListScreenTitleColor,
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
                     ),
                   ),
                 ),
