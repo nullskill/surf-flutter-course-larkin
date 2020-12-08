@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:places/utils/consts.dart';
+import 'package:places/ui/res/strings/strings.dart';
+import 'package:places/ui/res/colors.dart';
+import 'package:places/ui/res/text_styles.dart';
 
 class SightListScreen extends StatefulWidget {
   @override
@@ -11,7 +13,7 @@ class _SightListScreenState extends State<SightListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: sightListScreenBackgroundColor,
+      backgroundColor: white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
@@ -25,48 +27,43 @@ class _SightListScreenState extends State<SightListScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 120.0),
-                  child: RichText(
-                    maxLines: 2,
-                    text: TextSpan(
-                      style: TextStyle(
-                        fontSize: 32.0,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: "Roboto",
-                        color: sightListScreenTitleColor,
-                      ),
-                      children: [
-                        TextSpan(
-                          text: "C",
-                          style: TextStyle(
-                            color: Colors.green,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: "писок",
-                              style: TextStyle(
-                                color: sightListScreenTitleColor,
-                              ),
-                            ),
-                          ],
-                        ),
-                        TextSpan(
-                          text: "\nи",
-                          style: TextStyle(
-                            color: Colors.amberAccent,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: "нтересных мест",
-                              style: TextStyle(
-                                color: sightListScreenTitleColor,
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
+                RichText(
+                  maxLines: 2,
+                  text: TextSpan(
+                    style: textBold32.copyWith(
+                      fontFamily: "Roboto",
+                      color: titleColorPrimary,
                     ),
+                    children: [
+                      TextSpan(
+                        text: "C",
+                        style: textBold32.copyWith(
+                          color: textColorGreen,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: "писок",
+                            style: textBold32.copyWith(
+                              color: titleColorPrimary,
+                            ),
+                          ),
+                        ],
+                      ),
+                      TextSpan(
+                        text: "\nи",
+                        style: textBold32.copyWith(
+                          color: textColorYellow,
+                        ),
+                        children: [
+                          TextSpan(
+                            text: "нтересных мест",
+                            style: textBold32.copyWith(
+                              color: titleColorPrimary,
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
                   ),
                 ),
               ],
@@ -89,7 +86,7 @@ class _SightListScreenState extends State<SightListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print("Scaffold FAB");
+          print("");
         },
         child: Icon(Icons.add),
       ),
