@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:places/utils/consts.dart';
+import 'package:places/ui/res/strings/strings.dart';
+import 'package:places/ui/res/colors.dart';
+import 'package:places/ui/res/text_styles.dart';
 
 class SightListScreen extends StatefulWidget {
   @override
@@ -11,7 +13,7 @@ class _SightListScreenState extends State<SightListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: sightListScreenBackgroundColor,
+      backgroundColor: white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
@@ -25,18 +27,13 @@ class _SightListScreenState extends State<SightListScreen> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 120.0),
-                  child: const Text(
-                    sightListScreenAppBarTitle,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 32.0,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: "Roboto",
-                      color: Color(0xFF3B3E5B),
-                    ),
+                Text(
+                  sightListScreenText,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: textBold32.copyWith(
+                    fontFamily: "Roboto",
+                    color: titleColorPrimary,
                   ),
                 ),
               ],
@@ -59,7 +56,7 @@ class _SightListScreenState extends State<SightListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          print("Scaffold FAB");
+          print("");
         },
         child: Icon(Icons.add),
       ),
