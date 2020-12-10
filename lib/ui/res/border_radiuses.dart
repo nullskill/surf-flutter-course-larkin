@@ -12,4 +12,7 @@ BorderRadius topBorderRadius = BorderRadius.only(
     bottomBorderRadius = BorderRadius.only(
       bottomLeft: const Radius.circular(16.0),
       bottomRight: const Radius.circular(16.0),
-    );
+    ),
+
+//Button
+    buttonBorderRadius = BorderRadius.all(Radius.circular(12.0));
