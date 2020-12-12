@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
+import 'package:places/mocks.dart';
+import 'package:places/ui/screens/sight_card.dart';
 
 class SightListScreen extends StatefulWidget {
   @override
@@ -31,10 +33,7 @@ class _SightListScreenState extends State<SightListScreen> {
                   sightListScreenText,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: textBold32.copyWith(
-                    fontFamily: "Roboto",
-                    color: titleColorPrimary,
-                  ),
+                  style: textBold32,
                 ),
               ],
             ),
@@ -42,7 +41,9 @@ class _SightListScreenState extends State<SightListScreen> {
         ),
       ),
       body: Center(
-        child: const Text(sightListScreenBody),
+        child: SingleChildScrollView(
+          child: CardColumn(),
+        ),
       ),
       drawer: Container(
         width: 250.0,
@@ -54,19 +55,37 @@ class _SightListScreenState extends State<SightListScreen> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          print("");
-        },
-        child: Icon(Icons.add),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        child: Container(
-          height: 50.0,
-          child: const Text(sightListScreenBottomNavigationBar),
+    );
+  }
+}
+
+class CardColumn extends StatelessWidget {
+  const CardColumn({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final List<Widget> cards = [];
+
+    for (var sight in mocks) {
+      cards.add(
+        SizedBox(
+          height: 16,
         ),
+      );
+      cards.add(SightCard(sight: sight));
+    }
+    cards.add(
+      SizedBox(
+        height: 16,
       ),
+    );
+
+    return Column(
+      children: [
+        ...cards,
+      ],
     );
   }
 }

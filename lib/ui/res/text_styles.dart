@@ -5,20 +5,23 @@ import 'package:places/ui/res/colors.dart';
 /// Стили текстов
 TextStyle _text = const TextStyle(
       fontStyle: FontStyle.normal,
-      color: textColorPrimary,
+      fontFamily: "Roboto",
+      color: titleColorPrimary,
     ),
 
 //Light
     textLight = _text.copyWith(fontWeight: FontWeight.w300),
 
 //Regular
-    textRegular = _text.copyWith(fontWeight: FontWeight.normal),
-    textRegular16 = textRegular.copyWith(fontSize: 16.0),
+    textRegular = _text.copyWith(fontWeight: FontWeight.w400),
+    textRegular14 = textRegular.copyWith(fontSize: 14.0),
 
 //Medium
     textMedium = _text.copyWith(fontWeight: FontWeight.w500),
-    textMedium20 = textMedium.copyWith(fontSize: 20.0),
+    textMedium16 = textMedium.copyWith(fontSize: 16.0),
 
 //Bold
     textBold = _text.copyWith(fontWeight: FontWeight.bold),
+    textBold14 = textBold.copyWith(fontSize: 14.0),
+    textBold24 = textBold.copyWith(fontSize: 24.0),
     textBold32 = textBold.copyWith(fontSize: 32.0);
