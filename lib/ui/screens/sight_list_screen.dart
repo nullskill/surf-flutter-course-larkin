@@ -83,7 +83,9 @@ class CardColumn extends StatelessWidget {
     );
 
     return Column(
-      children: cards,
+      children: [
+        ...cards,
+      ],
     );
   }
 }

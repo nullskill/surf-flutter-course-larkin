@@ -15,4 +15,5 @@ BorderRadius topBorderRadius = BorderRadius.only(
     ),
 
 //Button
-    buttonBorderRadius = BorderRadius.all(Radius.circular(12.0));
+    smallButtonBorderRadius = const BorderRadius.all(Radius.circular(10.0)),
+    largeButtonBorderRadius = const BorderRadius.all(Radius.circular(12.0));

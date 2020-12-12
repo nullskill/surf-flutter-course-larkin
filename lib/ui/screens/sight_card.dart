@@ -69,7 +69,9 @@ class SightCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: textRegular14.copyWith(
-                        height: 1.3, color: textColorPrimary),
+                      height: 1.3,
+                      color: textColorPrimary,
+                    ),
                   ),
                 ],
               ),
