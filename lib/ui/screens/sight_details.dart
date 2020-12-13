@@ -13,52 +13,95 @@ class SightDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: placeholderColorPurple,
-        shadowColor: Colors.transparent,
-        toolbarHeight: appBarHeight,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(0.0),
-          child: SizedBox(
-            height: appBarHeight,
-            width: double.infinity,
-            child: Gallery(),
+      appBar: SightDetailsAppBar(preferredSize: Size.fromHeight(appBarHeight)),
+      body: SightDetailsBody(sight: sight),
+    );
+  }
+}
+
+class SightDetailsAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
+  final Size preferredSize;
+
+  const SightDetailsAppBar({
+    Key key,
+    @required this.preferredSize,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return PreferredSize(
+      preferredSize: preferredSize,
+      child: AppBar(
+        leading: Container(
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            color: white,
+            borderRadius: smallButtonBorderRadius,
           ),
+          margin: const EdgeInsets.only(
+            left: 16.0,
+            top: 16.0,
+          ),
+          child: Icon(
+            Icons.arrow_back_ios_rounded,
+            color: iconColor,
+          ),
+        ), //Container(
+        flexibleSpace: Align(
+          alignment: Alignment.topLeft,
+          child: Gallery(),
         ),
+        backgroundColor: placeholderColorPurple,
+        elevation: 0,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 24.0,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CardLabel(sight: sight),
-                  SizedBox(
-                    height: 24,
-                  ),
-                  Text(
-                    sight.details,
-                    style: textRegular14.copyWith(height: 1.3),
-                  ),
-                  SizedBox(
-                    height: 24,
-                  ),
-                  ShowRouteButton(),
-                  SizedBox(
-                    height: 24,
-                  ),
-                  CardMenu(),
-                ],
-              ),
+    );
+  }
+}
+
+class SightDetailsBody extends StatelessWidget {
+  const SightDetailsBody({
+    Key key,
+    @required this.sight,
+  }) : super(key: key);
+
+  final sight;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 24.0,
             ),
-          ],
-        ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CardLabel(sight: sight),
+                SizedBox(
+                  height: 24,
+                ),
+                Text(
+                  sight.details,
+                  style: textRegular14.copyWith(height: 1.3),
+                ),
+                SizedBox(
+                  height: 24,
+                ),
+                ShowRouteButton(),
+                SizedBox(
+                  height: 24,
+                ),
+                CardMenu(),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -71,23 +114,7 @@ class Gallery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            color: white,
-            borderRadius: smallButtonBorderRadius,
-          ),
-          margin: const EdgeInsets.only(
-            left: 16.0,
-            top: 12.0,
-          ),
-        ),
-      ),
-    );
+    return Container();
   }
 }
 

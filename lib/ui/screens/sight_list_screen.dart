@@ -18,35 +18,49 @@ class _SightListScreenState extends State<SightListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: white,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        toolbarHeight: 136.0,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(60.0),
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.only(left: 16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  sightListScreenText,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: textBold32,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
+      appBar: PreferredSizeAppBar(preferredSize: Size.fromHeight(152)),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: CardColumn(),
         ),
+      ),
+    );
+  }
+}
+
+class PreferredSizeAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
+  final Size preferredSize;
+
+  const PreferredSizeAppBar({
+    Key key,
+    @required this.preferredSize,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return PreferredSize(
+      preferredSize: preferredSize,
+      child: AppBar(
+        flexibleSpace: Align(
+          alignment: Alignment.bottomLeft,
+          child: Container(
+            margin: EdgeInsets.only(
+              left: 16,
+              right: 16,
+              bottom: 16,
+            ),
+            child: Text(
+              sightListScreenText,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: textBold32,
+            ),
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
     );
   }
@@ -62,10 +76,10 @@ class CardColumn extends StatelessWidget {
     return Column(
       children: [
         for (var sight in mocks) ...[
+          SightCard(sight: sight),
           SizedBox(
             height: 16,
           ),
-          SightCard(sight: sight),
         ],
       ],
     );
