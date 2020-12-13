@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:places/ui/res/strings/strings.dart';
-import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
+import 'package:places/ui/res/colors.dart';
+
 import 'package:places/mocks.dart';
+
 import 'package:places/ui/screens/sight_card.dart';
 
 class SightListScreen extends StatefulWidget {
@@ -40,19 +42,10 @@ class _SightListScreenState extends State<SightListScreen> {
           ),
         ),
       ),
-      body: Center(
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: CardColumn(),
-        ),
-      ),
-      drawer: Container(
-        width: 250.0,
-        color: Colors.blue,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(sightListScreenDrawer),
-          ],
         ),
       ),
     );
@@ -66,25 +59,14 @@ class CardColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> cards = [];
-
-    for (var sight in mocks) {
-      cards.add(
-        SizedBox(
-          height: 16,
-        ),
-      );
-      cards.add(SightCard(sight: sight));
-    }
-    cards.add(
-      SizedBox(
-        height: 16,
-      ),
-    );
-
     return Column(
       children: [
-        ...cards,
+        for (var sight in mocks) ...[
+          SizedBox(
+            height: 16,
+          ),
+          SightCard(sight: sight),
+        ],
       ],
     );
   }

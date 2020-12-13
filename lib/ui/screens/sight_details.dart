@@ -120,7 +120,7 @@ class CardLabel extends StatelessWidget {
               width: 16,
             ),
             Text(
-              sightDetailsClosed,
+              sightDetailsOpenHours,
               style: textRegular14.copyWith(
                 height: 1.3,
                 color: textColorPrimary,

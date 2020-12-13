@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:places/domain/sight.dart';
+
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/border_radiuses.dart';
@@ -12,7 +13,8 @@ class SightCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return AspectRatio(
+      aspectRatio: 3 / 2,
       child: Container(
         height: 188.0,
         width: 328.0,
