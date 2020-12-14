@@ -8,6 +8,7 @@ import 'package:places/mocks.dart';
 
 import 'package:places/ui/screens/sight_card.dart';
 
+/// Экран отображения списка карточек интересных мест.
 class SightListScreen extends StatefulWidget {
   @override
   _SightListScreenState createState() => _SightListScreenState();
@@ -18,56 +19,49 @@ class _SightListScreenState extends State<SightListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: white,
-      appBar: PreferredSizeAppBar(preferredSize: Size.fromHeight(152)),
+      appBar: _SightListScreenAppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: CardColumn(),
+          child: _CardColumn(),
         ),
       ),
     );
   }
 }
 
-class PreferredSizeAppBar extends StatelessWidget
+//Private widgets
+class _SightListScreenAppBar extends StatelessWidget
     implements PreferredSizeWidget {
-  final Size preferredSize;
-
-  const PreferredSizeAppBar({
-    Key key,
-    @required this.preferredSize,
-  }) : super(key: key);
+  final Size preferredSize = Size.fromHeight(152);
 
   @override
   Widget build(BuildContext context) {
-    return PreferredSize(
-      preferredSize: preferredSize,
-      child: AppBar(
-        flexibleSpace: Align(
-          alignment: Alignment.bottomLeft,
-          child: Container(
-            margin: EdgeInsets.only(
-              left: 16,
-              right: 16,
-              bottom: 16,
-            ),
-            child: Text(
-              sightListScreenText,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: textBold32,
-            ),
+    return AppBar(
+      flexibleSpace: Align(
+        alignment: Alignment.bottomLeft,
+        child: Container(
+          margin: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            bottom: 16,
+          ),
+          child: Text(
+            sightListScreenText,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: textBold32,
           ),
         ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
       ),
+      backgroundColor: Colors.transparent,
+      elevation: 0,
     );
   }
 }
 
-class CardColumn extends StatelessWidget {
-  const CardColumn({
+class _CardColumn extends StatelessWidget {
+  const _CardColumn({
     Key key,
   }) : super(key: key);
 

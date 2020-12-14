@@ -1,4 +1,4 @@
-// Экран "Список интересных мест"
+/// Строковые константы
 const String sightListScreenText = 'Список\nинтересных мест',
     sightDetailsShowRoute = "построить маршрут",
     sightDetailsOpenHours = "закрыто до 09:00",

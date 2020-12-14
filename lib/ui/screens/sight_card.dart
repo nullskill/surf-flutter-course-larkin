@@ -6,6 +6,7 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/border_radiuses.dart';
 
+/// Виджет карточки интересного места.
 class SightCard extends StatelessWidget {
   final Sight sight;
 
@@ -20,8 +21,8 @@ class SightCard extends StatelessWidget {
         width: 328.0,
         child: Column(
           children: [
-            CardTop(sight: sight),
-            CardBottom(sight: sight),
+            _CardTop(sight: sight),
+            _CardBottom(sight: sight),
           ],
         ),
       ),
@@ -29,8 +30,9 @@ class SightCard extends StatelessWidget {
   }
 }
 
-class CardTop extends StatelessWidget {
-  const CardTop({
+//Private widgets
+class _CardTop extends StatelessWidget {
+  const _CardTop({
     Key key,
     @required this.sight,
   }) : super(key: key);
@@ -68,8 +70,8 @@ class CardTop extends StatelessWidget {
   }
 }
 
-class CardBottom extends StatelessWidget {
-  const CardBottom({
+class _CardBottom extends StatelessWidget {
+  const _CardBottom({
     Key key,
     @required this.sight,
   }) : super(key: key);

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Цветовые константы
 const white = Colors.white,
     titleColorPrimary = Color(0xFF3B3E5B),
     textColorPrimary = Color(0xFF7C7E92),
