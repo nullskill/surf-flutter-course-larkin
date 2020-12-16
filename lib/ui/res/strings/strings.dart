@@ -1,9 +1,6 @@
-// Экран "Список интересных мест"
-import 'package:places/ui/screens/sight_details.dart';
-
+/// Строковые константы
 const String sightListScreenText = 'Список\nинтересных мест',
-    sightListScreenDrawer = "SightListScreen drawer",
     sightDetailsShowRoute = "построить маршрут",
-    sightDetailsClosed = "закрыто до 09:00",
+    sightDetailsOpenHours = "закрыто до 09:00",
     sightDetailsPlan = "Запланировать",
     sightDetailsAddToFavorites = "В Избранное";

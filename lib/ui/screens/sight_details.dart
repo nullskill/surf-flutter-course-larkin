@@ -1,98 +1,118 @@
 import 'package:flutter/material.dart';
 
 import 'package:places/ui/res/strings/strings.dart';
-import 'package:places/ui/res/colors.dart';
-import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/border_radiuses.dart';
+import 'package:places/ui/res/text_styles.dart';
+import 'package:places/ui/res/colors.dart';
+
 import 'package:places/mocks.dart';
 
+/// Экран отображения подробной информации о посещаемом месте.
 class SightDetails extends StatelessWidget {
-  static const appBarHeight = 360.0;
   final sight = mocks.last;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: placeholderColorPurple,
-        shadowColor: Colors.transparent,
-        toolbarHeight: appBarHeight,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(0.0),
-          child: SizedBox(
-            height: appBarHeight,
-            width: double.infinity,
-            child: Gallery(),
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 24.0,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CardLabel(sight: sight),
-                  SizedBox(
-                    height: 24,
-                  ),
-                  Text(
-                    sight.details,
-                    style: textRegular14.copyWith(height: 1.3),
-                  ),
-                  SizedBox(
-                    height: 24,
-                  ),
-                  ShowRouteButton(),
-                  SizedBox(
-                    height: 24,
-                  ),
-                  CardMenu(),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+      appBar: _SightDetailsAppBar(),
+      body: _SightDetailsBody(sight: sight),
     );
   }
 }
 
-class Gallery extends StatelessWidget {
-  const Gallery({
+class _SightDetailsAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
+  final Size preferredSize = Size.fromHeight(360.0);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      leading: Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          color: white,
+          borderRadius: smallButtonBorderRadius,
+        ),
+        margin: const EdgeInsets.only(
+          left: 16.0,
+          top: 16.0,
+        ),
+        child: Icon(
+          Icons.arrow_back_ios_rounded,
+          color: iconColor,
+        ),
+      ),
+      flexibleSpace: Align(
+        alignment: Alignment.topLeft,
+        child: _Gallery(),
+      ),
+      backgroundColor: placeholderColorPurple,
+      elevation: 0,
+    );
+  }
+}
+
+class _Gallery extends StatelessWidget {
+  const _Gallery({
     Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Align(
-        alignment: Alignment.topLeft,
-        child: Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            color: white,
-            borderRadius: smallButtonBorderRadius,
+    return Container();
+  }
+}
+
+class _SightDetailsBody extends StatelessWidget {
+  const _SightDetailsBody({
+    Key key,
+    @required this.sight,
+  }) : super(key: key);
+
+  final sight;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 24.0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _CardLabel(sight: sight),
+                SizedBox(
+                  height: 24,
+                ),
+                Text(
+                  sight.details,
+                  style: textRegular14.copyWith(height: 1.3),
+                ),
+                SizedBox(
+                  height: 24,
+                ),
+                _ShowRouteButton(),
+                SizedBox(
+                  height: 24,
+                ),
+                _CardMenu(),
+              ],
+            ),
           ),
-          margin: const EdgeInsets.only(
-            left: 16.0,
-            top: 12.0,
-          ),
-        ),
+        ],
       ),
     );
   }
 }
 
-class CardLabel extends StatelessWidget {
-  const CardLabel({
+class _CardLabel extends StatelessWidget {
+  const _CardLabel({
     Key key,
     @required this.sight,
   }) : super(key: key);
@@ -120,7 +140,7 @@ class CardLabel extends StatelessWidget {
               width: 16,
             ),
             Text(
-              sightDetailsClosed,
+              sightDetailsOpenHours,
               style: textRegular14.copyWith(
                 height: 1.3,
                 color: textColorPrimary,
@@ -133,8 +153,8 @@ class CardLabel extends StatelessWidget {
   }
 }
 
-class ShowRouteButton extends StatelessWidget {
-  const ShowRouteButton({
+class _ShowRouteButton extends StatelessWidget {
+  const _ShowRouteButton({
     Key key,
   }) : super(key: key);
 
@@ -150,7 +170,7 @@ class ShowRouteButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          DummyIcon(
+          _DummyIcon(
             color: white,
           ),
           SizedBox(
@@ -166,8 +186,8 @@ class ShowRouteButton extends StatelessWidget {
   }
 }
 
-class CardMenu extends StatelessWidget {
-  const CardMenu({
+class _CardMenu extends StatelessWidget {
+  const _CardMenu({
     Key key,
   }) : super(key: key);
 
@@ -185,10 +205,10 @@ class CardMenu extends StatelessWidget {
         ),
         Row(
           children: [
-            FlexibleButton(
+            _FlexibleButton(
               title: sightDetailsPlan,
             ),
-            FlexibleButton(
+            _FlexibleButton(
               title: sightDetailsAddToFavorites,
               primary: true,
             ),
@@ -199,11 +219,11 @@ class CardMenu extends StatelessWidget {
   }
 }
 
-class FlexibleButton extends StatelessWidget {
+class _FlexibleButton extends StatelessWidget {
   final String title;
   final bool primary;
 
-  const FlexibleButton({
+  const _FlexibleButton({
     Key key,
     this.title,
     this.primary = false,
@@ -220,7 +240,7 @@ class FlexibleButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            DummyIcon(
+            _DummyIcon(
               color: color,
             ),
             SizedBox(
@@ -237,10 +257,10 @@ class FlexibleButton extends StatelessWidget {
   }
 }
 
-class DummyIcon extends StatelessWidget {
+class _DummyIcon extends StatelessWidget {
   final Color color;
 
-  const DummyIcon({
+  const _DummyIcon({
     Key key,
     this.color,
   }) : super(key: key);
