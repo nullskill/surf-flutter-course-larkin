@@ -30,7 +30,6 @@ class _SightListScreenState extends State<SightListScreen> {
   }
 }
 
-//Private widgets
 class _SightListScreenAppBar extends StatelessWidget
     implements PreferredSizeWidget {
   final Size preferredSize = Size.fromHeight(152);

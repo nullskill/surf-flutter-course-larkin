@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:places/ui/res/strings/strings.dart';
-import 'package:places/ui/res/colors.dart';
-import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/border_radiuses.dart';
+import 'package:places/ui/res/text_styles.dart';
+import 'package:places/ui/res/colors.dart';
+
 import 'package:places/mocks.dart';
 
 /// Экран отображения подробной информации о посещаемом месте.
@@ -19,7 +20,6 @@ class SightDetails extends StatelessWidget {
   }
 }
 
-//Private widgets
 class _SightDetailsAppBar extends StatelessWidget
     implements PreferredSizeWidget {
   final Size preferredSize = Size.fromHeight(360.0);
