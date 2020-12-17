@@ -50,7 +50,7 @@ class _CardTop extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            _CardImage(sight: sight),
+            _CardImage(imgUrl: sight.url),
             Positioned(
               top: 16,
               left: 16,
@@ -78,15 +78,15 @@ class _CardTop extends StatelessWidget {
 class _CardImage extends StatelessWidget {
   const _CardImage({
     Key key,
-    @required this.sight,
+    @required this.imgUrl,
   }) : super(key: key);
 
-  final Sight sight;
+  final String imgUrl;
 
   @override
   Widget build(BuildContext context) {
     return Image.network(
-      sight.url,
+      imgUrl,
       fit: BoxFit.cover,
       loadingBuilder: (
         BuildContext context,
