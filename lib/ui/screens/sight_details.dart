@@ -73,7 +73,7 @@ class _Gallery extends StatelessWidget {
   Widget build(BuildContext context) {
     return Image.network(
       imgUrl,
-      fit: BoxFit.fitHeight,
+      fit: BoxFit.cover,
       loadingBuilder: (
         BuildContext context,
         Widget child,
