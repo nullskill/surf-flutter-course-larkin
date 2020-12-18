@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:places/ui/res/border_radiuses.dart';
@@ -40,31 +41,68 @@ class _CardTop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: topBorderRadius,
+    return ClipRRect(
+      borderRadius: topBorderRadius,
+      child: Container(
         color: placeholderColorPurple,
-      ),
-      padding: const EdgeInsets.all(16.0),
-      width: double.infinity,
-      height: 96.0,
-      child: Stack(
-        children: [
-          Text(
-            sight.type,
-            style: textBold14.copyWith(color: white),
-          ),
-          Positioned(
-            top: 3,
-            right: 2,
-            child: Container(
-              width: 20,
-              height: 18,
-              color: white,
+        width: double.infinity,
+        height: 96.0,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            _CardImage(imgUrl: sight.url),
+            Positioned(
+              top: 16,
+              left: 16,
+              child: Text(
+                sight.type,
+                style: textBold14.copyWith(color: white),
+              ),
             ),
-          ),
-        ],
+            Positioned(
+              top: 19,
+              right: 18,
+              child: Container(
+                width: 20,
+                height: 18,
+                color: white,
+              ),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class _CardImage extends StatelessWidget {
+  const _CardImage({
+    Key key,
+    @required this.imgUrl,
+  }) : super(key: key);
+
+  final String imgUrl;
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.network(
+      imgUrl,
+      fit: BoxFit.cover,
+      loadingBuilder: (
+        BuildContext context,
+        Widget child,
+        ImageChunkEvent loadingProgress,
+      ) {
+        if (loadingProgress == null) return child;
+        return Center(
+          child: CircularProgressIndicator(
+            value: loadingProgress.expectedTotalBytes != null
+                ? loadingProgress.cumulativeBytesLoaded /
+                    loadingProgress.expectedTotalBytes
+                : null,
+          ),
+        );
+      },
     );
   }
 }

@@ -14,7 +14,7 @@ class SightDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _SightDetailsAppBar(),
+      appBar: _SightDetailsAppBar(sight: sight),
       body: _SightDetailsBody(sight: sight),
     );
   }
@@ -22,6 +22,12 @@ class SightDetails extends StatelessWidget {
 
 class _SightDetailsAppBar extends StatelessWidget
     implements PreferredSizeWidget {
+  _SightDetailsAppBar({
+    Key key,
+    @required this.sight,
+  }) : super(key: key);
+
+  final sight;
   final Size preferredSize = Size.fromHeight(360.0);
 
   @override
@@ -43,9 +49,11 @@ class _SightDetailsAppBar extends StatelessWidget
           color: iconColor,
         ),
       ),
-      flexibleSpace: Align(
-        alignment: Alignment.topLeft,
-        child: _Gallery(),
+      flexibleSpace: Container(
+        height: double.infinity,
+        child: _Gallery(
+          imgUrl: sight.url,
+        ),
       ),
       backgroundColor: placeholderColorPurple,
       elevation: 0,
@@ -56,11 +64,32 @@ class _SightDetailsAppBar extends StatelessWidget
 class _Gallery extends StatelessWidget {
   const _Gallery({
     Key key,
+    @required this.imgUrl,
   }) : super(key: key);
+
+  final String imgUrl;
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Image.network(
+      imgUrl,
+      fit: BoxFit.cover,
+      loadingBuilder: (
+        BuildContext context,
+        Widget child,
+        ImageChunkEvent loadingProgress,
+      ) {
+        if (loadingProgress == null) return child;
+        return Center(
+          child: CircularProgressIndicator(
+            value: loadingProgress.expectedTotalBytes != null
+                ? loadingProgress.cumulativeBytesLoaded /
+                    loadingProgress.expectedTotalBytes
+                : null,
+          ),
+        );
+      },
+    );
   }
 }
 
