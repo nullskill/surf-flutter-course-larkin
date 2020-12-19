@@ -42,7 +42,7 @@ class _CardTop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: topBorderRadius,
+      borderRadius: topBorderRadius16,
       child: Container(
         color: placeholderColor,
         width: double.infinity,
@@ -119,7 +119,7 @@ class _CardBottom extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: bottomBorderRadius,
+        borderRadius: bottomBorderRadius16,
         color: backgroundColor,
       ),
       padding: const EdgeInsets.all(16.0),

@@ -38,7 +38,7 @@ class _SightDetailsAppBar extends StatelessWidget
         height: 32,
         decoration: BoxDecoration(
           color: white,
-          borderRadius: smallButtonBorderRadius,
+          borderRadius: allBorderRadius10,
         ),
         margin: const EdgeInsets.only(
           left: 16.0,
@@ -193,7 +193,7 @@ class _ShowRouteButton extends StatelessWidget {
       height: 48.0,
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: largeButtonBorderRadius,
+        borderRadius: allBorderRadius12,
         color: greenColor,
       ),
       child: Row(
