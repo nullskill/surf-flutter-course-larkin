@@ -46,7 +46,7 @@ class _SightDetailsAppBar extends StatelessWidget
         ),
         child: Icon(
           Icons.arrow_back_ios_rounded,
-          color: iconColor,
+          color: primaryColor,
         ),
       ),
       flexibleSpace: Container(
@@ -55,7 +55,7 @@ class _SightDetailsAppBar extends StatelessWidget
           imgUrl: sight.url,
         ),
       ),
-      backgroundColor: placeholderColorPurple,
+      backgroundColor: placeholderColor,
       elevation: 0,
     );
   }
@@ -172,7 +172,7 @@ class _CardLabel extends StatelessWidget {
               sightDetailsOpenHours,
               style: textRegular14.copyWith(
                 height: 1.3,
-                color: textColorPrimary,
+                color: secondaryColor2,
               ),
             ),
           ],
@@ -194,7 +194,7 @@ class _ShowRouteButton extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: largeButtonBorderRadius,
-        color: buttonColor,
+        color: greenColor,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -227,7 +227,7 @@ class _CardMenu extends StatelessWidget {
         Container(
           width: double.infinity,
           height: 1.0,
-          color: textColorSecondary,
+          color: inactiveColor,
         ),
         SizedBox(
           height: 8,
@@ -261,7 +261,7 @@ class _FlexibleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color =
-        primary ? titleColorPrimary : textColorSecondary.withOpacity(.56);
+        primary ? secondaryColor : inactiveColor;
     return Flexible(
       flex: 1,
       child: Container(

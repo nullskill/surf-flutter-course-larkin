@@ -44,7 +44,7 @@ class _CardTop extends StatelessWidget {
     return ClipRRect(
       borderRadius: topBorderRadius,
       child: Container(
-        color: placeholderColorPurple,
+        color: placeholderColor,
         width: double.infinity,
         height: 96.0,
         child: Stack(
@@ -120,7 +120,7 @@ class _CardBottom extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: bottomBorderRadius,
-        color: cardColor,
+        color: backgroundColor,
       ),
       padding: const EdgeInsets.all(16.0),
       width: double.infinity,
@@ -143,7 +143,7 @@ class _CardBottom extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: textRegular14.copyWith(
               height: 1.3,
-              color: textColorPrimary,
+              color: secondaryColor2,
             ),
           ),
         ],
