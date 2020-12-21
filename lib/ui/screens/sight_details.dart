@@ -37,7 +37,7 @@ class _SightDetailsAppBar extends StatelessWidget
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: white,
+          color: whiteColor,
           borderRadius: allBorderRadius10,
         ),
         margin: const EdgeInsets.only(
@@ -200,14 +200,14 @@ class _ShowRouteButton extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _DummyIcon(
-            color: white,
+            color: whiteColor,
           ),
           SizedBox(
             width: 10,
           ),
           Text(
             sightDetailsShowRoute.toUpperCase(),
-            style: textBold14.copyWith(color: white),
+            style: textBold14.copyWith(color: whiteColor),
           ),
         ],
       ),
@@ -260,8 +260,7 @@ class _FlexibleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color =
-        primary ? secondaryColor : inactiveColor;
+    final color = primary ? secondaryColor : inactiveColor;
     return Flexible(
       flex: 1,
       child: Container(

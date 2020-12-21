@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// Цветовые константы
-const white = Colors.white,
+const whiteColor = Colors.white,
     greenColor = Color(0xFF4CAF50),
     yellowColor = Color(0xFFFCDD3D),
     redColor = Color(0xFFEF4343),

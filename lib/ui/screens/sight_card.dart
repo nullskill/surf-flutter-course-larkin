@@ -1,7 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:intl/intl.dart';
+
 import 'package:places/ui/res/border_radiuses.dart';
+import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
 
@@ -56,18 +58,29 @@ class _CardTop extends StatelessWidget {
               left: 16,
               child: Text(
                 sight.type,
-                style: textBold14.copyWith(color: white),
+                style: textBold14.copyWith(color: whiteColor),
               ),
             ),
             Positioned(
-              top: 19,
-              right: 18,
-              child: Container(
-                width: 20,
-                height: 18,
-                color: white,
+              top: 16,
+              right: 16,
+              child: _CardIcon(
+                icon: sight.runtimeType == Sight ? Icons.favorite : Icons.close,
               ),
             ),
+            [FavoriteSight, VisitedSight].contains(sight.runtimeType)
+                ? Positioned(
+                    top: 16,
+                    right: 56,
+                    child: _CardIcon(
+                      icon: sight.runtimeType == FavoriteSight
+                          ? Icons.calendar_today_outlined
+                          : sight.runtimeType == VisitedSight
+                              ? Icons.share_outlined
+                              : Icons.emoji_emotions_rounded,
+                    ),
+                  )
+                : Container(),
           ],
         ),
       ),
@@ -107,6 +120,27 @@ class _CardImage extends StatelessWidget {
   }
 }
 
+class _CardIcon extends StatelessWidget {
+  const _CardIcon({
+    Key key,
+    @required this.icon,
+  }) : super(key: key);
+
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 24,
+      height: 24,
+      child: Icon(
+        icon,
+        color: whiteColor,
+      ),
+    );
+  }
+}
+
 class _CardBottom extends StatelessWidget {
   const _CardBottom({
     Key key,
@@ -137,17 +171,63 @@ class _CardBottom extends StatelessWidget {
           SizedBox(
             height: 2,
           ),
-          Text(
-            sight.details,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: textRegular14.copyWith(
-              height: 1.3,
-              color: secondaryColor2,
-            ),
+          _getDescriptionText(sight),
+          SizedBox(
+            height: 2,
           ),
+          _getOpenHoursText(sight),
         ],
       ),
     );
+  }
+}
+
+Text _getDescriptionText(var sight) {
+  switch (sight.runtimeType) {
+    case FavoriteSight:
+      return Text(
+        "$sightCardPlanned ${DateFormat.yMMMd().format(sight.plannedDate)}",
+        style: textRegular14.copyWith(
+          height: 1.3,
+          color: greenColor,
+        ),
+      );
+      break;
+    case VisitedSight:
+      return Text(
+        "$sightCardVisited ${DateFormat.yMMMd().format(sight.visitedDate)}",
+        style: textRegular14.copyWith(
+          height: 1.3,
+          color: secondaryColor2,
+        ),
+      );
+      break;
+    default:
+      return Text(
+        sight.details,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: textRegular14.copyWith(
+          height: 1.3,
+          color: secondaryColor2,
+        ),
+      );
+  }
+}
+
+Text _getOpenHoursText(var sight) {
+  switch (sight.runtimeType) {
+    case FavoriteSight:
+    case VisitedSight:
+      return Text(
+        "$sightDetailsOpenHours ${DateFormat.Hm().format(sight.openHour)}",
+        style: textRegular14.copyWith(
+          height: 1.3,
+          color: secondaryColor2,
+        ),
+      );
+      break;
+    default:
+      return Text("");
   }
 }
