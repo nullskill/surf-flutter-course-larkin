@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/border_radiuses.dart';
+import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
 

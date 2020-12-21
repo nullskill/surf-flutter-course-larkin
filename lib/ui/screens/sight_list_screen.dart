@@ -6,7 +6,7 @@ import 'package:places/ui/res/colors.dart';
 
 import 'package:places/mocks.dart';
 
-import 'package:places/ui/screens/sight_card.dart';
+import 'package:places/ui/widgets/sight_card.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 
 /// Экран отображения списка карточек интересных мест.
