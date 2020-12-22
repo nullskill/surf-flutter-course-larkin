@@ -68,6 +68,7 @@ class _CardTop extends StatelessWidget {
                 icon: sight.runtimeType == Sight ? Icons.favorite : Icons.close,
               ),
             ),
+            //Показываем различные иконки, в зависимости от типа карточки
             [FavoriteSight, VisitedSight].contains(sight.runtimeType)
                 ? Positioned(
                     top: 16,
@@ -80,7 +81,7 @@ class _CardTop extends StatelessWidget {
                               : Icons.emoji_emotions_rounded,
                     ),
                   )
-                : Container(),
+                : SizedBox(),
           ],
         ),
       ),
@@ -182,7 +183,7 @@ class _CardBottom extends StatelessWidget {
   }
 }
 
-Text _getDescriptionText(var sight) {
+Widget _getDescriptionText(var sight) {
   switch (sight.runtimeType) {
     case FavoriteSight:
       return Text(
@@ -215,7 +216,7 @@ Text _getDescriptionText(var sight) {
   }
 }
 
-Text _getOpenHoursText(var sight) {
+Widget _getOpenHoursText(var sight) {
   switch (sight.runtimeType) {
     case FavoriteSight:
     case VisitedSight:

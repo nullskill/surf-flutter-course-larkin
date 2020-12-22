@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:places/ui/res/colors.dart';
 
+/// Виджет AppBottomNavigationBar предназначен для всего приложения
 class AppBottomNavigationBar extends StatelessWidget {
   const AppBottomNavigationBar({
     Key key,

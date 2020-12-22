@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
+/// Класс интересного места
 class Sight {
   String _name;
   double _lan, _lon;
@@ -31,6 +32,7 @@ class Sight {
   }
 }
 
+/// Класс для желаемого к посещению интересного места
 class FavoriteSight extends Sight {
   DateTime _plannedDate;
   DateTime _openHour;
@@ -75,6 +77,7 @@ class FavoriteSight extends Sight {
   }
 }
 
+/// Класс посещенного интересного места
 class VisitedSight extends Sight {
   DateTime _visitedDate;
   DateTime _openHour;
