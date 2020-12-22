@@ -6,7 +6,8 @@ import 'package:places/ui/res/colors.dart';
 
 import 'package:places/mocks.dart';
 
-import 'package:places/ui/screens/sight_card.dart';
+import 'package:places/ui/widgets/sight_card.dart';
+import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 
 /// Экран отображения списка карточек интересных мест.
 class SightListScreen extends StatefulWidget {
@@ -18,13 +19,16 @@ class _SightListScreenState extends State<SightListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: white,
+      backgroundColor: whiteColor,
       appBar: _SightListScreenAppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: _CardColumn(),
         ),
+      ),
+      bottomNavigationBar: AppBottomNavigationBar(
+        currentIndex: 0,
       ),
     );
   }

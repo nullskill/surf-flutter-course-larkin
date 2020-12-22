@@ -6,7 +6,7 @@ import 'package:places/ui/res/colors.dart';
 TextStyle _text = const TextStyle(
       fontStyle: FontStyle.normal,
       fontFamily: "Roboto",
-      color: titleColorPrimary,
+      color: secondaryColor,
     ),
 
 //Light
@@ -19,6 +19,7 @@ TextStyle _text = const TextStyle(
 //Medium
     textMedium = _text.copyWith(fontWeight: FontWeight.w500),
     textMedium16 = textMedium.copyWith(fontSize: 16.0),
+    textMedium18 = textMedium.copyWith(fontSize: 18.0),
 
 //Bold
     textBold = _text.copyWith(fontWeight: FontWeight.bold),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/border_radiuses.dart';
+import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
 
@@ -37,8 +37,8 @@ class _SightDetailsAppBar extends StatelessWidget
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: white,
-          borderRadius: smallButtonBorderRadius,
+          color: whiteColor,
+          borderRadius: allBorderRadius10,
         ),
         margin: const EdgeInsets.only(
           left: 16.0,
@@ -46,7 +46,7 @@ class _SightDetailsAppBar extends StatelessWidget
         ),
         child: Icon(
           Icons.arrow_back_ios_rounded,
-          color: iconColor,
+          color: primaryColor,
         ),
       ),
       flexibleSpace: Container(
@@ -55,7 +55,7 @@ class _SightDetailsAppBar extends StatelessWidget
           imgUrl: sight.url,
         ),
       ),
-      backgroundColor: placeholderColorPurple,
+      backgroundColor: placeholderColor,
       elevation: 0,
     );
   }
@@ -172,7 +172,7 @@ class _CardLabel extends StatelessWidget {
               sightDetailsOpenHours,
               style: textRegular14.copyWith(
                 height: 1.3,
-                color: textColorPrimary,
+                color: secondaryColor2,
               ),
             ),
           ],
@@ -193,21 +193,21 @@ class _ShowRouteButton extends StatelessWidget {
       height: 48.0,
       width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: largeButtonBorderRadius,
-        color: buttonColor,
+        borderRadius: allBorderRadius12,
+        color: greenColor,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _DummyIcon(
-            color: white,
+            color: whiteColor,
           ),
           SizedBox(
             width: 10,
           ),
           Text(
             sightDetailsShowRoute.toUpperCase(),
-            style: textBold14.copyWith(color: white),
+            style: textBold14.copyWith(color: whiteColor),
           ),
         ],
       ),
@@ -227,7 +227,7 @@ class _CardMenu extends StatelessWidget {
         Container(
           width: double.infinity,
           height: 1.0,
-          color: textColorSecondary,
+          color: inactiveColor,
         ),
         SizedBox(
           height: 8,
@@ -260,8 +260,7 @@ class _FlexibleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color =
-        primary ? titleColorPrimary : textColorSecondary.withOpacity(.56);
+    final color = primary ? secondaryColor : inactiveColor;
     return Flexible(
       flex: 1,
       child: Container(

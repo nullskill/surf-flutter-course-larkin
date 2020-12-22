@@ -36,3 +36,13 @@ final List mocks = [
     type: "showPlace",
   ),
 ];
+
+final List favoriteMocks = [
+  FavoriteSight.fromSight(
+    sight: mocks.first,
+    plannedDate: DateTime.now(),
+    openHour: DateTime.tryParse("1970-01-01 09:00:00"),
+  ),
+];
+
+final List visitedMocks = [];
