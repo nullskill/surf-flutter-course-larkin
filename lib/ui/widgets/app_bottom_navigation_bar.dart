@@ -17,7 +17,7 @@ class AppBottomNavigationBar extends StatelessWidget {
       currentIndex: currentIndex,
       showSelectedLabels: false,
       showUnselectedLabels: false,
-      selectedItemColor: primaryColor,
+      selectedItemColor: LightMode.primaryColor,
       unselectedItemColor: inactiveColor,
       items: [
         BottomNavigationBarItem(

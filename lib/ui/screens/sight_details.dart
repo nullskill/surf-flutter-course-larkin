@@ -46,7 +46,7 @@ class _SightDetailsAppBar extends StatelessWidget
         ),
         child: Icon(
           Icons.arrow_back_ios_rounded,
-          color: primaryColor,
+          color: Theme.of(context).primaryColor,
         ),
       ),
       flexibleSpace: Container(
@@ -194,7 +194,7 @@ class _ShowRouteButton extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: allBorderRadius12,
-        color: greenColor,
+        color: LightMode.greenColor,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

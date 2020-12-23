@@ -190,7 +190,7 @@ Widget _getDescriptionText(var sight) {
         "$sightCardPlanned ${DateFormat.yMMMd().format(sight.plannedDate)}",
         style: textRegular14.copyWith(
           height: 1.3,
-          color: greenColor,
+          color: LightMode.greenColor,
         ),
       );
       break;

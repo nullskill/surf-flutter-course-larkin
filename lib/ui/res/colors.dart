@@ -10,8 +10,7 @@ const whiteColor = Colors.white,
 
 /// Класс цветовых констант для светлой темы
 class LightMode {
-  final
-      greenColor = Color(0xFF4CAF50),
+  static const greenColor = Color(0xFF4CAF50),
       yellowColor = Color(0xFFFCDD3D),
       redColor = Color(0xFFEF4343),
       primaryColor = Color(0xFF252849);
@@ -19,12 +18,9 @@ class LightMode {
 
 /// Класс цветовых констант для темной темы
 class DarkMode {
-  final
-      greenColor = Color(0xFF6ADA6F),
+  static const greenColor = Color(0xFF6ADA6F),
       yellowColor = Color(0xFFFFE769),
       redColor = Color(0xFFCF2A2A),
       darkColor = Color(0xFF1A1A20),
       primaryColor = Color(0xFF21222C);
 }
-
-
