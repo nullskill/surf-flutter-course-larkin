@@ -155,7 +155,7 @@ class _CardBottom extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: bottomBorderRadius16,
-        color: backgroundColor,
+        color: Theme.of(context).backgroundColor,
       ),
       padding: const EdgeInsets.all(16.0),
       width: double.infinity,
@@ -167,12 +167,13 @@ class _CardBottom extends StatelessWidget {
             sight.name,
             style: textMedium16.copyWith(
               height: 1.25,
+              color: Theme.of(context).primaryColor,
             ),
           ),
           SizedBox(
             height: 2,
           ),
-          _getDescriptionText(sight),
+          _getDescriptionText(sight, Theme.of(context).buttonColor),
           SizedBox(
             height: 2,
           ),
@@ -183,14 +184,14 @@ class _CardBottom extends StatelessWidget {
   }
 }
 
-Widget _getDescriptionText(var sight) {
+Widget _getDescriptionText(final sight, final Color descriptionColor) {
   switch (sight.runtimeType) {
     case FavoriteSight:
       return Text(
         "$sightCardPlanned ${DateFormat.yMMMd().format(sight.plannedDate)}",
         style: textRegular14.copyWith(
           height: 1.3,
-          color: LightMode.greenColor,
+          color: descriptionColor,
         ),
       );
       break;

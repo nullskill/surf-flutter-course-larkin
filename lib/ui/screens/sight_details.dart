@@ -4,18 +4,30 @@ import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
+import 'package:places/ui/res/custom_color_scheme.dart';
 
 import 'package:places/mocks.dart';
 
 /// Экран отображения подробной информации о посещаемом месте.
 class SightDetails extends StatelessWidget {
   final sight = mocks.last;
+  final Function changeThemeMode;
+  // Don't like this but since we haven't covered state architecture yet...
+  SightDetails({@required this.changeThemeMode});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _SightDetailsAppBar(sight: sight),
       body: _SightDetailsBody(sight: sight),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          changeThemeMode();
+        },
+        label: Text(
+          "Switch Theme",
+        ),
+      ),
     );
   }
 }
@@ -37,7 +49,7 @@ class _SightDetailsAppBar extends StatelessWidget
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: whiteColor,
+          color: Theme.of(context).colorScheme.sightDetailsBackButtonColor,
           borderRadius: allBorderRadius10,
         ),
         margin: const EdgeInsets.only(
@@ -121,7 +133,10 @@ class _SightDetailsBody extends StatelessWidget {
                 ),
                 Text(
                   sight.details,
-                  style: textRegular14.copyWith(height: 1.3),
+                  style: textRegular14.copyWith(
+                    height: 1.3,
+                    color: Theme.of(context).colorScheme.sightDetailsTitleColor,
+                  ),
                 ),
                 SizedBox(
                   height: 24,
@@ -154,7 +169,10 @@ class _CardLabel extends StatelessWidget {
       children: [
         Text(
           sight.name,
-          style: textBold24.copyWith(height: 1.2),
+          style: textBold24.copyWith(
+            height: 1.2,
+            color: Theme.of(context).colorScheme.sightDetailsTitleColor,
+          ),
         ),
         SizedBox(
           height: 2,
@@ -163,13 +181,16 @@ class _CardLabel extends StatelessWidget {
           children: [
             Text(
               sight.type,
-              style: textBold14.copyWith(height: 1.3),
+              style: textBold14.copyWith(
+                height: 1.3,
+                color: Theme.of(context).colorScheme.sightDetailsTypeColor,
+              ),
             ),
             SizedBox(
               width: 16,
             ),
             Text(
-              sightDetailsOpenHours,
+              "$sightDetailsOpenHours 09:00",
               style: textRegular14.copyWith(
                 height: 1.3,
                 color: secondaryColor2,
@@ -194,7 +215,7 @@ class _ShowRouteButton extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: allBorderRadius12,
-        color: LightMode.greenColor,
+        color: Theme.of(context).buttonColor,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -260,7 +281,9 @@ class _FlexibleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = primary ? secondaryColor : inactiveColor;
+    final color = primary
+        ? Theme.of(context).colorScheme.sightDetailsTitleColor
+        : inactiveColor;
     return Flexible(
       flex: 1,
       child: Container(

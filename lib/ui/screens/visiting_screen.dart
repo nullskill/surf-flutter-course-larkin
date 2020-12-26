@@ -31,7 +31,6 @@ class _VisitingScreenState extends State<VisitingScreen> {
       length: 2,
       initialIndex: 0,
       child: Scaffold(
-        // backgroundColor: whiteColor,
         appBar: _VisitingScreenAppBar(),
         body: TabBarView(
           children: [
@@ -97,22 +96,15 @@ class _AppBarBottom extends StatelessWidget implements PreferredSizeWidget {
       ),
       height: 40.0,
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: Theme.of(context).backgroundColor,
         borderRadius: allBorderRadius40,
       ),
       child: Theme(
-        data: ThemeData(
-          // removes ripple effect from inkwell inside tabs
+        data: Theme.of(context).copyWith(
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
         ),
         child: TabBar(
-          indicator: BoxDecoration(
-            color: secondaryColor,
-            borderRadius: allBorderRadius40,
-          ),
-          labelColor: whiteColor,
-          unselectedLabelColor: inactiveColor,
           tabs: [
             Tab(
               text: visitingWishToVisitTabText,
