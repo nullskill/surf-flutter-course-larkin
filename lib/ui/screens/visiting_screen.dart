@@ -11,18 +11,26 @@ import 'package:places/ui/widgets/sight_card.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 
 class VisitingScreen extends StatefulWidget {
+  final Function changeThemeMode;
+  // Don't like this but since we haven't covered state architecture yet...
+  VisitingScreen({@required this.changeThemeMode});
+
   @override
-  _VisitingScreenState createState() => _VisitingScreenState();
+  _VisitingScreenState createState() =>
+      _VisitingScreenState(changeThemeMode: changeThemeMode);
 }
 
 class _VisitingScreenState extends State<VisitingScreen> {
+  final Function changeThemeMode;
+  // Don't like this but since we haven't covered state architecture yet...
+  _VisitingScreenState({@required this.changeThemeMode});
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
       initialIndex: 0,
       child: Scaffold(
-        backgroundColor: whiteColor,
         appBar: _VisitingScreenAppBar(),
         body: TabBarView(
           children: [
@@ -32,6 +40,14 @@ class _VisitingScreenState extends State<VisitingScreen> {
         ),
         bottomNavigationBar: AppBottomNavigationBar(
           currentIndex: 2,
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            changeThemeMode();
+          },
+          label: Text(
+            "Switch Theme",
+          ),
         ),
       ),
     );
@@ -54,7 +70,7 @@ class _VisitingScreenAppBar extends StatelessWidget
       title: Text(
         visitingAppBarTitle,
         style: textMedium18.copyWith(
-          color: primaryColor,
+          color: Theme.of(context).primaryColor,
           height: 1.3,
         ),
       ),
@@ -80,22 +96,15 @@ class _AppBarBottom extends StatelessWidget implements PreferredSizeWidget {
       ),
       height: 40.0,
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: Theme.of(context).backgroundColor,
         borderRadius: allBorderRadius40,
       ),
       child: Theme(
-        data: ThemeData(
-          // removes ripple effect from inkwell inside tabs
+        data: Theme.of(context).copyWith(
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
         ),
         child: TabBar(
-          indicator: BoxDecoration(
-            color: secondaryColor,
-            borderRadius: allBorderRadius40,
-          ),
-          labelColor: whiteColor,
-          unselectedLabelColor: inactiveColor,
           tabs: [
             Tab(
               text: visitingWishToVisitTabText,

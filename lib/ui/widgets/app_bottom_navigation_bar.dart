@@ -13,30 +13,39 @@ class AppBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      currentIndex: currentIndex,
-      showSelectedLabels: false,
-      showUnselectedLabels: false,
-      selectedItemColor: primaryColor,
-      unselectedItemColor: inactiveColor,
-      items: [
-        BottomNavigationBarItem(
-          icon: Icon(Icons.list),
-          label: "",
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.map),
-          label: "",
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.favorite),
-          label: "",
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.settings),
-          label: "",
-        ),
-      ],
+    return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: inactiveColor,
+          ),
+        ],
+      ),
+      child: BottomNavigationBar(
+        currentIndex: currentIndex,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        type: BottomNavigationBarType.fixed,
+        elevation: 0,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list),
+            label: "",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.map),
+            label: "",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: "",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: "",
+          ),
+        ],
+      ),
     );
   }
 }
