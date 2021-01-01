@@ -134,9 +134,14 @@ class _CardIcon extends StatelessWidget {
     return Container(
       width: 24,
       height: 24,
-      child: Icon(
-        icon,
-        color: whiteColor,
+      child: IconButton(
+        onPressed: () {
+          print("Card icon pressed");
+        },
+        icon: Icon(
+          icon,
+          color: whiteColor,
+        ),
       ),
     );
   }

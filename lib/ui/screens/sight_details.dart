@@ -56,9 +56,18 @@ class _SightDetailsAppBar extends StatelessWidget
           left: 16.0,
           top: 16.0,
         ),
-        child: Icon(
-          Icons.arrow_back_ios_rounded,
-          color: Theme.of(context).primaryColor,
+        child: FlatButton(
+          padding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: allBorderRadius10,
+          ),
+          onPressed: () {
+            print("BackButton pressed");
+          },
+          child: Icon(
+            Icons.arrow_back_ios_rounded,
+            color: Theme.of(context).primaryColor,
+          ),
         ),
       ),
       flexibleSpace: Container(
@@ -210,27 +219,24 @@ class _ShowRouteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 48.0,
       width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: allBorderRadius12,
-        color: Theme.of(context).buttonColor,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _DummyIcon(
-            color: whiteColor,
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Text(
-            sightDetailsShowRoute.toUpperCase(),
-            style: textBold14.copyWith(color: whiteColor),
-          ),
-        ],
+      child: RaisedButton.icon(
+        elevation: 0,
+        icon: _DummyIcon(
+          color: whiteColor,
+        ),
+        label: Text(
+          sightDetailsShowRoute.toUpperCase(),
+          style: textBold14.copyWith(color: whiteColor),
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: allBorderRadius12,
+        ),
+        onPressed: () {
+          print("ShowRouteButton pressed");
+        },
       ),
     );
   }
@@ -255,12 +261,12 @@ class _CardMenu extends StatelessWidget {
         ),
         Row(
           children: [
-            _FlexibleButton(
+            _ExpandedButton(
               title: sightDetailsPlan,
             ),
-            _FlexibleButton(
+            _ExpandedButton(
               title: sightDetailsAddToFavorites,
-              primary: true,
+              selected: true,
             ),
           ],
         ),
@@ -269,39 +275,34 @@ class _CardMenu extends StatelessWidget {
   }
 }
 
-class _FlexibleButton extends StatelessWidget {
+class _ExpandedButton extends StatelessWidget {
   final String title;
-  final bool primary;
+  final bool selected;
 
-  const _FlexibleButton({
+  const _ExpandedButton({
     Key key,
     this.title,
-    this.primary = false,
+    this.selected = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final color = primary
+    final color = selected
         ? Theme.of(context).colorScheme.sightDetailsTitleColor
         : inactiveColor;
-    return Flexible(
-      flex: 1,
-      child: Container(
+    return Expanded(
+      child: FlatButton.icon(
         height: 40.0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _DummyIcon(
-              color: color,
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Text(
-              title,
-              style: textRegular14.copyWith(height: 1.3, color: color),
-            ),
-          ],
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        onPressed: () {
+          print("_ExpandedButton pressed");
+        },
+        icon: _DummyIcon(
+          color: color,
+        ),
+        label: Text(
+          title,
+          style: textRegular14.copyWith(height: 1.3, color: color),
         ),
       ),
     );
