@@ -12,6 +12,7 @@ import 'package:places/ui/res/custom_color_scheme.dart';
 import 'package:places/ui/res/assets.dart';
 
 import 'package:places/ui/widgets/action_button.dart';
+import 'package:places/ui/widgets/app_back_button.dart';
 
 /// Экран отображения подробной информации о посещаемом месте.
 class SightDetails extends StatelessWidget {
@@ -52,31 +53,17 @@ class _SightDetailsAppBar extends StatelessWidget
   Widget build(BuildContext context) {
     return AppBar(
       leading: Container(
-        width: 32,
-        height: 32,
+        margin: const EdgeInsets.only(
+          left: 16,
+          top: 12,
+          right: 8,
+          bottom: 12,
+        ),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.sightDetailsBackButtonColor,
           borderRadius: allBorderRadius10,
         ),
-        margin: const EdgeInsets.only(
-          left: 16.0,
-          top: 16.0,
-        ),
-        child: FlatButton(
-          padding: EdgeInsets.zero,
-          shape: RoundedRectangleBorder(
-            borderRadius: allBorderRadius10,
-          ),
-          onPressed: () {
-            print("BackButton pressed");
-          },
-          child: SvgPicture.asset(
-            AppIcons.arrow,
-            width: 32,
-            height: 32,
-            color: Theme.of(context).primaryColor,
-          ),
-        ),
+        child: AppBackButton(),
       ),
       flexibleSpace: Container(
         height: double.infinity,
