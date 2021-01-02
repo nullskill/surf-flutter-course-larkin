@@ -11,6 +11,8 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/custom_color_scheme.dart';
 import 'package:places/ui/res/assets.dart';
 
+import 'package:places/ui/widgets/action_button.dart';
+
 /// Экран отображения подробной информации о посещаемом месте.
 class SightDetails extends StatelessWidget {
   final sight = mocks.last;
@@ -156,7 +158,7 @@ class _SightDetailsBody extends StatelessWidget {
                 SizedBox(
                   height: 24,
                 ),
-                _ShowRouteButton(),
+                ActionButton(),
                 SizedBox(
                   height: 24,
                 ),
@@ -214,39 +216,6 @@ class _CardLabel extends StatelessWidget {
           ],
         ),
       ],
-    );
-  }
-}
-
-class _ShowRouteButton extends StatelessWidget {
-  const _ShowRouteButton({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 48.0,
-      width: double.infinity,
-      child: RaisedButton.icon(
-        elevation: 0,
-        icon: SvgPicture.asset(
-          AppIcons.go,
-          width: 24,
-          height: 24,
-          color: whiteColor,
-        ),
-        label: Text(
-          sightDetailsShowRoute.toUpperCase(),
-          style: textBold14.copyWith(color: whiteColor),
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: allBorderRadius12,
-        ),
-        onPressed: () {
-          print("ShowRouteButton pressed");
-        },
-      ),
     );
   }
 }
