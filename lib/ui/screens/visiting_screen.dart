@@ -68,7 +68,6 @@ class _VisitingScreenAppBar extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.transparent,
       centerTitle: true,
       title: Text(
         visitingAppBarTitle,
@@ -77,7 +76,6 @@ class _VisitingScreenAppBar extends StatelessWidget
           height: 1.3,
         ),
       ),
-      elevation: 0,
       bottom: _AppBarBottom(),
     );
   }

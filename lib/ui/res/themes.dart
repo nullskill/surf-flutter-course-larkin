@@ -20,6 +20,8 @@ final lightTheme = ThemeData(
   //AppBar
   appBarTheme: AppBarTheme(
     brightness: Brightness.light,
+    color: transparentColor,
+    elevation: 0,
   ),
 
   //TabBar

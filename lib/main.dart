@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:places/ui/res/themes.dart';
 
 // import 'package:places/ui/screens/visiting_screen.dart';
-import 'package:places/ui/screens/sight_details.dart';
+// import 'package:places/ui/screens/sight_details.dart';
 // import 'package:places/ui/screens/sight_list_screen.dart';
+import 'package:places/ui/screens/filters_screen.dart';
 
 void main() {
   runApp(App());
@@ -26,7 +27,8 @@ class _AppState extends State<App> {
       darkTheme: darkTheme,
       themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
       title: "My first App",
-      home: SightDetails(changeThemeMode: changeThemeMode),
+      // home: SightDetails(changeThemeMode: changeThemeMode),
+      home: FiltersScreen(),
     );
   }
 

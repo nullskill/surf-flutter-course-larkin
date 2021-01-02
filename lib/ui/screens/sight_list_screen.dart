@@ -75,8 +75,6 @@ class _SightListScreenAppBar extends StatelessWidget
           ),
         ),
       ),
-      backgroundColor: Colors.transparent,
-      elevation: 0,
     );
   }
 }

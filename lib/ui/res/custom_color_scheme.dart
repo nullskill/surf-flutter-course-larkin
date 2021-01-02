@@ -4,7 +4,7 @@ import 'package:places/ui/res/colors.dart';
 
 /// Расширение для ColorScheme, добавляет кастомные цвета
 extension CustomColorScheme on ColorScheme {
-  Color get sightDetailsBackButtonColor =>
+  Color get appBackButtonColor =>
       getColorByBrightness(whiteColor, DarkMode.primaryColor);
   Color get sightDetailsTitleColor =>
       getColorByBrightness(secondaryColor, whiteColor);

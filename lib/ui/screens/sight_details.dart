@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:places/mocks.dart';
 
-import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
@@ -52,19 +51,7 @@ class _SightDetailsAppBar extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: Container(
-        margin: const EdgeInsets.only(
-          left: 16,
-          top: 12,
-          right: 8,
-          bottom: 12,
-        ),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.sightDetailsBackButtonColor,
-          borderRadius: allBorderRadius10,
-        ),
-        child: AppBackButton(),
-      ),
+      leading: AppBackButton(),
       flexibleSpace: Container(
         height: double.infinity,
         child: _Gallery(
@@ -72,7 +59,6 @@ class _SightDetailsAppBar extends StatelessWidget
         ),
       ),
       backgroundColor: placeholderColor,
-      elevation: 0,
     );
   }
 }
