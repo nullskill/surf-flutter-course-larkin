@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_svg/flutter_svg.dart';
+
+import 'package:places/mocks.dart';
+
 import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/custom_color_scheme.dart';
-
-import 'package:places/mocks.dart';
+import 'package:places/ui/res/assets.dart';
 
 /// Экран отображения подробной информации о посещаемом месте.
 class SightDetails extends StatelessWidget {
@@ -28,6 +31,7 @@ class SightDetails extends StatelessWidget {
           "Switch Theme",
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
     );
   }
 }
@@ -64,8 +68,10 @@ class _SightDetailsAppBar extends StatelessWidget
           onPressed: () {
             print("BackButton pressed");
           },
-          child: Icon(
-            Icons.arrow_back_ios_rounded,
+          child: SvgPicture.asset(
+            AppIcons.arrow,
+            width: 32,
+            height: 32,
             color: Theme.of(context).primaryColor,
           ),
         ),
@@ -224,7 +230,10 @@ class _ShowRouteButton extends StatelessWidget {
       width: double.infinity,
       child: RaisedButton.icon(
         elevation: 0,
-        icon: _DummyIcon(
+        icon: SvgPicture.asset(
+          AppIcons.go,
+          width: 24,
+          height: 24,
           color: whiteColor,
         ),
         label: Text(
@@ -263,9 +272,12 @@ class _CardMenu extends StatelessWidget {
           children: [
             _ExpandedButton(
               title: sightDetailsPlan,
+              iconName: AppIcons.calendar,
             ),
             _ExpandedButton(
               title: sightDetailsAddToFavorites,
+              // iconName: AppIcons.heart,
+              iconName: AppIcons.heart,
               selected: true,
             ),
           ],
@@ -277,11 +289,13 @@ class _CardMenu extends StatelessWidget {
 
 class _ExpandedButton extends StatelessWidget {
   final String title;
+  final String iconName;
   final bool selected;
 
   const _ExpandedButton({
     Key key,
-    this.title,
+    @required this.title,
+    @required this.iconName,
     this.selected = false,
   }) : super(key: key);
 
@@ -297,7 +311,10 @@ class _ExpandedButton extends StatelessWidget {
         onPressed: () {
           print("_ExpandedButton pressed");
         },
-        icon: _DummyIcon(
+        icon: SvgPicture.asset(
+          iconName,
+          width: 24,
+          height: 24,
           color: color,
         ),
         label: Text(
@@ -305,24 +322,6 @@ class _ExpandedButton extends StatelessWidget {
           style: textRegular14.copyWith(height: 1.3, color: color),
         ),
       ),
-    );
-  }
-}
-
-class _DummyIcon extends StatelessWidget {
-  final Color color;
-
-  const _DummyIcon({
-    Key key,
-    this.color,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 20,
-      height: 18,
-      color: color,
     );
   }
 }

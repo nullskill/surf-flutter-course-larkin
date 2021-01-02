@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_svg/flutter_svg.dart';
+
+import 'package:places/mocks.dart';
+
 import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
-
-import 'package:places/mocks.dart';
+import 'package:places/ui/res/assets.dart';
 
 import 'package:places/ui/widgets/sight_card.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
@@ -164,11 +167,17 @@ class _EmptyList extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          width: 64.0,
-          height: 64.0,
+        SvgPicture.asset(
+          hasVisited ? AppIcons.go : AppIcons.card,
+          width: 64,
+          height: 64,
           color: inactiveColor,
         ),
+        // Container(
+        //   width: 64.0,
+        //   height: 64.0,
+        //   color: inactiveColor,
+        // ),
         SizedBox(
           height: 24.0,
         ),

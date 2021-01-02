@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:places/mocks.dart';
+
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/res/colors.dart';
-
-import 'package:places/mocks.dart';
 
 import 'package:places/ui/widgets/sight_card.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
@@ -46,6 +45,7 @@ class _SightListScreenState extends State<SightListScreen> {
           "Switch Theme",
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
     );
   }
 }
