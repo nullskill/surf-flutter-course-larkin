@@ -166,7 +166,7 @@ class _EmptyList extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         SvgPicture.asset(
-          hasVisited ? AppIcons.go : AppIcons.card,
+          hasVisited ? AppIcons.emptyGo : AppIcons.emptyCard,
           width: 64,
           height: 64,
           color: inactiveColor,

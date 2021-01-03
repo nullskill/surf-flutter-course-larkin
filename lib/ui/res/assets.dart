@@ -8,7 +8,24 @@ class AppIcons {
   /// Paths
   static const _baseResPath = "res/icons",
       _menuPath = "$_baseResPath/menu",
-      _otherPath = "$_baseResPath/other";
+      _otherPath = "$_baseResPath/other",
+      _catalogPath = "$_baseResPath/catalog",
+      _emptyPagesPath = "$_baseResPath/empty_pages";
+
+  /// Catalog
+  static const cafe = '$_catalogPath/cafe.svg',
+      hotel = '$_catalogPath/hotel.svg',
+      museum = '$_catalogPath/museum.svg',
+      park = '$_catalogPath/park.svg',
+      particular_place = '$_catalogPath/particular_place.svg',
+      restaurant = '$_catalogPath/restaurant.svg';
+
+  /// Empty pages
+  static const emptyCard = '$_emptyPagesPath/card.svg',
+      emptyError = '$_emptyPagesPath/error.svg',
+      emptyGo = '$_emptyPagesPath/go.svg',
+      emptyMap = '$_emptyPagesPath/map.svg',
+      emptySearch = '$_emptyPagesPath/search.svg';
 
   /// Menu
   static const list = '$_menuPath/list.svg',
