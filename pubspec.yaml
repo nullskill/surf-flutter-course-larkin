@@ -33,6 +33,7 @@ flutter:
     - res/icons/menu/
     - res/icons/other/
     - res/icons/catalog/
+    - res/icons/empty_pages/
 
   fonts:
     - family: Roboto
