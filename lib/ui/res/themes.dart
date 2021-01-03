@@ -47,6 +47,8 @@ final lightTheme = ThemeData(
     backgroundColor: whiteColor,
     selectedItemColor: LightMode.primaryColor,
     unselectedItemColor: inactiveColor,
+    type: BottomNavigationBarType.fixed,
+    elevation: 0,
   ),
 );
 
@@ -66,6 +68,8 @@ final darkTheme = ThemeData(
   //AppBar
   appBarTheme: AppBarTheme(
     brightness: Brightness.dark,
+    color: transparentColor,
+    elevation: 0,
   ),
 
   //TabBar
@@ -91,5 +95,7 @@ final darkTheme = ThemeData(
     backgroundColor: DarkMode.primaryColor,
     selectedItemColor: whiteColor,
     unselectedItemColor: secondaryColor2,
+    type: BottomNavigationBarType.fixed,
+    elevation: 0,
   ),
 );

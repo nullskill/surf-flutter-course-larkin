@@ -1,3 +1,5 @@
+import 'package:places/ui/screens/filters_screen.dart';
+
 /// Строковые константы
 const String sightListScreenText = 'Список\nинтересных мест',
 
@@ -6,7 +8,7 @@ const String sightListScreenText = 'Список\nинтересных мест'
     sightCardVisited = "Цель достигнута",
 
 //SightDetails screen
-    sightDetailsShowRoute = "построить маршрут",
+    sightDetailsActionButtonLabel = "построить маршрут",
     sightDetailsOpenHours = "откроется в",
     sightDetailsPlan = "Запланировать",
     sightDetailsAddToFavorites = "В Избранное",
@@ -19,4 +21,8 @@ const String sightListScreenText = 'Список\nинтересных мест'
     visitingVisitedTabText = "Посетил",
     visitingVisitedTabViewEmptyListText =
         "Завершите маршрут, чтобы место попало сюда.",
-    visitingEmptyListText = "Пусто";
+    visitingEmptyListText = "Пусто",
+
+//FiltersScreen
+    filtersScreenActionButtonLabel = "показать",
+    filtersScreenClearButtonLabel = "Очистить";

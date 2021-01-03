@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:places/ui/res/border_radiuses.dart';
-import 'package:places/ui/res/custom_color_scheme.dart';
 import 'package:places/ui/res/assets.dart';
 
 /// Виджет AppActionButton предоставляет кнопку возврата на предыдущий экран
@@ -26,7 +25,7 @@ class AppBackButton extends StatelessWidget {
         minWidth: 32,
         padding: EdgeInsets.zero,
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        color: Theme.of(context).colorScheme.appBackButtonColor,
+        color: Theme.of(context).canvasColor,
         shape: RoundedRectangleBorder(
           borderRadius: allBorderRadius10,
         ),

@@ -131,7 +131,10 @@ class _SightDetailsBody extends StatelessWidget {
                 SizedBox(
                   height: 24,
                 ),
-                ActionButton(),
+                ActionButton(
+                  iconName: AppIcons.go,
+                  label: sightDetailsActionButtonLabel,
+                ),
                 SizedBox(
                   height: 24,
                 ),
