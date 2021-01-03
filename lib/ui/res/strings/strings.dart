@@ -25,4 +25,5 @@ const String sightListScreenText = 'Список\nинтересных мест'
 
 //FiltersScreen
     filtersScreenActionButtonLabel = "показать",
-    filtersScreenClearButtonLabel = "Очистить";
+    filtersScreenClearButtonLabel = "Очистить",
+    filtersScreenDistanceTitle = "Расстояние";
