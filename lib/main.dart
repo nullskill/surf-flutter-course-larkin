@@ -27,7 +27,7 @@ class _AppState extends State<App> {
       darkTheme: darkTheme,
       themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
       title: "My first App",
-      // home: VisitingScreen(changeThemeMode: changeThemeMode),
+      // home: SightDetails(changeThemeMode: changeThemeMode),
       home: FiltersScreen(),
     );
   }

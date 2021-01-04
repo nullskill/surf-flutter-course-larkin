@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:places/ui/res/colors.dart';
 
 /// Расширение для ColorScheme, добавляет кастомные цвета
-extension CustomColorScheme on ColorScheme {
+extension AppColorScheme on ColorScheme {
   Color get sightDetailsTitleColor =>
       getColorByBrightness(secondaryColor, whiteColor);
   Color get sightDetailsTypeColor =>

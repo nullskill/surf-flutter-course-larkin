@@ -7,7 +7,7 @@ import 'package:places/mocks.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
-import 'package:places/ui/res/custom_color_scheme.dart';
+import 'package:places/ui/res/app_color_scheme.dart';
 import 'package:places/ui/res/assets.dart';
 
 import 'package:places/ui/widgets/action_button.dart';
