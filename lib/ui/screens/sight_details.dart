@@ -125,7 +125,7 @@ class _SightDetailsBody extends StatelessWidget {
                   sight.details,
                   style: textRegular14.copyWith(
                     height: 1.3,
-                    color: Theme.of(context).colorScheme.sightDetailsTitleColor,
+                    color: Theme.of(context).colorScheme.appTitleColor,
                   ),
                 ),
                 SizedBox(
@@ -164,7 +164,7 @@ class _CardLabel extends StatelessWidget {
           sight.name,
           style: textBold24.copyWith(
             height: 1.2,
-            color: Theme.of(context).colorScheme.sightDetailsTitleColor,
+            color: Theme.of(context).colorScheme.appTitleColor,
           ),
         ),
         SizedBox(
@@ -176,7 +176,7 @@ class _CardLabel extends StatelessWidget {
               sight.type,
               style: textBold14.copyWith(
                 height: 1.3,
-                color: Theme.of(context).colorScheme.sightDetailsTypeColor,
+                color: Theme.of(context).colorScheme.appSubtitleColor,
               ),
             ),
             SizedBox(
@@ -246,9 +246,8 @@ class _ExpandedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = selected
-        ? Theme.of(context).colorScheme.sightDetailsTitleColor
-        : inactiveColor;
+    final color =
+        selected ? Theme.of(context).colorScheme.appTitleColor : inactiveColor;
     return Expanded(
       child: FlatButton.icon(
         height: 40.0,

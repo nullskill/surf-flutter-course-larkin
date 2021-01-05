@@ -30,7 +30,7 @@
 .pub-cache/
 .pub/
 /build/
-pubspec.lock
+*.lock
 analysis_options.yaml
 
 # Web related

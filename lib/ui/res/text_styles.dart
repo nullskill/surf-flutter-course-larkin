@@ -14,6 +14,7 @@ TextStyle _text = const TextStyle(
 
 //Regular
     textRegular = _text.copyWith(fontWeight: FontWeight.w400),
+    textRegular12 = textRegular.copyWith(fontSize: 12.0),
     textRegular14 = textRegular.copyWith(fontSize: 14.0),
     textRegular16 = textRegular.copyWith(fontSize: 16.0),
 

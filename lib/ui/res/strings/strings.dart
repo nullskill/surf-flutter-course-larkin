@@ -1,5 +1,3 @@
-import 'package:places/ui/screens/filters_screen.dart';
-
 /// Строковые константы
 const String sightListScreenText = 'Список\nинтересных мест',
 
@@ -26,4 +24,5 @@ const String sightListScreenText = 'Список\nинтересных мест'
 //FiltersScreen
     filtersScreenActionButtonLabel = "показать",
     filtersScreenClearButtonLabel = "Очистить",
-    filtersScreenDistanceTitle = "Расстояние";
+    filtersScreenDistanceTitle = "Расстояние",
+    filtersScreenCategoriesTitle = "Категории";

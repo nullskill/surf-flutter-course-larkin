@@ -3,29 +3,29 @@ import 'package:flutter/cupertino.dart';
 /// Класс интересного места
 class Sight {
   String _name;
-  double _lan, _lon;
+  double _lat, _lng;
   String _url;
   String _details;
   String _type;
 
   get name => _name;
-  get lan => _lan;
-  get lon => _lon;
+  get lat => _lat;
+  get lng => _lng;
   get url => _url;
   get details => _details;
   get type => _type;
 
   Sight({
     @required String name,
-    @required double lan,
-    @required double lon,
+    @required double lat,
+    @required double lng,
     @required String url,
     @required String details,
     @required String type,
   }) {
     this._name = name;
-    this._lan = lan;
-    this._lon = lon;
+    this._lat = lat;
+    this._lng = lng;
     this._url = url;
     this._details = details;
     this._type = type;
@@ -42,8 +42,8 @@ class FavoriteSight extends Sight {
 
   FavoriteSight({
     @required String name,
-    @required double lan,
-    @required double lon,
+    @required double lat,
+    @required double lng,
     @required String url,
     @required String details,
     @required String type,
@@ -51,8 +51,8 @@ class FavoriteSight extends Sight {
     @required DateTime openHour,
   }) : super(
           name: name,
-          lan: lan,
-          lon: lon,
+          lat: lat,
+          lng: lng,
           url: url,
           details: details,
           type: type,
@@ -67,8 +67,8 @@ class FavoriteSight extends Sight {
     @required DateTime openHour,
   }) {
     this._name = sight.name;
-    this._lan = sight.lan;
-    this._lon = sight.lon;
+    this._lat = sight.lat;
+    this._lng = sight.lng;
     this._url = sight.url;
     this._details = sight.details;
     this._type = sight.type;
@@ -87,8 +87,8 @@ class VisitedSight extends Sight {
 
   VisitedSight({
     @required String name,
-    @required double lan,
-    @required double lon,
+    @required double lat,
+    @required double lng,
     @required String url,
     @required String details,
     @required String type,
@@ -96,8 +96,8 @@ class VisitedSight extends Sight {
     @required DateTime openHour,
   }) : super(
           name: name,
-          lan: lan,
-          lon: lon,
+          lat: lat,
+          lng: lng,
           url: url,
           details: details,
           type: type,
@@ -112,8 +112,8 @@ class VisitedSight extends Sight {
     @required DateTime openHour,
   }) {
     this._name = sight.name;
-    this._lan = sight.lan;
-    this._lon = sight.lon;
+    this._lat = sight.lat;
+    this._lng = sight.lng;
     this._url = sight.url;
     this._details = sight.details;
     this._type = sight.type;

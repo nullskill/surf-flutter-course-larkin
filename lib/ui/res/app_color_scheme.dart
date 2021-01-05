@@ -4,11 +4,10 @@ import 'package:places/ui/res/colors.dart';
 
 /// Расширение для ColorScheme, добавляет кастомные цвета
 extension AppColorScheme on ColorScheme {
-  Color get sightDetailsTitleColor =>
-      getColorByBrightness(secondaryColor, whiteColor);
-  Color get sightDetailsTypeColor =>
+  Color get appTitleColor => getColorByBrightness(secondaryColor, whiteColor);
+  Color get appSubtitleColor =>
       getColorByBrightness(secondaryColor, secondaryColor2);
-  Color get sightDetailsOpenHoursColor =>
+  Color get appSecondarySubtitleColor =>
       getColorByBrightness(secondaryColor2, inactiveColor);
 
   /// Метод возвращает либо lightThemeColor, либо darkThemeColor,
