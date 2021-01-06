@@ -16,7 +16,7 @@ import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 class VisitingScreen extends StatefulWidget {
   final Function changeThemeMode;
   // Don't like this but since we haven't covered state architecture yet...
-  VisitingScreen({@required this.changeThemeMode});
+  const VisitingScreen({@required this.changeThemeMode});
 
   @override
   _VisitingScreenState createState() =>

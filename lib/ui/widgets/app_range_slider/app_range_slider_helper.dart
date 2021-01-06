@@ -10,6 +10,8 @@ class AppRangeSliderHelper {
   static const divisions = 100,
       minValue = 100.0,
       maxValue = 10000.0,
+      initialMinValue = 500.0,
+      initialMaxValue = 5000.0,
       _kilo = 1000,
       _m = "м",
       _km = "км";

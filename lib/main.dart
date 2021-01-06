@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:places/ui/res/themes.dart';
 
-// import 'package:places/ui/screens/visiting_screen.dart';
-// import 'package:places/ui/screens/sight_details.dart';
-// import 'package:places/ui/screens/sight_list_screen.dart';
+import 'package:places/ui/screens/visiting_screen.dart';
+import 'package:places/ui/screens/sight_details_screen.dart';
+import 'package:places/ui/screens/sight_list_screen.dart';
 import 'package:places/ui/screens/filters_screen/filters_screen.dart';
 
 void main() {

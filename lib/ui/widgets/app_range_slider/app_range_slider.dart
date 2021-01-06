@@ -5,21 +5,15 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
 
 import 'package:places/ui/widgets/app_range_slider/app_range_slider_helper.dart';
+import 'package:places/ui/screens/filters_screen/filters_screen.dart';
 
 /// Виджет для отображения слайдера с выбором диапазона "от и до"
-class AppRangeSlider extends StatefulWidget {
-  const AppRangeSlider({
-    Key key,
-  }) : super(key: key);
+class AppRangeSlider extends StatelessWidget {
+  const AppRangeSlider({this.currentRangeValues});
 
-  @override
-  _AppRangeSliderState createState() => _AppRangeSliderState();
-}
-
-class _AppRangeSliderState extends State<AppRangeSlider> {
   static const _minValue = AppRangeSliderHelper.minValue;
   static const _maxValue = AppRangeSliderHelper.maxValue;
-  RangeValues _currentValues = RangeValues(_minValue, _maxValue);
+  final currentRangeValues;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +30,7 @@ class _AppRangeSliderState extends State<AppRangeSlider> {
               ),
             ),
             Text(
-              AppRangeSliderHelper.getRangeDescription(_currentValues),
+              AppRangeSliderHelper.getRangeDescription(currentRangeValues),
               style: textRegular16.copyWith(
                 color: secondaryColor2,
                 height: 1.25,
@@ -51,11 +45,9 @@ class _AppRangeSliderState extends State<AppRangeSlider> {
           divisions: AppRangeSliderHelper.divisions,
           min: _minValue,
           max: _maxValue,
-          values: _currentValues,
+          values: currentRangeValues,
           onChanged: (newValues) {
-            setState(() {
-              _currentValues = newValues;
-            });
+            FiltersScreen.of(context).setRangeValues(newValues);
           },
         ),
       ],

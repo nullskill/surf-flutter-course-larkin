@@ -11,11 +11,62 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/app_color_scheme.dart';
 
+import 'package:places/ui/screens/filters_screen/filters_screen_helper.dart';
+
 import 'package:places/ui/widgets/app_back_button.dart';
 import 'package:places/ui/widgets/action_button.dart';
+import 'package:places/ui/widgets/app_range_slider/app_range_slider_helper.dart';
 import 'package:places/ui/widgets/app_range_slider/app_range_slider.dart';
 
-class FiltersScreen extends StatelessWidget {
+class FiltersScreen extends StatefulWidget {
+  @override
+  _FiltersScreenState createState() => _FiltersScreenState();
+
+  static _FiltersScreenState of(BuildContext context) =>
+      context.findAncestorStateOfType<_FiltersScreenState>();
+}
+
+class _FiltersScreenState extends State<FiltersScreen> {
+  List<Category> _categoriesState;
+  RangeValues _currentRangeValues;
+
+  get getCategories => _categoriesState;
+
+  @override
+  void initState() {
+    super.initState();
+    _categoriesState = [...categories];
+    _resetRangeValues();
+  }
+
+  void setRangeValues(RangeValues newValues) {
+    setState(() {
+      _currentRangeValues = newValues;
+    });
+  }
+
+  void resetAllSettings() => setState(() {
+        for (var category in _categoriesState) category.selected = false;
+        _resetRangeValues();
+      });
+
+  void toggleCategory(Category category) => setState(() {
+        category.toggle();
+        print(FiltersScreenHelper.arePointsNear(
+          checkPoint: mocks.last,
+          centerPoint: FiltersScreenHelper.kremlinPoint,
+          minValue: _currentRangeValues.start,
+          maxValue: _currentRangeValues.end,
+        ));
+      });
+
+  void _resetRangeValues() {
+    _currentRangeValues = RangeValues(
+      AppRangeSliderHelper.initialMinValue,
+      AppRangeSliderHelper.initialMaxValue,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +100,7 @@ class FiltersScreen extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(8, 24, 8, 56),
                 child: _Categories(),
               ),
-              AppRangeSlider(),
+              AppRangeSlider(currentRangeValues: _currentRangeValues),
             ],
           ),
         ),
@@ -76,7 +127,7 @@ class _ClearButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlatButton(
       onPressed: () {
-        for (var category in categories) category.selected = false;
+        FiltersScreen.of(context).resetAllSettings();
       },
       child: Text(
         filtersScreenClearButtonLabel,
@@ -101,7 +152,7 @@ class _Categories extends StatelessWidget {
       runSpacing: 40,
       alignment: WrapAlignment.spaceEvenly,
       children: [
-        for (var category in categories)
+        for (var category in FiltersScreen.of(context).getCategories)
           _Category(
             category: category,
           ),
@@ -110,7 +161,7 @@ class _Categories extends StatelessWidget {
   }
 }
 
-class _Category extends StatefulWidget {
+class _Category extends StatelessWidget {
   const _Category({
     Key key,
     @required this.category,
@@ -119,22 +170,6 @@ class _Category extends StatefulWidget {
   static const maxAvatarWidth = 32.0, maxItemWidth = 96.0;
 
   final Category category;
-
-  @override
-  _CategoryState createState() => _CategoryState(category);
-}
-
-class _CategoryState extends State<_Category> {
-  _CategoryState(this.category);
-
-  final Category category;
-  bool hasTick;
-
-  @override
-  void initState() {
-    super.initState();
-    hasTick = category.selected;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -159,14 +194,11 @@ class _CategoryState extends State<_Category> {
                   ),
                 ),
                 onTap: () {
-                  setState(() {
-                    hasTick = !hasTick;
-                    category.toggle();
-                  });
+                  FiltersScreen.of(context).toggleCategory(category);
                 },
               ),
             ),
-            hasTick ? _CategoryTick() : SizedBox(),
+            category.selected ? _CategoryTick() : SizedBox(),
           ],
         ),
         SizedBox(

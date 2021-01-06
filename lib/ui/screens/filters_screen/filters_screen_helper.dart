@@ -11,9 +11,15 @@ class FiltersScreenHelper {
   // ignore: unused_element
   FiltersScreenHelper._();
 
+  static Point kremlinPoint = Point(
+    name: "Москва, Кремль",
+    lat: 55.751999,
+    lng: 37.617734,
+  );
+
   /// Определеяет вхождение координат карточки интересного места [checkPoint]
   /// в радиусе от [minValue] до [maxValue], начиная с точки [centerPoint]
-  bool arePointsNear({
+  static bool arePointsNear({
     @required Sight checkPoint,
     @required Point centerPoint,
     @required double minValue,
