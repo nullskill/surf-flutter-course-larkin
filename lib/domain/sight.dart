@@ -1,4 +1,16 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+
+import 'package:places/ui/res/assets.dart';
+
+/// Перечисление возможных типов мест
+enum SightType {
+  hotel,
+  restaurant,
+  particular_place,
+  park,
+  museum,
+  cafe,
+}
 
 /// Класс интересного места
 class Sight {
@@ -6,7 +18,7 @@ class Sight {
   double _lat, _lng;
   String _url;
   String _details;
-  String _type;
+  SightType _type;
 
   get name => _name;
   get lat => _lat;
@@ -21,7 +33,7 @@ class Sight {
     @required double lng,
     @required String url,
     @required String details,
-    @required String type,
+    @required SightType type,
   }) {
     this._name = name;
     this._lat = lat;
@@ -46,7 +58,7 @@ class FavoriteSight extends Sight {
     @required double lng,
     @required String url,
     @required String details,
-    @required String type,
+    @required SightType type,
     @required DateTime plannedDate,
     @required DateTime openHour,
   }) : super(
@@ -91,7 +103,7 @@ class VisitedSight extends Sight {
     @required double lng,
     @required String url,
     @required String details,
-    @required String type,
+    @required SightType type,
     @required DateTime visitedDate,
     @required DateTime openHour,
   }) : super(
@@ -121,3 +133,54 @@ class VisitedSight extends Sight {
     this._openHour = openHour;
   }
 }
+
+/// Класс категории интересных мест
+class Category {
+  String _name;
+  String _iconName;
+  SightType _type;
+  bool _selected;
+
+  get name => _name;
+  get iconName => _iconName;
+  get type => _type;
+  get selected => _selected;
+
+  set selected(bool b) => _selected = b;
+
+  Category({
+    @required String name,
+    @required String iconName,
+    @required SightType type,
+    bool selected = false,
+  }) {
+    this._name = name;
+    this._iconName = iconName;
+    this._type = type;
+    this._selected = selected;
+  }
+
+  Category.fromType({
+    @required type,
+  }) {
+    this._type = type;
+    this._selected = false;
+    this._name = _typesMapping[type]?.first ?? "Особое место";
+    this._iconName = _typesMapping[type]?.last ?? AppIcons.particular_place;
+  }
+
+  /// Меняет признак выбранности категории
+  void toggle() {
+    _selected = !_selected;
+  }
+}
+
+/// Маппинг типа места и его названия
+const _typesMapping = <SightType, List<String>>{
+  SightType.hotel: ["Отель", AppIcons.hotel],
+  SightType.restaurant: ["Ресторан", AppIcons.restaurant],
+  SightType.particular_place: ["Особое место", AppIcons.particular_place],
+  SightType.park: ["Парк", AppIcons.park],
+  SightType.museum: ["Музей", AppIcons.museum],
+  SightType.cafe: ["Кафе", AppIcons.cafe],
+};

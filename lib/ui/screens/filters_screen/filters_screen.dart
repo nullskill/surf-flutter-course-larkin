@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:places/mocks.dart';
+import 'package:places/domain/sight.dart';
 
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/strings/strings.dart';
@@ -75,7 +76,7 @@ class _ClearButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FlatButton(
       onPressed: () {
-        print("_ClearButton pressed");
+        for (var category in categories) category.selected = false;
       },
       child: Text(
         filtersScreenClearButtonLabel,
@@ -100,31 +101,40 @@ class _Categories extends StatelessWidget {
       runSpacing: 40,
       alignment: WrapAlignment.spaceEvenly,
       children: [
-        for (var sight in mocks) ...[
+        for (var category in categories)
           _Category(
-            name: sight.type,
-            iconName: AppIcons.hotel,
-            hasTick: true,
+            category: category,
           ),
-        ],
       ],
     );
   }
 }
 
-class _Category extends StatelessWidget {
+class _Category extends StatefulWidget {
   const _Category({
     Key key,
-    @required this.name,
-    @required this.iconName,
-    @required this.hasTick,
+    @required this.category,
   }) : super(key: key);
 
   static const maxAvatarWidth = 32.0, maxItemWidth = 96.0;
 
-  final String name;
-  final String iconName;
-  final bool hasTick;
+  final Category category;
+
+  @override
+  _CategoryState createState() => _CategoryState(category);
+}
+
+class _CategoryState extends State<_Category> {
+  _CategoryState(this.category);
+
+  final Category category;
+  bool hasTick;
+
+  @override
+  void initState() {
+    super.initState();
+    hasTick = category.selected;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -133,45 +143,44 @@ class _Category extends StatelessWidget {
       children: [
         Stack(
           children: [
-            CircleAvatar(
-              radius: maxAvatarWidth,
-              backgroundColor: Theme.of(context).buttonColor.withOpacity(.16),
-              child: SvgPicture.asset(
-                iconName,
-                width: maxAvatarWidth,
-                height: maxAvatarWidth,
-                color: Theme.of(context).buttonColor,
+            Material(
+              type: MaterialType.transparency,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(_Category.maxAvatarWidth),
+                child: CircleAvatar(
+                  radius: _Category.maxAvatarWidth,
+                  backgroundColor:
+                      Theme.of(context).buttonColor.withOpacity(.16),
+                  child: SvgPicture.asset(
+                    category.iconName,
+                    width: _Category.maxAvatarWidth,
+                    height: _Category.maxAvatarWidth,
+                    color: Theme.of(context).buttonColor,
+                  ),
+                ),
+                onTap: () {
+                  setState(() {
+                    hasTick = !hasTick;
+                    category.toggle();
+                  });
+                },
               ),
             ),
-            hasTick ? _Tick() : SizedBox(),
+            hasTick ? _CategoryTick() : SizedBox(),
           ],
         ),
         SizedBox(
-          width: maxItemWidth,
+          width: _Category.maxItemWidth,
           height: 12,
         ),
-        ConstrainedBox(
-          constraints: BoxConstraints.loose(
-            const Size.fromWidth(maxItemWidth),
-          ),
-          child: Text(
-            name,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: textRegular12.copyWith(
-              color: Theme.of(context).colorScheme.appTitleColor,
-              height: 1.3,
-            ),
-          ),
-        ),
+        _CategoryLabel(label: category.name),
       ],
     );
   }
 }
 
-class _Tick extends StatelessWidget {
-  const _Tick({
+class _CategoryTick extends StatelessWidget {
+  const _CategoryTick({
     Key key,
   }) : super(key: key);
 
@@ -189,6 +198,34 @@ class _Tick extends StatelessWidget {
           width: iconSize,
           height: iconSize,
           color: Theme.of(context).colorScheme.onPrimary,
+        ),
+      ),
+    );
+  }
+}
+
+class _CategoryLabel extends StatelessWidget {
+  const _CategoryLabel({
+    Key key,
+    @required this.label,
+  }) : super(key: key);
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: BoxConstraints.loose(
+        const Size.fromWidth(_Category.maxItemWidth),
+      ),
+      child: Text(
+        label,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
+        style: textRegular12.copyWith(
+          color: Theme.of(context).colorScheme.appTitleColor,
+          height: 1.3,
         ),
       ),
     );
