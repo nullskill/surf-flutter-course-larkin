@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
+import 'package:places/utils/consts.dart';
 import 'package:places/domain/sight.dart';
 
 /// Вспомогательный класс для виджета AppRangeSlider
@@ -11,10 +11,10 @@ class FiltersScreenHelper {
   // ignore: unused_element
   FiltersScreenHelper._();
 
-  static Point kremlinPoint = Point(
-    name: "Москва, Кремль",
-    lat: 55.751999,
-    lng: 37.617734,
+  static Point centerPoint = Point(
+    name: "Москва, Красная площадь",
+    lat: 55.754093,
+    lng: 37.620407,
   );
 
   /// Определеяет вхождение координат карточки интересного места [checkPoint]
@@ -30,7 +30,7 @@ class FiltersScreenHelper {
     final dx = (centerPoint.lng - checkPoint.lng).abs() * kx;
     final dy = (centerPoint.lat - checkPoint.lat).abs() * ky;
     final d = sqrt(dx * dx + dy * dy);
-    return d >= minValue && d <= maxValue;
+    return d >= minValue / kilometer && d <= maxValue / kilometer;
   }
 }
 

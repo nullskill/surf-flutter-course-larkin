@@ -73,7 +73,7 @@ class _VisitingScreenAppBar extends StatelessWidget
         visitingAppBarTitle,
         style: textMedium18.copyWith(
           color: Theme.of(context).primaryColor,
-          height: 1.3,
+          height: lineHeight1_3,
         ),
       ),
       bottom: _AppBarBottom(),
@@ -126,6 +126,7 @@ class _VisitingScreenList extends StatelessWidget {
     this.hasVisited = false,
   }) : super(key: key);
 
+  static const spacing16 = 16.0;
   final bool hasVisited;
 
   @override
@@ -135,14 +136,14 @@ class _VisitingScreenList extends StatelessWidget {
         ? _EmptyList(hasVisited: hasVisited)
         : SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(spacing16),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   for (var sight in sights) ...[
                     SightCard(sight: sight),
                     SizedBox(
-                      height: 16,
+                      height: spacing16,
                     ),
                   ],
                 ],
@@ -158,6 +159,7 @@ class _EmptyList extends StatelessWidget {
     @required this.hasVisited,
   }) : super(key: key);
 
+  static const spacing64 = 64.0;
   final bool hasVisited;
 
   @override
@@ -167,15 +169,10 @@ class _EmptyList extends StatelessWidget {
       children: [
         SvgPicture.asset(
           hasVisited ? AppIcons.emptyGo : AppIcons.emptyCard,
-          width: 64,
-          height: 64,
+          width: spacing64,
+          height: spacing64,
           color: inactiveColor,
         ),
-        // Container(
-        //   width: 64.0,
-        //   height: 64.0,
-        //   color: inactiveColor,
-        // ),
         SizedBox(
           height: 24.0,
         ),
@@ -183,7 +180,7 @@ class _EmptyList extends StatelessWidget {
           visitingEmptyListText,
           style: textMedium18.copyWith(
             color: inactiveColor,
-            height: 1.3,
+            height: lineHeight1_3,
           ),
         ),
         SizedBox(
@@ -197,7 +194,7 @@ class _EmptyList extends StatelessWidget {
                 : visitingWishToVisitTabViewEmptyListText,
             style: textRegular14.copyWith(
               color: inactiveColor,
-              height: 1.3,
+              height: lineHeight1_3,
             ),
             textAlign: TextAlign.center,
           ),

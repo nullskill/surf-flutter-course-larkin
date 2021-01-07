@@ -27,38 +27,53 @@ class FiltersScreen extends StatefulWidget {
 }
 
 class _FiltersScreenState extends State<FiltersScreen> {
-  List<Category> _categoriesState;
+  static const spacing8 = 8.0, spacing16 = 16.0, spacing24 = 24.0;
+  int _numberOfFilteredCards = 0;
+  List<Category> _categories;
   RangeValues _currentRangeValues;
 
-  get getCategories => _categoriesState;
+  get getCategories => _categories;
 
   @override
   void initState() {
     super.initState();
-    _categoriesState = [...categories];
+    _categories = [...categories];
     _resetRangeValues();
   }
 
   void setRangeValues(RangeValues newValues) {
     setState(() {
       _currentRangeValues = newValues;
+      _filterCards();
     });
   }
 
   void resetAllSettings() => setState(() {
-        for (var category in _categoriesState) category.selected = false;
+        for (var category in _categories) category.selected = false;
         _resetRangeValues();
+        _numberOfFilteredCards = 0;
       });
 
   void toggleCategory(Category category) => setState(() {
         category.toggle();
-        print(FiltersScreenHelper.arePointsNear(
-          checkPoint: mocks.last,
-          centerPoint: FiltersScreenHelper.kremlinPoint,
+        _filterCards();
+      });
+
+  void _filterCards() {
+    final selectedTypes = [
+      for (var category in _categories)
+        if (category.selected) category.type,
+    ];
+    final filteredCards = mocks.where((el) =>
+        selectedTypes.contains(el.type) &&
+        FiltersScreenHelper.arePointsNear(
+          checkPoint: el,
+          centerPoint: FiltersScreenHelper.centerPoint,
           minValue: _currentRangeValues.start,
           maxValue: _currentRangeValues.end,
         ));
-      });
+    _numberOfFilteredCards = filteredCards.length;
+  }
 
   void _resetRangeValues() {
     _currentRangeValues = RangeValues(
@@ -70,19 +85,12 @@ class _FiltersScreenState extends State<FiltersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: AppBackButton(),
-        actions: [
-          Center(
-            child: _ClearButton(),
-          ),
-        ],
-      ),
+      appBar: _FiltersAppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 24,
+            horizontal: spacing16,
+            vertical: spacing24,
           ),
           child: Column(
             children: [
@@ -92,12 +100,17 @@ class _FiltersScreenState extends State<FiltersScreen> {
                   filtersScreenCategoriesTitle.toUpperCase(),
                   style: textRegular12.copyWith(
                     color: inactiveColor,
-                    height: 1.3,
+                    height: lineHeight1_3,
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(8, 24, 8, 56),
+                padding: const EdgeInsets.fromLTRB(
+                  spacing8,
+                  spacing24,
+                  spacing8,
+                  56,
+                ),
                 child: _Categories(),
               ),
               AppRangeSlider(currentRangeValues: _currentRangeValues),
@@ -107,13 +120,33 @@ class _FiltersScreenState extends State<FiltersScreen> {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 8,
+          horizontal: spacing16,
+          vertical: spacing8,
         ),
         child: ActionButton(
-          label: filtersScreenActionButtonLabel,
+          label: "$filtersScreenActionButtonLabel ($_numberOfFilteredCards)",
         ),
       ),
+    );
+  }
+}
+
+class _FiltersAppBar extends StatelessWidget implements PreferredSizeWidget {
+  _FiltersAppBar({
+    Key key,
+  }) : super(key: key);
+
+  final Size preferredSize = Size.fromHeight(56.0);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      leading: AppBackButton(),
+      actions: [
+        Center(
+          child: _ClearButton(),
+        ),
+      ],
     );
   }
 }
@@ -133,7 +166,7 @@ class _ClearButton extends StatelessWidget {
         filtersScreenClearButtonLabel,
         style: textMedium16.copyWith(
           color: Theme.of(context).buttonColor,
-          height: 1.25,
+          height: lineHeight1_25,
         ),
       ),
     );
@@ -257,7 +290,7 @@ class _CategoryLabel extends StatelessWidget {
         textAlign: TextAlign.center,
         style: textRegular12.copyWith(
           color: Theme.of(context).colorScheme.appTitleColor,
-          height: 1.3,
+          height: lineHeight1_3,
         ),
       ),
     );

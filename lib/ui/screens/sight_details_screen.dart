@@ -101,6 +101,7 @@ class _SightDetailsBody extends StatelessWidget {
     @required this.sight,
   }) : super(key: key);
 
+  static const spacing24 = 24.0;
   final sight;
 
   @override
@@ -112,31 +113,31 @@ class _SightDetailsBody extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(
               horizontal: 16.0,
-              vertical: 24.0,
+              vertical: spacing24,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _CardLabel(sight: sight),
                 SizedBox(
-                  height: 24,
+                  height: spacing24,
                 ),
                 Text(
                   sight.details,
                   style: textRegular14.copyWith(
-                    height: 1.3,
+                    height: lineHeight1_3,
                     color: Theme.of(context).colorScheme.appTitleColor,
                   ),
                 ),
                 SizedBox(
-                  height: 24,
+                  height: spacing24,
                 ),
                 ActionButton(
                   iconName: AppIcons.go,
                   label: sightDetailsActionButtonLabel,
                 ),
                 SizedBox(
-                  height: 24,
+                  height: spacing24,
                 ),
                 _CardMenu(),
               ],
@@ -163,7 +164,7 @@ class _CardLabel extends StatelessWidget {
         Text(
           sight.name,
           style: textBold24.copyWith(
-            height: 1.2,
+            height: lineHeight1_2,
             color: Theme.of(context).colorScheme.appTitleColor,
           ),
         ),
@@ -175,7 +176,7 @@ class _CardLabel extends StatelessWidget {
             Text(
               sight.type,
               style: textBold14.copyWith(
-                height: 1.3,
+                height: lineHeight1_3,
                 color: Theme.of(context).colorScheme.appSubtitleColor,
               ),
             ),
@@ -185,7 +186,7 @@ class _CardLabel extends StatelessWidget {
             Text(
               "$sightDetailsOpenHours 09:00",
               style: textRegular14.copyWith(
-                height: 1.3,
+                height: lineHeight1_3,
                 color: secondaryColor2,
               ),
             ),
@@ -244,6 +245,8 @@ class _ExpandedButton extends StatelessWidget {
     this.selected = false,
   }) : super(key: key);
 
+  static const spacing24 = 24.0;
+
   @override
   Widget build(BuildContext context) {
     final color =
@@ -257,8 +260,8 @@ class _ExpandedButton extends StatelessWidget {
         },
         icon: SvgPicture.asset(
           iconName,
-          width: 24,
-          height: 24,
+          width: spacing24,
+          height: spacing24,
           color: color,
         ),
         label: Text(

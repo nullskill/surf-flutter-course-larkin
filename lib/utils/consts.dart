@@ -1,1 +1,2 @@
-/// Reserved for constants
+/// Набор констант
+const kilometer = 1000;

@@ -26,14 +26,14 @@ class AppRangeSlider extends StatelessWidget {
               filtersScreenDistanceTitle,
               style: textMedium16.copyWith(
                 color: Theme.of(context).primaryColor,
-                height: 1.25,
+                height: lineHeight1_25,
               ),
             ),
             Text(
               AppRangeSliderHelper.getRangeDescription(currentRangeValues),
               style: textRegular16.copyWith(
                 color: secondaryColor2,
-                height: 1.25,
+                height: lineHeight1_25,
               ),
             ),
           ],
