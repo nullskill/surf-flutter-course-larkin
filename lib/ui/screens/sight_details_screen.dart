@@ -14,26 +14,14 @@ import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/ui/widgets/app_back_button.dart';
 
 /// Экран отображения подробной информации о посещаемом месте.
-class SightDetails extends StatelessWidget {
+class SightDetailsScreen extends StatelessWidget {
   final sight = mocks.last;
-  final Function changeThemeMode;
-  // Don't like this but since we haven't covered state architecture yet...
-  SightDetails({@required this.changeThemeMode});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _SightDetailsAppBar(sight: sight),
       body: _SightDetailsBody(sight: sight),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          changeThemeMode();
-        },
-        label: Text(
-          "Switch Theme",
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
     );
   }
 }
@@ -101,7 +89,7 @@ class _SightDetailsBody extends StatelessWidget {
     @required this.sight,
   }) : super(key: key);
 
-  static const spacing24 = 24.0;
+  static const pxl24 = 24.0;
   final sight;
 
   @override
@@ -113,14 +101,14 @@ class _SightDetailsBody extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(
               horizontal: 16.0,
-              vertical: spacing24,
+              vertical: pxl24,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _CardLabel(sight: sight),
                 SizedBox(
-                  height: spacing24,
+                  height: pxl24,
                 ),
                 Text(
                   sight.details,
@@ -130,14 +118,14 @@ class _SightDetailsBody extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: spacing24,
+                  height: pxl24,
                 ),
                 ActionButton(
                   iconName: AppIcons.go,
                   label: sightDetailsActionButtonLabel,
                 ),
                 SizedBox(
-                  height: spacing24,
+                  height: pxl24,
                 ),
                 _CardMenu(),
               ],
@@ -160,6 +148,7 @@ class _CardLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           sight.name,
@@ -174,7 +163,7 @@ class _CardLabel extends StatelessWidget {
         Row(
           children: [
             Text(
-              sight.type,
+              categories.firstWhere((el) => el.type == sight.type).name,
               style: textBold14.copyWith(
                 height: lineHeight1_3,
                 color: Theme.of(context).colorScheme.appSubtitleColor,
@@ -245,7 +234,7 @@ class _ExpandedButton extends StatelessWidget {
     this.selected = false,
   }) : super(key: key);
 
-  static const spacing24 = 24.0;
+  static const pxl24 = 24.0;
 
   @override
   Widget build(BuildContext context) {
@@ -260,8 +249,8 @@ class _ExpandedButton extends StatelessWidget {
         },
         icon: SvgPicture.asset(
           iconName,
-          width: spacing24,
-          height: spacing24,
+          width: pxl24,
+          height: pxl24,
           color: color,
         ),
         label: Text(

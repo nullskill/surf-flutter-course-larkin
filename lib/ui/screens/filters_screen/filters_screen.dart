@@ -93,7 +93,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
           vertical: pxl8,
         ),
         child: ActionButton(
-          label: "$filtersScreenActionButtonLabel ($_filteredCardsNumber)",
+          label: "$filtersActionButtonLabel ($_filteredCardsNumber)",
         ),
       ),
     );
@@ -132,7 +132,7 @@ class _ClearButton extends StatelessWidget {
         FiltersScreen.of(context).resetAllSettings();
       },
       child: Text(
-        filtersScreenClearButtonLabel,
+        filtersClearButtonLabel,
         style: textMedium16.copyWith(
           color: Theme.of(context).buttonColor,
           height: lineHeight1_25,
@@ -164,7 +164,7 @@ class _FiltersBody extends StatelessWidget {
             Align(
               alignment: Alignment.topLeft,
               child: Text(
-                filtersScreenCategoriesTitle.toUpperCase(),
+                filtersCategoriesTitle.toUpperCase(),
                 style: textRegular12.copyWith(
                   color: inactiveColor,
                   height: lineHeight1_3,
@@ -273,11 +273,12 @@ class _CategoryTick extends StatelessWidget {
       right: zero,
       child: CircleAvatar(
         radius: 8,
+        backgroundColor: Theme.of(context).primaryColor,
         child: SvgPicture.asset(
           AppIcons.tick,
           width: pxl16,
           height: pxl16,
-          color: Theme.of(context).colorScheme.onPrimary,
+          color: Theme.of(context).canvasColor,
         ),
       ),
     );

@@ -10,20 +10,11 @@ import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 
 /// Экран отображения списка карточек интересных мест.
 class SightListScreen extends StatefulWidget {
-  final Function changeThemeMode;
-  // Don't like this but since we haven't covered state architecture yet...
-  SightListScreen({@required this.changeThemeMode});
-
   @override
-  _SightListScreenState createState() =>
-      _SightListScreenState(changeThemeMode: changeThemeMode);
+  _SightListScreenState createState() => _SightListScreenState();
 }
 
 class _SightListScreenState extends State<SightListScreen> {
-  final Function changeThemeMode;
-  // Don't like this but since we haven't covered state architecture yet...
-  _SightListScreenState({@required this.changeThemeMode});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,15 +28,6 @@ class _SightListScreenState extends State<SightListScreen> {
       bottomNavigationBar: AppBottomNavigationBar(
         currentIndex: 0,
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          changeThemeMode();
-        },
-        label: Text(
-          "Switch Theme",
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
     );
   }
 }

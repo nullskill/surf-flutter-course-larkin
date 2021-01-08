@@ -14,20 +14,11 @@ import 'package:places/ui/widgets/sight_card.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 
 class VisitingScreen extends StatefulWidget {
-  final Function changeThemeMode;
-  // Don't like this but since we haven't covered state architecture yet...
-  const VisitingScreen({@required this.changeThemeMode});
-
   @override
-  _VisitingScreenState createState() =>
-      _VisitingScreenState(changeThemeMode: changeThemeMode);
+  _VisitingScreenState createState() => _VisitingScreenState();
 }
 
 class _VisitingScreenState extends State<VisitingScreen> {
-  final Function changeThemeMode;
-  // Don't like this but since we haven't covered state architecture yet...
-  _VisitingScreenState({@required this.changeThemeMode});
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -43,14 +34,6 @@ class _VisitingScreenState extends State<VisitingScreen> {
         ),
         bottomNavigationBar: AppBottomNavigationBar(
           currentIndex: 2,
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            changeThemeMode();
-          },
-          label: Text(
-            "Switch Theme",
-          ),
         ),
       ),
     );
@@ -190,8 +173,8 @@ class _EmptyList extends StatelessWidget {
           width: 253.5,
           child: Text(
             hasVisited
-                ? visitingVisitedTabViewEmptyListText
-                : visitingWishToVisitTabViewEmptyListText,
+                ? visitingVisitedEmptyListText
+                : visitingWishToVisitEmptyListText,
             style: textRegular14.copyWith(
               color: inactiveColor,
               height: lineHeight1_3,

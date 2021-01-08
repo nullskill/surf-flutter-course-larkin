@@ -21,7 +21,7 @@ class AppRangeSlider extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              filtersScreenDistanceTitle,
+              filtersDistanceTitle,
               style: textMedium16.copyWith(
                 color: Theme.of(context).primaryColor,
                 height: lineHeight1_25,

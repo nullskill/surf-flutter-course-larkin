@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
 import 'package:places/domain/sight.dart';
+import 'package:places/mocks.dart';
 
 import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/strings/strings.dart';
@@ -59,7 +60,7 @@ class _CardTop extends StatelessWidget {
               top: 16,
               left: 16,
               child: Text(
-                sight.type,
+                categories.firstWhere((el) => el.type == sight.type).name,
                 style: textBold14.copyWith(color: whiteColor),
               ),
             ),
