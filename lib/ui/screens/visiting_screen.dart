@@ -109,7 +109,7 @@ class _VisitingScreenList extends StatelessWidget {
     this.hasVisited = false,
   }) : super(key: key);
 
-  static const spacing16 = 16.0;
+  static const pxl16 = 16.0;
   final bool hasVisited;
 
   @override
@@ -119,14 +119,14 @@ class _VisitingScreenList extends StatelessWidget {
         ? _EmptyList(hasVisited: hasVisited)
         : SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(spacing16),
+              padding: const EdgeInsets.all(pxl16),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   for (var sight in sights) ...[
                     SightCard(sight: sight),
                     SizedBox(
-                      height: spacing16,
+                      height: pxl16,
                     ),
                   ],
                 ],
@@ -142,7 +142,7 @@ class _EmptyList extends StatelessWidget {
     @required this.hasVisited,
   }) : super(key: key);
 
-  static const spacing64 = 64.0;
+  static const pxl64 = 64.0;
   final bool hasVisited;
 
   @override
@@ -152,8 +152,8 @@ class _EmptyList extends StatelessWidget {
       children: [
         SvgPicture.asset(
           hasVisited ? AppIcons.emptyGo : AppIcons.emptyCard,
-          width: spacing64,
-          height: spacing64,
+          width: pxl64,
+          height: pxl64,
           color: inactiveColor,
         ),
         SizedBox(
