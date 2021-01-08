@@ -59,6 +59,13 @@ class _FiltersScreenState extends State<FiltersScreen> {
         _filterCards();
       });
 
+  void _resetRangeValues() {
+    _currentRangeValues = RangeValues(
+      AppRangeSliderHelper.initialMinValue,
+      AppRangeSliderHelper.initialMaxValue,
+    );
+  }
+
   void _filterCards() {
     final selectedTypes = [
       for (var category in _categories)
@@ -73,13 +80,6 @@ class _FiltersScreenState extends State<FiltersScreen> {
           maxValue: _currentRangeValues.end,
         ));
     _filteredCardsNumber = filteredCards.length;
-  }
-
-  void _resetRangeValues() {
-    _currentRangeValues = RangeValues(
-      AppRangeSliderHelper.initialMinValue,
-      AppRangeSliderHelper.initialMaxValue,
-    );
   }
 
   @override
