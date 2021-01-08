@@ -22,14 +22,17 @@ class SightCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 3 / 2,
-      child: Container(
-        height: 188.0,
-        width: 328.0,
-        child: Column(
-          children: [
-            _CardTop(sight: sight),
-            _CardBottom(sight: sight),
-          ],
+      child: ClipRRect(
+        borderRadius: allBorderRadius16,
+        child: Container(
+          height: 188.0,
+          width: 328.0,
+          child: Column(
+            children: [
+              _CardTop(sight: sight),
+              _CardBottom(sight: sight),
+            ],
+          ),
         ),
       ),
     );
@@ -46,47 +49,43 @@ class _CardTop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: topBorderRadius16,
-      child: Container(
-        color: placeholderColor,
-        width: double.infinity,
-        height: 96.0,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            _CardImage(imgUrl: sight.url),
-            Positioned(
-              top: 16,
-              left: 16,
-              child: Text(
-                categories.firstWhere((el) => el.type == sight.type).name,
-                style: textBold14.copyWith(color: whiteColor),
-              ),
+    return Container(
+      color: placeholderColor,
+      width: double.infinity,
+      height: 96.0,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          _CardImage(imgUrl: sight.url),
+          Positioned(
+            top: 16,
+            left: 16,
+            child: Text(
+              categories.firstWhere((el) => el.type == sight.type).name,
+              style: textBold14.copyWith(color: whiteColor),
             ),
-            Positioned(
-              top: 16,
-              right: 16,
-              child: _CardIcon(
-                iconName: sight.runtimeType == Sight
-                    ? AppIcons.heart
-                    : AppIcons.close,
-              ),
+          ),
+          Positioned(
+            top: 16,
+            right: 16,
+            child: _CardIcon(
+              iconName:
+                  sight.runtimeType == Sight ? AppIcons.heart : AppIcons.close,
             ),
-            //Показываем различные иконки, в зависимости от типа карточки
-            [FavoriteSight, VisitedSight].contains(sight.runtimeType)
-                ? Positioned(
-                    top: 16,
-                    right: 56,
-                    child: _CardIcon(
-                      iconName: sight.runtimeType == FavoriteSight
-                          ? AppIcons.calendar
-                          : AppIcons.share,
-                    ),
-                  )
-                : SizedBox(),
-          ],
-        ),
+          ),
+          //Показываем различные иконки, в зависимости от типа карточки
+          [FavoriteSight, VisitedSight].contains(sight.runtimeType)
+              ? Positioned(
+                  top: 16,
+                  right: 56,
+                  child: _CardIcon(
+                    iconName: sight.runtimeType == FavoriteSight
+                        ? AppIcons.calendar
+                        : AppIcons.share,
+                  ),
+                )
+              : SizedBox(),
+        ],
       ),
     );
   }
