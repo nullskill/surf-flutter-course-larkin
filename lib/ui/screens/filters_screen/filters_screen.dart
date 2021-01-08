@@ -27,8 +27,8 @@ class FiltersScreen extends StatefulWidget {
 }
 
 class _FiltersScreenState extends State<FiltersScreen> {
-  static const spacing8 = 8.0, spacing16 = 16.0, spacing24 = 24.0;
-  int _numberOfFilteredCards = 0;
+  static const pxl8 = 8.0, pxl16 = 16.0, pxl24 = 24.0;
+  int _filteredCardsNumber = 0;
   List<Category> _categories;
   RangeValues _currentRangeValues;
 
@@ -51,7 +51,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   void resetAllSettings() => setState(() {
         for (var category in _categories) category.selected = false;
         _resetRangeValues();
-        _numberOfFilteredCards = 0;
+        _filteredCardsNumber = 0;
       });
 
   void toggleCategory(Category category) => setState(() {
@@ -72,7 +72,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
           minValue: _currentRangeValues.start,
           maxValue: _currentRangeValues.end,
         ));
-    _numberOfFilteredCards = filteredCards.length;
+    _filteredCardsNumber = filteredCards.length;
   }
 
   void _resetRangeValues() {
@@ -86,45 +86,14 @@ class _FiltersScreenState extends State<FiltersScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _FiltersAppBar(),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: spacing16,
-            vertical: spacing24,
-          ),
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  filtersScreenCategoriesTitle.toUpperCase(),
-                  style: textRegular12.copyWith(
-                    color: inactiveColor,
-                    height: lineHeight1_3,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  spacing8,
-                  spacing24,
-                  spacing8,
-                  56,
-                ),
-                child: _Categories(),
-              ),
-              AppRangeSlider(currentRangeValues: _currentRangeValues),
-            ],
-          ),
-        ),
-      ),
+      body: _FiltersBody(currentRangeValues: _currentRangeValues),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: spacing16,
-          vertical: spacing8,
+          horizontal: pxl16,
+          vertical: pxl8,
         ),
         child: ActionButton(
-          label: "$filtersScreenActionButtonLabel ($_numberOfFilteredCards)",
+          label: "$filtersScreenActionButtonLabel ($_filteredCardsNumber)",
         ),
       ),
     );
@@ -173,6 +142,52 @@ class _ClearButton extends StatelessWidget {
   }
 }
 
+class _FiltersBody extends StatelessWidget {
+  const _FiltersBody({
+    Key key,
+    @required RangeValues currentRangeValues,
+  })  : _currentRangeValues = currentRangeValues,
+        super(key: key);
+
+  final RangeValues _currentRangeValues;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: _FiltersScreenState.pxl16,
+          vertical: _FiltersScreenState.pxl24,
+        ),
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                filtersScreenCategoriesTitle.toUpperCase(),
+                style: textRegular12.copyWith(
+                  color: inactiveColor,
+                  height: lineHeight1_3,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                _FiltersScreenState.pxl8,
+                _FiltersScreenState.pxl24,
+                _FiltersScreenState.pxl8,
+                56,
+              ),
+              child: _Categories(),
+            ),
+            AppRangeSlider(currentRangeValues: _currentRangeValues),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _Categories extends StatelessWidget {
   const _Categories({
     Key key,
@@ -200,7 +215,7 @@ class _Category extends StatelessWidget {
     @required this.category,
   }) : super(key: key);
 
-  static const maxAvatarWidth = 32.0, maxItemWidth = 96.0;
+  static const pxl32 = 32.0, pxl96 = 96.0;
 
   final Category category;
 
@@ -214,15 +229,15 @@ class _Category extends StatelessWidget {
             Material(
               type: MaterialType.transparency,
               child: InkWell(
-                borderRadius: BorderRadius.circular(_Category.maxAvatarWidth),
+                borderRadius: BorderRadius.circular(pxl32),
                 child: CircleAvatar(
-                  radius: _Category.maxAvatarWidth,
+                  radius: _Category.pxl32,
                   backgroundColor:
                       Theme.of(context).buttonColor.withOpacity(.16),
                   child: SvgPicture.asset(
                     category.iconName,
-                    width: _Category.maxAvatarWidth,
-                    height: _Category.maxAvatarWidth,
+                    width: pxl32,
+                    height: pxl32,
                     color: Theme.of(context).buttonColor,
                   ),
                 ),
@@ -235,7 +250,7 @@ class _Category extends StatelessWidget {
           ],
         ),
         SizedBox(
-          width: _Category.maxItemWidth,
+          width: pxl96,
           height: 12,
         ),
         _CategoryLabel(label: category.name),
@@ -249,7 +264,7 @@ class _CategoryTick extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  static const iconSize = 16.0, zero = 0.0;
+  static const pxl16 = 16.0, zero = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -260,8 +275,8 @@ class _CategoryTick extends StatelessWidget {
         radius: 8,
         child: SvgPicture.asset(
           AppIcons.tick,
-          width: iconSize,
-          height: iconSize,
+          width: pxl16,
+          height: pxl16,
           color: Theme.of(context).colorScheme.onPrimary,
         ),
       ),
@@ -281,7 +296,7 @@ class _CategoryLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: BoxConstraints.loose(
-        const Size.fromWidth(_Category.maxItemWidth),
+        const Size.fromWidth(_Category.pxl96),
       ),
       child: Text(
         label,

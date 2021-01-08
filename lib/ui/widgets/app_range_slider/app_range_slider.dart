@@ -11,8 +11,6 @@ import 'package:places/ui/screens/filters_screen/filters_screen.dart';
 class AppRangeSlider extends StatelessWidget {
   const AppRangeSlider({this.currentRangeValues});
 
-  static const _minValue = AppRangeSliderHelper.minValue;
-  static const _maxValue = AppRangeSliderHelper.maxValue;
   final currentRangeValues;
 
   @override
@@ -43,8 +41,8 @@ class AppRangeSlider extends StatelessWidget {
         ),
         RangeSlider(
           divisions: AppRangeSliderHelper.divisions,
-          min: _minValue,
-          max: _maxValue,
+          min: AppRangeSliderHelper.minValue,
+          max: AppRangeSliderHelper.maxValue,
           values: currentRangeValues,
           onChanged: (newValues) {
             FiltersScreen.of(context).setRangeValues(newValues);
