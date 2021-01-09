@@ -25,12 +25,46 @@ class SightCard extends StatelessWidget {
       child: ClipRRect(
         borderRadius: allBorderRadius16,
         child: Container(
-          height: 188.0,
-          width: 328.0,
-          child: Column(
+          color: Theme.of(context).backgroundColor,
+          child: Stack(
             children: [
-              _CardTop(sight: sight),
-              _CardBottom(sight: sight),
+              Column(
+                children: [
+                  _CardTop(sight: sight),
+                  _CardBottom(sight: sight),
+                ],
+              ),
+              Positioned.fill(
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    onTap: () {
+                      print('Card tapped');
+                    },
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 16,
+                right: 16,
+                child: _CardIcon(
+                  iconName: sight.runtimeType == Sight
+                      ? AppIcons.heart
+                      : AppIcons.close,
+                ),
+              ),
+              //Показываем различные иконки, в зависимости от типа карточки
+              [FavoriteSight, VisitedSight].contains(sight.runtimeType)
+                  ? Positioned(
+                      top: 16,
+                      right: 56,
+                      child: _CardIcon(
+                        iconName: sight.runtimeType == FavoriteSight
+                            ? AppIcons.calendar
+                            : AppIcons.share,
+                      ),
+                    )
+                  : SizedBox(),
             ],
           ),
         ),
@@ -65,26 +99,6 @@ class _CardTop extends StatelessWidget {
               style: textBold14.copyWith(color: whiteColor),
             ),
           ),
-          Positioned(
-            top: 16,
-            right: 16,
-            child: _CardIcon(
-              iconName:
-                  sight.runtimeType == Sight ? AppIcons.heart : AppIcons.close,
-            ),
-          ),
-          //Показываем различные иконки, в зависимости от типа карточки
-          [FavoriteSight, VisitedSight].contains(sight.runtimeType)
-              ? Positioned(
-                  top: 16,
-                  right: 56,
-                  child: _CardIcon(
-                    iconName: sight.runtimeType == FavoriteSight
-                        ? AppIcons.calendar
-                        : AppIcons.share,
-                  ),
-                )
-              : SizedBox(),
         ],
       ),
     );
@@ -153,18 +167,17 @@ class _CardBottom extends StatelessWidget {
     @required this.sight,
   }) : super(key: key);
 
+  static const pxl16 = 16.0;
   final Sight sight;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: bottomBorderRadius16,
-        color: Theme.of(context).backgroundColor,
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: pxl16,
+        left: pxl16,
+        right: pxl16,
       ),
-      padding: const EdgeInsets.all(16.0),
-      width: double.infinity,
-      height: 92.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -212,7 +225,7 @@ Widget _getDescriptionText(final sight, final Color descriptionColor) {
     default:
       return Text(
         sight.details,
-        maxLines: 1,
+        maxLines: 5,
         overflow: TextOverflow.ellipsis,
         style: textRegular14.copyWith(
           height: 1.3,

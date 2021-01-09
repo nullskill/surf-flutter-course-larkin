@@ -22,6 +22,7 @@ class App extends StatelessWidget {
       create: (_) => ThemeNotifier(),
       child: Consumer<ThemeNotifier>(
         builder: (context, ThemeNotifier notifier, child) {
+          print(notifier.darkTheme);
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: lightTheme,
