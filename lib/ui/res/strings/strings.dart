@@ -6,17 +6,28 @@ const String sightListScreenText = 'Список\nинтересных мест'
     sightCardVisited = "Цель достигнута",
 
 //SightDetails screen
-    sightDetailsShowRoute = "построить маршрут",
+    sightDetailsActionButtonLabel = "построить маршрут",
     sightDetailsOpenHours = "откроется в",
     sightDetailsPlan = "Запланировать",
     sightDetailsAddToFavorites = "В Избранное",
 
-//SightDetails screen
+//VisitingScreen screen
     visitingAppBarTitle = "Избранное",
     visitingWishToVisitTabText = "Хочу посетить",
-    visitingWishToVisitTabViewEmptyListText =
+    visitingWishToVisitEmptyListText =
         "Отмечайте понравившиеся места и они появятся здесь.",
     visitingVisitedTabText = "Посетил",
-    visitingVisitedTabViewEmptyListText =
+    visitingVisitedEmptyListText =
         "Завершите маршрут, чтобы место попало сюда.",
-    visitingEmptyListText = "Пусто";
+    visitingEmptyListText = "Пусто",
+
+//FiltersScreen
+    filtersActionButtonLabel = "показать",
+    filtersClearButtonLabel = "Очистить",
+    filtersDistanceTitle = "Расстояние",
+    filtersCategoriesTitle = "Категории",
+
+//SettingsScreen
+    settingsAppBarTitle = "Настройки",
+    settingsThemeSettingTitle = "Тёмная тема",
+    settingsWatchTutorialTitle = "Смотреть туториал";

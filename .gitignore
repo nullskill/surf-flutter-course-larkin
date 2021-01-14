@@ -30,8 +30,7 @@
 .pub-cache/
 .pub/
 /build/
-pubspec.lock
-analysis_options.yaml
+*.lock
 
 # Web related
 lib/generated_plugin_registrant.dart

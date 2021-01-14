@@ -18,7 +18,7 @@ final lightTheme = ThemeData(
   shadowColor: blackColor,
 
   //AppBar
-  appBarTheme: AppBarTheme(
+  appBarTheme: _BaseProps.appBarTheme.copyWith(
     brightness: Brightness.light,
   ),
 
@@ -32,16 +32,19 @@ final lightTheme = ThemeData(
     unselectedLabelColor: inactiveColor,
   ),
 
+  //Slider & RangeSlider
+  sliderTheme: _BaseProps.sliderTheme.copyWith(
+    overlayColor: LightMode.greenColor.withAlpha(32),
+    activeTrackColor: LightMode.greenColor,
+  ),
+
   //FAB
-  floatingActionButtonTheme: FloatingActionButtonThemeData(
-    elevation: 0,
-    hoverElevation: 0,
-    focusElevation: 0,
+  floatingActionButtonTheme: _BaseProps.floatingActionButtonTheme.copyWith(
     backgroundColor: LightMode.greenColor,
   ),
 
   //BottomNavigationBar
-  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+  bottomNavigationBarTheme: _BaseProps.bottomNavigationBarTheme.copyWith(
     backgroundColor: whiteColor,
     selectedItemColor: LightMode.primaryColor,
     unselectedItemColor: inactiveColor,
@@ -62,7 +65,7 @@ final darkTheme = ThemeData(
   shadowColor: whiteColor,
 
   //AppBar
-  appBarTheme: AppBarTheme(
+  appBarTheme: _BaseProps.appBarTheme.copyWith(
     brightness: Brightness.dark,
   ),
 
@@ -76,18 +79,80 @@ final darkTheme = ThemeData(
     unselectedLabelColor: secondaryColor2,
   ),
 
+  //Slider & RangeSlider
+  sliderTheme: _BaseProps.sliderTheme.copyWith(
+    overlayColor: DarkMode.greenColor.withAlpha(32),
+    activeTrackColor: DarkMode.greenColor,
+  ),
+
   //FAB
-  floatingActionButtonTheme: FloatingActionButtonThemeData(
-    elevation: 0,
-    hoverElevation: 0,
-    focusElevation: 0,
+  floatingActionButtonTheme: _BaseProps.floatingActionButtonTheme.copyWith(
     backgroundColor: DarkMode.greenColor,
   ),
 
   //BottomNavigationBar
-  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+  bottomNavigationBarTheme: _BaseProps.bottomNavigationBarTheme.copyWith(
     backgroundColor: DarkMode.primaryColor,
     selectedItemColor: whiteColor,
     unselectedItemColor: secondaryColor2,
   ),
 );
+
+class _BaseProps {
+  //AppBar
+  static const appBarTheme = AppBarTheme(
+    color: transparentColor,
+    elevation: 0,
+  );
+
+  //Slider & RangeSlider
+  static const sliderTheme = SliderThemeData(
+    trackHeight: 2.0,
+    thumbColor: whiteColor,
+    thumbShape: RoundSliderThumbShape(enabledThumbRadius: 16.0),
+    inactiveTrackColor: inactiveColor,
+    activeTickMarkColor: transparentColor,
+    inactiveTickMarkColor: transparentColor,
+    rangeTrackShape: _SliderTrackShape(), //RangeSlider only
+  );
+
+  //FAB
+  static const floatingActionButtonTheme = FloatingActionButtonThemeData(
+    elevation: 0,
+    hoverElevation: 0,
+    focusElevation: 0,
+  );
+
+  //BottomNavigationBar
+  static const bottomNavigationBarTheme = BottomNavigationBarThemeData(
+    type: BottomNavigationBarType.fixed,
+    elevation: 0,
+  );
+}
+
+class _SliderTrackShape extends RoundedRectRangeSliderTrackShape {
+  const _SliderTrackShape();
+
+  static const _leftPadding = 8;
+  static const _rightPadding = 16;
+
+  Rect getPreferredRect({
+    @required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    @required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final double trackHeight = sliderTheme.trackHeight;
+    final double trackLeft = offset.dx + _leftPadding;
+    final double trackTop =
+        offset.dy + (parentBox.size.height - trackHeight) / 2;
+    final double trackWidth = parentBox.size.width - _rightPadding;
+    return Rect.fromLTWH(
+      trackLeft,
+      trackTop,
+      trackWidth,
+      trackHeight,
+    );
+  }
+}

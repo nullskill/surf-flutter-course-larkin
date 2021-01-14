@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+
+import 'package:places/domain/sight.dart';
+import 'package:places/mocks.dart';
 
 import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
-
-import 'package:places/domain/sight.dart';
+import 'package:places/ui/res/assets.dart';
 
 /// Виджет карточки интересного места.
 class SightCard extends StatelessWidget {
@@ -19,14 +22,51 @@ class SightCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 3 / 2,
-      child: Container(
-        height: 188.0,
-        width: 328.0,
-        child: Column(
-          children: [
-            _CardTop(sight: sight),
-            _CardBottom(sight: sight),
-          ],
+      child: ClipRRect(
+        borderRadius: allBorderRadius16,
+        child: Container(
+          color: Theme.of(context).backgroundColor,
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  _CardTop(sight: sight),
+                  _CardBottom(sight: sight),
+                ],
+              ),
+              Positioned.fill(
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: InkWell(
+                    onTap: () {
+                      print('Card tapped');
+                    },
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 16,
+                right: 16,
+                child: _CardIcon(
+                  iconName: sight.runtimeType == Sight
+                      ? AppIcons.heart
+                      : AppIcons.close,
+                ),
+              ),
+              //Показываем различные иконки, в зависимости от типа карточки
+              [FavoriteSight, VisitedSight].contains(sight.runtimeType)
+                  ? Positioned(
+                      top: 16,
+                      right: 56,
+                      child: _CardIcon(
+                        iconName: sight.runtimeType == FavoriteSight
+                            ? AppIcons.calendar
+                            : AppIcons.share,
+                      ),
+                    )
+                  : SizedBox(),
+            ],
+          ),
         ),
       ),
     );
@@ -43,47 +83,23 @@ class _CardTop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: topBorderRadius16,
-      child: Container(
-        color: placeholderColor,
-        width: double.infinity,
-        height: 96.0,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            _CardImage(imgUrl: sight.url),
-            Positioned(
-              top: 16,
-              left: 16,
-              child: Text(
-                sight.type,
-                style: textBold14.copyWith(color: whiteColor),
-              ),
+    return Container(
+      color: placeholderColor,
+      width: double.infinity,
+      height: 96.0,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          _CardImage(imgUrl: sight.url),
+          Positioned(
+            top: 16,
+            left: 16,
+            child: Text(
+              categories.firstWhere((el) => el.type == sight.type).name,
+              style: textBold14.copyWith(color: whiteColor),
             ),
-            Positioned(
-              top: 16,
-              right: 16,
-              child: _CardIcon(
-                icon: sight.runtimeType == Sight ? Icons.favorite : Icons.close,
-              ),
-            ),
-            //Показываем различные иконки, в зависимости от типа карточки
-            [FavoriteSight, VisitedSight].contains(sight.runtimeType)
-                ? Positioned(
-                    top: 16,
-                    right: 56,
-                    child: _CardIcon(
-                      icon: sight.runtimeType == FavoriteSight
-                          ? Icons.calendar_today_outlined
-                          : sight.runtimeType == VisitedSight
-                              ? Icons.share_outlined
-                              : Icons.emoji_emotions_rounded,
-                    ),
-                  )
-                : SizedBox(),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -124,18 +140,21 @@ class _CardImage extends StatelessWidget {
 class _CardIcon extends StatelessWidget {
   const _CardIcon({
     Key key,
-    @required this.icon,
+    @required this.iconName,
   }) : super(key: key);
 
-  final IconData icon;
+  final String iconName;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 24,
-      height: 24,
-      child: Icon(
-        icon,
+    return InkWell(
+      onTap: () {
+        print("Card icon pressed");
+      },
+      child: SvgPicture.asset(
+        iconName,
+        width: 24,
+        height: 24,
         color: whiteColor,
       ),
     );
@@ -148,18 +167,17 @@ class _CardBottom extends StatelessWidget {
     @required this.sight,
   }) : super(key: key);
 
+  static const pxl16 = 16.0;
   final Sight sight;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: bottomBorderRadius16,
-        color: Theme.of(context).backgroundColor,
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: pxl16,
+        left: pxl16,
+        right: pxl16,
       ),
-      padding: const EdgeInsets.all(16.0),
-      width: double.infinity,
-      height: 92.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -207,7 +225,7 @@ Widget _getDescriptionText(final sight, final Color descriptionColor) {
     default:
       return Text(
         sight.details,
-        maxLines: 1,
+        maxLines: 5,
         overflow: TextOverflow.ellipsis,
         style: textRegular14.copyWith(
           height: 1.3,

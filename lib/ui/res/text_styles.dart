@@ -14,7 +14,9 @@ TextStyle _text = const TextStyle(
 
 //Regular
     textRegular = _text.copyWith(fontWeight: FontWeight.w400),
+    textRegular12 = textRegular.copyWith(fontSize: 12.0),
     textRegular14 = textRegular.copyWith(fontSize: 14.0),
+    textRegular16 = textRegular.copyWith(fontSize: 16.0),
 
 //Medium
     textMedium = _text.copyWith(fontWeight: FontWeight.w500),
@@ -26,3 +28,6 @@ TextStyle _text = const TextStyle(
     textBold14 = textBold.copyWith(fontSize: 14.0),
     textBold24 = textBold.copyWith(fontSize: 24.0),
     textBold32 = textBold.copyWith(fontSize: 32.0);
+
+/// Высоты строк
+const lineHeight1_2 = 1.2, lineHeight1_25 = 1.25, lineHeight1_3 = 1.3;

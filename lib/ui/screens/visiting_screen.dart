@@ -1,30 +1,24 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_svg/flutter_svg.dart';
+
+import 'package:places/mocks.dart';
+
 import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
-
-import 'package:places/mocks.dart';
+import 'package:places/ui/res/assets.dart';
 
 import 'package:places/ui/widgets/sight_card.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 
 class VisitingScreen extends StatefulWidget {
-  final Function changeThemeMode;
-  // Don't like this but since we haven't covered state architecture yet...
-  VisitingScreen({@required this.changeThemeMode});
-
   @override
-  _VisitingScreenState createState() =>
-      _VisitingScreenState(changeThemeMode: changeThemeMode);
+  _VisitingScreenState createState() => _VisitingScreenState();
 }
 
 class _VisitingScreenState extends State<VisitingScreen> {
-  final Function changeThemeMode;
-  // Don't like this but since we haven't covered state architecture yet...
-  _VisitingScreenState({@required this.changeThemeMode});
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -40,14 +34,6 @@ class _VisitingScreenState extends State<VisitingScreen> {
         ),
         bottomNavigationBar: AppBottomNavigationBar(
           currentIndex: 2,
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            changeThemeMode();
-          },
-          label: Text(
-            "Switch Theme",
-          ),
         ),
       ),
     );
@@ -65,16 +51,14 @@ class _VisitingScreenAppBar extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Colors.transparent,
       centerTitle: true,
       title: Text(
         visitingAppBarTitle,
         style: textMedium18.copyWith(
           color: Theme.of(context).primaryColor,
-          height: 1.3,
+          height: lineHeight1_3,
         ),
       ),
-      elevation: 0,
       bottom: _AppBarBottom(),
     );
   }
@@ -125,6 +109,7 @@ class _VisitingScreenList extends StatelessWidget {
     this.hasVisited = false,
   }) : super(key: key);
 
+  static const pxl16 = 16.0;
   final bool hasVisited;
 
   @override
@@ -134,14 +119,14 @@ class _VisitingScreenList extends StatelessWidget {
         ? _EmptyList(hasVisited: hasVisited)
         : SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(pxl16),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   for (var sight in sights) ...[
                     SightCard(sight: sight),
                     SizedBox(
-                      height: 16,
+                      height: pxl16,
                     ),
                   ],
                 ],
@@ -157,6 +142,7 @@ class _EmptyList extends StatelessWidget {
     @required this.hasVisited,
   }) : super(key: key);
 
+  static const pxl64 = 64.0;
   final bool hasVisited;
 
   @override
@@ -164,9 +150,10 @@ class _EmptyList extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Container(
-          width: 64.0,
-          height: 64.0,
+        SvgPicture.asset(
+          hasVisited ? AppIcons.emptyGo : AppIcons.emptyCard,
+          width: pxl64,
+          height: pxl64,
           color: inactiveColor,
         ),
         SizedBox(
@@ -176,7 +163,7 @@ class _EmptyList extends StatelessWidget {
           visitingEmptyListText,
           style: textMedium18.copyWith(
             color: inactiveColor,
-            height: 1.3,
+            height: lineHeight1_3,
           ),
         ),
         SizedBox(
@@ -186,11 +173,11 @@ class _EmptyList extends StatelessWidget {
           width: 253.5,
           child: Text(
             hasVisited
-                ? visitingVisitedTabViewEmptyListText
-                : visitingWishToVisitTabViewEmptyListText,
+                ? visitingVisitedEmptyListText
+                : visitingWishToVisitEmptyListText,
             style: textRegular14.copyWith(
               color: inactiveColor,
-              height: 1.3,
+              height: lineHeight1_3,
             ),
             textAlign: TextAlign.center,
           ),

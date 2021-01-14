@@ -13,10 +13,14 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.0
-
-  flutter_svg: ^0.19.2+1
-
+  # SVG image
+  flutter_svg: 0.18.1
+  # Package provides internationalization and localization facilities
   intl: ^0.16.1
+  # State provider
+  provider: ^4.3.2+3
+  # Wraps platform-specific persistent storage for simple data
+  shared_preferences: ^0.5.12+4
 
 dev_dependencies:
   flutter_test:
@@ -29,6 +33,11 @@ flutter:
 
   assets:
     - res/
+    - res/icons/
+    - res/icons/menu/
+    - res/icons/other/
+    - res/icons/catalog/
+    - res/icons/empty_pages/
 
   fonts:
     - family: Roboto

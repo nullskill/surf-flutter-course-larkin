@@ -1,33 +1,27 @@
 import 'package:flutter/material.dart';
 
-import 'package:places/ui/res/border_radiuses.dart';
-import 'package:places/ui/res/strings/strings.dart';
-import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/res/colors.dart';
-import 'package:places/ui/res/custom_color_scheme.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:places/mocks.dart';
 
+import 'package:places/ui/res/strings/strings.dart';
+import 'package:places/ui/res/text_styles.dart';
+import 'package:places/ui/res/colors.dart';
+import 'package:places/ui/res/app_color_scheme.dart';
+import 'package:places/ui/res/assets.dart';
+
+import 'package:places/ui/widgets/action_button.dart';
+import 'package:places/ui/widgets/app_back_button.dart';
+
 /// Экран отображения подробной информации о посещаемом месте.
-class SightDetails extends StatelessWidget {
+class SightDetailsScreen extends StatelessWidget {
   final sight = mocks.last;
-  final Function changeThemeMode;
-  // Don't like this but since we haven't covered state architecture yet...
-  SightDetails({@required this.changeThemeMode});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _SightDetailsAppBar(sight: sight),
       body: _SightDetailsBody(sight: sight),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          changeThemeMode();
-        },
-        label: Text(
-          "Switch Theme",
-        ),
-      ),
     );
   }
 }
@@ -45,22 +39,7 @@ class _SightDetailsAppBar extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: Container(
-        width: 32,
-        height: 32,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.sightDetailsBackButtonColor,
-          borderRadius: allBorderRadius10,
-        ),
-        margin: const EdgeInsets.only(
-          left: 16.0,
-          top: 16.0,
-        ),
-        child: Icon(
-          Icons.arrow_back_ios_rounded,
-          color: Theme.of(context).primaryColor,
-        ),
-      ),
+      leading: AppBackButton(),
       flexibleSpace: Container(
         height: double.infinity,
         child: _Gallery(
@@ -68,7 +47,6 @@ class _SightDetailsAppBar extends StatelessWidget
         ),
       ),
       backgroundColor: placeholderColor,
-      elevation: 0,
     );
   }
 }
@@ -111,6 +89,7 @@ class _SightDetailsBody extends StatelessWidget {
     @required this.sight,
   }) : super(key: key);
 
+  static const pxl24 = 24.0;
   final sight;
 
   @override
@@ -122,28 +101,31 @@ class _SightDetailsBody extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(
               horizontal: 16.0,
-              vertical: 24.0,
+              vertical: pxl24,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _CardLabel(sight: sight),
                 SizedBox(
-                  height: 24,
+                  height: pxl24,
                 ),
                 Text(
                   sight.details,
                   style: textRegular14.copyWith(
-                    height: 1.3,
-                    color: Theme.of(context).colorScheme.sightDetailsTitleColor,
+                    height: lineHeight1_3,
+                    color: Theme.of(context).colorScheme.appTitleColor,
                   ),
                 ),
                 SizedBox(
-                  height: 24,
+                  height: pxl24,
                 ),
-                _ShowRouteButton(),
+                ActionButton(
+                  iconName: AppIcons.go,
+                  label: sightDetailsActionButtonLabel,
+                ),
                 SizedBox(
-                  height: 24,
+                  height: pxl24,
                 ),
                 _CardMenu(),
               ],
@@ -166,12 +148,13 @@ class _CardLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           sight.name,
           style: textBold24.copyWith(
-            height: 1.2,
-            color: Theme.of(context).colorScheme.sightDetailsTitleColor,
+            height: lineHeight1_2,
+            color: Theme.of(context).colorScheme.appTitleColor,
           ),
         ),
         SizedBox(
@@ -180,10 +163,10 @@ class _CardLabel extends StatelessWidget {
         Row(
           children: [
             Text(
-              sight.type,
+              categories.firstWhere((el) => el.type == sight.type).name,
               style: textBold14.copyWith(
-                height: 1.3,
-                color: Theme.of(context).colorScheme.sightDetailsTypeColor,
+                height: lineHeight1_3,
+                color: Theme.of(context).colorScheme.appSubtitleColor,
               ),
             ),
             SizedBox(
@@ -192,46 +175,13 @@ class _CardLabel extends StatelessWidget {
             Text(
               "$sightDetailsOpenHours 09:00",
               style: textRegular14.copyWith(
-                height: 1.3,
+                height: lineHeight1_3,
                 color: secondaryColor2,
               ),
             ),
           ],
         ),
       ],
-    );
-  }
-}
-
-class _ShowRouteButton extends StatelessWidget {
-  const _ShowRouteButton({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 48.0,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: allBorderRadius12,
-        color: Theme.of(context).buttonColor,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _DummyIcon(
-            color: whiteColor,
-          ),
-          SizedBox(
-            width: 10,
-          ),
-          Text(
-            sightDetailsShowRoute.toUpperCase(),
-            style: textBold14.copyWith(color: whiteColor),
-          ),
-        ],
-      ),
     );
   }
 }
@@ -255,12 +205,15 @@ class _CardMenu extends StatelessWidget {
         ),
         Row(
           children: [
-            _FlexibleButton(
+            _ExpandedButton(
               title: sightDetailsPlan,
+              iconName: AppIcons.calendar,
             ),
-            _FlexibleButton(
+            _ExpandedButton(
               title: sightDetailsAddToFavorites,
-              primary: true,
+              // iconName: AppIcons.heart,
+              iconName: AppIcons.heart,
+              selected: true,
             ),
           ],
         ),
@@ -269,59 +222,42 @@ class _CardMenu extends StatelessWidget {
   }
 }
 
-class _FlexibleButton extends StatelessWidget {
+class _ExpandedButton extends StatelessWidget {
   final String title;
-  final bool primary;
+  final String iconName;
+  final bool selected;
 
-  const _FlexibleButton({
+  const _ExpandedButton({
     Key key,
-    this.title,
-    this.primary = false,
+    @required this.title,
+    @required this.iconName,
+    this.selected = false,
   }) : super(key: key);
+
+  static const pxl24 = 24.0;
 
   @override
   Widget build(BuildContext context) {
-    final color = primary
-        ? Theme.of(context).colorScheme.sightDetailsTitleColor
-        : inactiveColor;
-    return Flexible(
-      flex: 1,
-      child: Container(
+    final color =
+        selected ? Theme.of(context).colorScheme.appTitleColor : inactiveColor;
+    return Expanded(
+      child: FlatButton.icon(
         height: 40.0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _DummyIcon(
-              color: color,
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Text(
-              title,
-              style: textRegular14.copyWith(height: 1.3, color: color),
-            ),
-          ],
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        onPressed: () {
+          print("_ExpandedButton pressed");
+        },
+        icon: SvgPicture.asset(
+          iconName,
+          width: pxl24,
+          height: pxl24,
+          color: color,
+        ),
+        label: Text(
+          title,
+          style: textRegular14.copyWith(height: 1.3, color: color),
         ),
       ),
-    );
-  }
-}
-
-class _DummyIcon extends StatelessWidget {
-  final Color color;
-
-  const _DummyIcon({
-    Key key,
-    this.color,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 20,
-      height: 18,
-      color: color,
     );
   }
 }
