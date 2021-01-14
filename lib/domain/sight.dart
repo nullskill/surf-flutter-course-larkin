@@ -144,8 +144,10 @@ class Category {
   get name => _name;
   get iconName => _iconName;
   get type => _type;
+  // ignore: unnecessary_getters_setters
   get selected => _selected;
 
+  // ignore: unnecessary_getters_setters
   set selected(bool b) => _selected = b;
 
   Category({
