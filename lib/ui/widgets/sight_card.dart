@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
@@ -223,12 +224,13 @@ Widget _getDescriptionText(final sight, final Color descriptionColor) {
       );
       break;
     default:
-      return Text(
+      return AutoSizeText(
         sight.details,
+        minFontSize: 14,
         maxLines: 5,
         overflow: TextOverflow.ellipsis,
         style: textRegular14.copyWith(
-          height: 1.3,
+          // height: 1.3, // don't auto size with line height!
           color: secondaryColor2,
         ),
       );
