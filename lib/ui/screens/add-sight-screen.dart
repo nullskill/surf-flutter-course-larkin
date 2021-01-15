@@ -1,10 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_svg/flutter_svg.dart';
+
+import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
+import 'package:places/ui/res/assets.dart';
 
 import 'package:places/ui/widgets/action_button.dart';
+import 'package:places/ui/widgets/settings_item.dart';
 
 class AddSightScreen extends StatelessWidget {
   static const pxl8 = 8.0;
@@ -24,6 +30,7 @@ class AddSightScreen extends StatelessWidget {
         ),
         child: ActionButton(
           label: addSightActionButtonLabel,
+          isDisabled: true,
         ),
       ),
     );
@@ -52,7 +59,7 @@ class _AddSightAppBar extends StatelessWidget implements PreferredSizeWidget {
             addSightCancelButtonLabel,
             softWrap: false,
             style: textMedium16.copyWith(
-              color: Theme.of(context).buttonColor,
+              color: secondaryColor2,
               height: lineHeight1_25,
             ),
           ),
@@ -96,14 +103,21 @@ class _AddSightBody extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AddSightScreen.pxl8,
-                AddSightScreen.pxl24,
-                AddSightScreen.pxl8,
-                AddSightScreen.pxl56,
+            SettingsItem(
+              title: addSightNoCategoryTitle,
+              isGreyedOut: true,
+              onTap: () {
+                print("category selection tapped");
+              },
+              trailing: SvgPicture.asset(
+                AppIcons.view,
+                width: 24,
+                height: 24,
+                color: Theme.of(context).primaryColor,
               ),
-              child: SizedBox(),
+            ),
+            Divider(
+              height: .8,
             ),
           ],
         ),

@@ -38,4 +38,5 @@ const String sightListScreenText = 'Список\nинтересных мест'
     addSightActionButtonLabel = "сохранить",
     addSightAppBarTitle = "Новое место",
     addSightCancelButtonLabel = "Отмена",
-    addSightCategoryTitle = "Категория";
+    addSightCategoryTitle = "Категория",
+    addSightNoCategoryTitle = "Не выбрано";

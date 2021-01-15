@@ -12,10 +12,12 @@ class ActionButton extends StatelessWidget {
     Key key,
     this.iconName,
     @required this.label,
+    this.isDisabled = false,
   }) : super(key: key);
 
   final String iconName;
   final String label;
+  final bool isDisabled;
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +41,11 @@ class ActionButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: allBorderRadius12,
         ),
-        onPressed: () {
-          print("ActionButton pressed");
-        },
+        onPressed: isDisabled
+            ? null
+            : () {
+                print("ActionButton pressed");
+              },
       ),
     );
   }

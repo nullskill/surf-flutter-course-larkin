@@ -7,11 +7,11 @@ import 'package:provider/provider.dart';
 import 'package:places/utils/theme_provider.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/assets.dart';
 
 import 'package:places/ui/widgets/app_back_button.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
+import 'package:places/ui/widgets/settings_item.dart';
 
 class SettingsScreen extends StatelessWidget {
   @override
@@ -54,15 +54,19 @@ class _SettingsBody extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
+  static const pxl0_8 = .8;
+  static const pxl24 = 24.0;
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: pxl24),
         child: Column(
           children: [
-            _SettingsItem(
+            SettingsItem(
               title: settingsThemeSettingTitle,
+              paddingValue: 10,
               trailing: Consumer<ThemeNotifier>(
                 builder: (context, notifier, child) => CupertinoSwitch(
                   value: notifier.darkTheme,
@@ -72,8 +76,10 @@ class _SettingsBody extends StatelessWidget {
                 ),
               ),
             ),
-            _Divider(),
-            _SettingsItem(
+            Divider(
+              height: pxl0_8,
+            ),
+            SettingsItem(
               title: settingsWatchTutorialTitle,
               trailing: GestureDetector(
                 onTap: () {
@@ -81,62 +87,18 @@ class _SettingsBody extends StatelessWidget {
                 },
                 child: SvgPicture.asset(
                   AppIcons.info,
-                  width: 24,
-                  height: 24,
+                  width: pxl24,
+                  height: pxl24,
                   color: Theme.of(context).buttonColor,
                 ),
               ),
             ),
-            _Divider(),
+            Divider(
+              height: pxl0_8,
+            ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _SettingsItem extends StatelessWidget {
-  const _SettingsItem({
-    Key key,
-    @required this.title,
-    @required this.trailing,
-  }) : super(key: key);
-
-  final String title;
-  final Widget trailing;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 14.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            title,
-            style: textRegular16.copyWith(
-              color: Theme.of(context).primaryColor,
-              height: lineHeight1_25,
-            ),
-          ),
-          trailing,
-        ],
-      ),
-    );
-  }
-}
-
-class _Divider extends StatelessWidget {
-  const _Divider({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: .8,
-      color: inactiveColor,
     );
   }
 }
