@@ -168,6 +168,7 @@ class _CardBottom extends StatelessWidget {
     @required this.sight,
   }) : super(key: key);
 
+  static const pxl2 = 2.0;
   static const pxl16 = 16.0;
   final Sight sight;
 
@@ -185,16 +186,16 @@ class _CardBottom extends StatelessWidget {
           Text(
             sight.name,
             style: textMedium16.copyWith(
-              height: 1.25,
+              height: lineHeight1_25,
               color: Theme.of(context).primaryColor,
             ),
           ),
           SizedBox(
-            height: 2,
+            height: pxl2,
           ),
           _getDescriptionText(sight, Theme.of(context).buttonColor),
           SizedBox(
-            height: 2,
+            height: pxl2,
           ),
           _getOpenHoursText(sight),
         ],
@@ -209,7 +210,7 @@ Widget _getDescriptionText(final sight, final Color descriptionColor) {
       return Text(
         "$sightCardPlanned ${DateFormat.yMMMd().format(sight.plannedDate)}",
         style: textRegular14.copyWith(
-          height: 1.3,
+          height: lineHeight1_3,
           color: descriptionColor,
         ),
       );
@@ -218,7 +219,7 @@ Widget _getDescriptionText(final sight, final Color descriptionColor) {
       return Text(
         "$sightCardVisited ${DateFormat.yMMMd().format(sight.visitedDate)}",
         style: textRegular14.copyWith(
-          height: 1.3,
+          height: lineHeight1_3,
           color: secondaryColor2,
         ),
       );
@@ -230,7 +231,7 @@ Widget _getDescriptionText(final sight, final Color descriptionColor) {
         maxLines: 5,
         overflow: TextOverflow.ellipsis,
         style: textRegular14.copyWith(
-          // height: 1.3, // don't auto size with line height!
+          // height: lineHeight1_3, // don't auto size with line height!
           color: secondaryColor2,
         ),
       );
@@ -244,7 +245,7 @@ Widget _getOpenHoursText(var sight) {
       return Text(
         "$sightDetailsOpenHours ${DateFormat.Hm().format(sight.openHour)}",
         style: textRegular14.copyWith(
-          height: 1.3,
+          height: lineHeight1_3,
           color: secondaryColor2,
         ),
       );

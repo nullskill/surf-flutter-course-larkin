@@ -1,3 +1,5 @@
+import 'package:places/ui/screens/add-sight-screen.dart';
+
 /// Строковые константы
 const String sightListScreenText = 'Список\nинтересных мест',
 
@@ -30,4 +32,10 @@ const String sightListScreenText = 'Список\nинтересных мест'
 //SettingsScreen
     settingsAppBarTitle = "Настройки",
     settingsThemeSettingTitle = "Тёмная тема",
-    settingsWatchTutorialTitle = "Смотреть туториал";
+    settingsWatchTutorialTitle = "Смотреть туториал",
+
+//AddSightScreen
+    addSightActionButtonLabel = "сохранить",
+    addSightAppBarTitle = "Новое место",
+    addSightCancelButtonLabel = "Отмена",
+    addSightCategoryTitle = "Категория";
