@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
-import 'package:places/ui/res/app_color_scheme.dart';
 
 /// Виджет ActionButton предоставляет кнопку действия
 class ActionButton extends StatelessWidget {

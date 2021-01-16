@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:places/utils/consts.dart';
 import 'package:places/domain/sight.dart';
 
-/// Вспомогательный класс для виджета AppRangeSlider
+/// Вспомогательный класс для экрана фильтров
 class FiltersScreenHelper {
   // This class is not meant to be instantiated or extended; this constructor
   // prevents instantiation and extension.

@@ -11,6 +11,7 @@ import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/ui/widgets/settings_item.dart';
 
+/// Экран добавления интересного места.
 class AddSightScreen extends StatelessWidget {
   static const pxl8 = 8.0;
   static const pxl16 = 16.0;
@@ -86,12 +87,15 @@ class _AddSightBody extends StatelessWidget {
   final FocusNode focusNodeName = FocusNode();
   final FocusNode focusNodeLatitude = FocusNode();
   final FocusNode focusNodeLongitude = FocusNode();
+  final FocusNode focusNodeDescription = FocusNode();
 
   void moveFocus() {
     if (focusNodeName.hasFocus) {
       focusNodeLatitude.requestFocus();
     } else if (focusNodeLatitude.hasFocus) {
       focusNodeLongitude.requestFocus();
+    } else if (focusNodeLongitude.hasFocus) {
+      focusNodeDescription.requestFocus();
     }
   }
 
@@ -149,6 +153,11 @@ class _AddSightBody extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+            _AddSightTextField(
+              title: addSightDescriptionTitle,
+              focusNode: focusNodeDescription,
+              moveFocus: moveFocus,
             ),
           ],
         ),

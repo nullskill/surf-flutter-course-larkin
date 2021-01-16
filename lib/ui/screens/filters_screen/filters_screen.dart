@@ -18,6 +18,7 @@ import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/ui/widgets/app_range_slider/app_range_slider_helper.dart';
 import 'package:places/ui/widgets/app_range_slider/app_range_slider.dart';
 
+/// Экран фильтров
 class FiltersScreen extends StatefulWidget {
   @override
   _FiltersScreenState createState() => _FiltersScreenState();

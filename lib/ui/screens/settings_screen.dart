@@ -13,6 +13,7 @@ import 'package:places/ui/widgets/app_back_button.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/settings_item.dart';
 
+/// Экран настроек
 class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
