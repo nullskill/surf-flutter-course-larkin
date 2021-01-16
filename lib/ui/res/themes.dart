@@ -38,6 +38,26 @@ final lightTheme = ThemeData(
     activeTrackColor: LightMode.greenColor,
   ),
 
+  //TextField
+  inputDecorationTheme: _BaseProps.inputDecorationTheme.copyWith(
+    enabledBorder: OutlineInputBorder(
+      borderSide: const BorderSide(color: LightMode.inputBorderColor),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderSide:
+          const BorderSide(color: LightMode.inputBorderColor, width: 2.0),
+    ),
+  ),
+
+  //Text (disabled)
+  disabledColor: inactiveColor,
+
+  //Button
+  buttonTheme: ButtonThemeData(
+    buttonColor: LightMode.greenColor,
+    disabledColor: backgroundColor,
+  ),
+
   //FAB
   floatingActionButtonTheme: _BaseProps.floatingActionButtonTheme.copyWith(
     backgroundColor: LightMode.greenColor,
@@ -85,6 +105,26 @@ final darkTheme = ThemeData(
     activeTrackColor: DarkMode.greenColor,
   ),
 
+  //TextField
+  inputDecorationTheme: _BaseProps.inputDecorationTheme.copyWith(
+    enabledBorder: OutlineInputBorder(
+      borderSide: const BorderSide(color: DarkMode.inputBorderColor),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderSide:
+          const BorderSide(color: DarkMode.inputBorderColor, width: 2.0),
+    ),
+  ),
+
+  //Text (disabled)
+  disabledColor: inactiveColor,
+
+  //Button
+  buttonTheme: ButtonThemeData(
+    buttonColor: DarkMode.greenColor,
+    disabledColor: DarkMode.darkColor,
+  ),
+
   //FAB
   floatingActionButtonTheme: _BaseProps.floatingActionButtonTheme.copyWith(
     backgroundColor: DarkMode.greenColor,
@@ -114,6 +154,18 @@ class _BaseProps {
     activeTickMarkColor: transparentColor,
     inactiveTickMarkColor: transparentColor,
     rangeTrackShape: _SliderTrackShape(), //RangeSlider only
+  );
+
+  //TextField
+  static const inputDecorationTheme = InputDecorationTheme(
+    isDense: true,
+    contentPadding: const EdgeInsets.symmetric(
+      vertical: 10,
+      horizontal: 16,
+    ),
+    border: OutlineInputBorder(
+      borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+    ),
   );
 
   //FAB

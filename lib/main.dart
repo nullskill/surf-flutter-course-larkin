@@ -11,7 +11,7 @@ import 'package:places/ui/res/themes.dart';
 // import 'package:places/ui/screens/sight_list_screen.dart';
 // import 'package:places/ui/screens/settings_screen.dart';
 // import 'package:places/ui/screens/filters_screen/filters_screen.dart';
-import 'package:places/ui/screens/add-sight-screen.dart';
+import 'package:places/ui/screens/add_sight_screen.dart';
 
 void main() {
   runApp(App());

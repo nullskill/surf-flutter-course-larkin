@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
+import 'package:places/ui/res/app_color_scheme.dart';
 
 /// Виджет ActionButton предоставляет кнопку действия
 class ActionButton extends StatelessWidget {
@@ -26,6 +27,7 @@ class ActionButton extends StatelessWidget {
       width: double.infinity,
       child: RaisedButton.icon(
         elevation: 0,
+        // disabledTextColor: Theme.of(context).colorScheme.appDisabledTextColor,
         icon: iconName != null
             ? SvgPicture.asset(
                 iconName,
@@ -36,7 +38,8 @@ class ActionButton extends StatelessWidget {
             : SizedBox(),
         label: Text(
           label.toUpperCase(),
-          style: textBold14.copyWith(color: whiteColor),
+          style: textBold14.copyWith(
+              color: isDisabled ? Theme.of(context).disabledColor : whiteColor),
         ),
         shape: RoundedRectangleBorder(
           borderRadius: allBorderRadius12,

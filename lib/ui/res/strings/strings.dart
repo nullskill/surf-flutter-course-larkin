@@ -1,4 +1,4 @@
-import 'package:places/ui/screens/add-sight-screen.dart';
+import 'package:places/ui/screens/add_sight_screen.dart';
 
 /// Строковые константы
 const String sightListScreenText = 'Список\nинтересных мест',
@@ -24,7 +24,7 @@ const String sightListScreenText = 'Список\nинтересных мест'
     visitingEmptyListText = "Пусто",
 
 //FiltersScreen
-    filtersActionButtonLabel = "показать",
+    filtersActionButtonLabel = "Показать",
     filtersClearButtonLabel = "Очистить",
     filtersDistanceTitle = "Расстояние",
     filtersCategoriesTitle = "Категории",
@@ -35,8 +35,11 @@ const String sightListScreenText = 'Список\nинтересных мест'
     settingsWatchTutorialTitle = "Смотреть туториал",
 
 //AddSightScreen
-    addSightActionButtonLabel = "сохранить",
+    addSightActionButtonLabel = "Создать",
     addSightAppBarTitle = "Новое место",
     addSightCancelButtonLabel = "Отмена",
     addSightCategoryTitle = "Категория",
-    addSightNoCategoryTitle = "Не выбрано";
+    addSightNoCategoryTitle = "Не выбрано",
+    addSightNameTitle = "Название",
+    addSightLatitudeTitle = "Широта",
+    addSightLongitudeTitle = "Долгота";
