@@ -55,7 +55,6 @@ class _SettingsBody extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  static const pxl0_8 = .8;
   static const pxl24 = 24.0;
 
   @override
@@ -77,9 +76,6 @@ class _SettingsBody extends StatelessWidget {
                 ),
               ),
             ),
-            Divider(
-              height: pxl0_8,
-            ),
             SettingsItem(
               title: settingsWatchTutorialTitle,
               trailing: GestureDetector(
@@ -93,9 +89,6 @@ class _SettingsBody extends StatelessWidget {
                   color: Theme.of(context).buttonColor,
                 ),
               ),
-            ),
-            Divider(
-              height: pxl0_8,
             ),
           ],
         ),

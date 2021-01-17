@@ -24,23 +24,30 @@ class SettingsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: paddingValue),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              title,
-              style: textRegular16.copyWith(
-                color: isGreyedOut
-                    ? secondaryColor2
-                    : Theme.of(context).primaryColor,
-                height: lineHeight1_25,
-              ),
+      child: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: paddingValue),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  title,
+                  style: textRegular16.copyWith(
+                    color: isGreyedOut
+                        ? secondaryColor2
+                        : Theme.of(context).primaryColor,
+                    height: lineHeight1_25,
+                  ),
+                ),
+                trailing,
+              ],
             ),
-            trailing,
-          ],
-        ),
+          ),
+          Divider(
+            height: .8,
+          ),
+        ],
       ),
     );
   }

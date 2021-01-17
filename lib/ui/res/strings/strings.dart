@@ -45,4 +45,8 @@ const String sightListScreenText = 'Список\nинтересных мест'
     addSightLatitudeTitle = "Широта",
     addSightLongitudeTitle = "Долгота",
     addSightSelectOnMapTitle = "Указать на карте",
-    addSightDescriptionHintText = "введите текст";
+    addSightDescriptionHintText = "введите текст",
+
+//SelectCategoryScreen
+    selectCategoryActionButtonLabel = "Сохранить",
+    selectCategoryAppBarTitle = "Категория";

@@ -189,9 +189,6 @@ class _AddSightBody extends StatelessWidget {
                 color: Theme.of(context).primaryColor,
               ),
             ),
-            Divider(
-              height: .8,
-            ),
             _AddSightTextField(
               title: addSightNameTitle,
               controller: controllers["name"],
