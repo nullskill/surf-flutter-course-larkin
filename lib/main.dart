@@ -30,7 +30,7 @@ class App extends StatelessWidget {
             theme: lightTheme,
             darkTheme: darkTheme,
             themeMode: notifier.darkTheme ? ThemeMode.dark : ThemeMode.light,
-            title: "My first App",
+            title: "Places",
             // home: SettingsScreen(),
             home: AddSightScreen(),
           );

@@ -43,4 +43,5 @@ const String sightListScreenText = 'Список\nинтересных мест'
     addSightNameTitle = "Название",
     addSightDescriptionTitle = "Описание",
     addSightLatitudeTitle = "Широта",
-    addSightLongitudeTitle = "Долгота";
+    addSightLongitudeTitle = "Долгота",
+    addSightDescriptionHintText = "введите текст";

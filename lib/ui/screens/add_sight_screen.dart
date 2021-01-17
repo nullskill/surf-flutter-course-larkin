@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,21 +11,87 @@ import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/ui/widgets/settings_item.dart';
 
 /// Экран добавления интересного места.
-class AddSightScreen extends StatelessWidget {
-  static const pxl8 = 8.0;
-  static const pxl16 = 16.0;
-  static const pxl24 = 24.0;
-  static const pxl56 = 56.0;
+class AddSightScreen extends StatefulWidget {
+  static const pxl8 = 8.0,
+      pxl10 = 10.0,
+      pxl16 = 16.0,
+      pxl24 = 24.0,
+      pxl56 = 56.0;
+
+  @override
+  _AddSightScreenState createState() => _AddSightScreenState();
+}
+
+class _AddSightScreenState extends State<AddSightScreen> {
+  final controllers = <String, TextEditingController>{
+    "name": TextEditingController(),
+    "latitude": TextEditingController(),
+    "longitude": TextEditingController(),
+    "description": TextEditingController(),
+  };
+
+  final focusNodes = <String, FocusNode>{
+    "name": FocusNode(),
+    "latitude": FocusNode(),
+    "longitude": FocusNode(),
+    "description": FocusNode(),
+  };
+
+  void moveFocus() {
+    if (focusNodes["name"].hasFocus) {
+      focusNodes["latitude"].requestFocus();
+    } else if (focusNodes["latitude"].hasFocus) {
+      focusNodes["longitude"].requestFocus();
+    } else if (focusNodes["longitude"].hasFocus) {
+      focusNodes["description"].requestFocus();
+    }
+  }
+
+  FocusNode currentFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+
+    for (var entry in focusNodes.entries)
+      entry.value.addListener(() => focusNodeListener(entry.key));
+    for (var entry in controllers.entries)
+      entry.value.addListener(() => controllerListener(entry.key));
+  }
+
+  @override
+  void dispose() {
+    for (var focusNode in focusNodes.values) focusNode.dispose();
+    for (var controller in focusNodes.values) controller.dispose();
+
+    super.dispose();
+  }
+
+  void focusNodeListener(String focusNodeName) {
+    setState(() {
+      currentFocusNode = focusNodes[focusNodeName];
+    });
+  }
+
+  void controllerListener(String controllerName) {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _AddSightAppBar(),
-      body: _AddSightBody(),
+      body: _AddSightBody(
+        controllers: controllers,
+        focusNodes: focusNodes,
+        currentFocusNode: currentFocusNode,
+        // isEmptyField: isEmptyField,
+        moveFocus: moveFocus,
+      ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: pxl16,
-          vertical: pxl8,
+          horizontal: AddSightScreen.pxl16,
+          vertical: AddSightScreen.pxl8,
         ),
         child: ActionButton(
           label: addSightActionButtonLabel,
@@ -50,7 +115,7 @@ class _AddSightAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       leading: Padding(
         padding: const EdgeInsets.symmetric(
-          vertical: 10.0,
+          vertical: AddSightScreen.pxl10,
         ),
         child: FlatButton(
           onPressed: () {
@@ -82,22 +147,20 @@ class _AddSightAppBar extends StatelessWidget implements PreferredSizeWidget {
 class _AddSightBody extends StatelessWidget {
   _AddSightBody({
     Key key,
+    @required this.controllers,
+    @required this.focusNodes,
+    @required this.currentFocusNode,
+    @required this.moveFocus,
   }) : super(key: key);
 
-  final FocusNode focusNodeName = FocusNode();
-  final FocusNode focusNodeLatitude = FocusNode();
-  final FocusNode focusNodeLongitude = FocusNode();
-  final FocusNode focusNodeDescription = FocusNode();
+  final Map<String, TextEditingController> controllers;
+  final Map<String, FocusNode> focusNodes;
+  final FocusNode currentFocusNode;
+  final Function moveFocus;
 
-  void moveFocus() {
-    if (focusNodeName.hasFocus) {
-      focusNodeLatitude.requestFocus();
-    } else if (focusNodeLatitude.hasFocus) {
-      focusNodeLongitude.requestFocus();
-    } else if (focusNodeLongitude.hasFocus) {
-      focusNodeDescription.requestFocus();
-    }
-  }
+  bool hasClearButton(fieldName) =>
+      currentFocusNode == focusNodes[fieldName] &&
+      controllers[fieldName].text.length > 0;
 
   @override
   Widget build(BuildContext context) {
@@ -130,34 +193,50 @@ class _AddSightBody extends StatelessWidget {
             ),
             _AddSightTextField(
               title: addSightNameTitle,
-              focusNode: focusNodeName,
+              controller: controllers["name"],
+              focusNode: focusNodes["name"],
               moveFocus: moveFocus,
+              hasClearIcon: hasClearButton("name"),
             ),
             Row(
               children: [
                 Expanded(
                   child: _AddSightTextField(
                     title: addSightLatitudeTitle,
-                    focusNode: focusNodeLatitude,
+                    controller: controllers["latitude"],
+                    focusNode: focusNodes["latitude"],
                     moveFocus: moveFocus,
+                    hasClearIcon: hasClearButton("latitude"),
+                    keyboardType: TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                   ),
                 ),
                 SizedBox(
-                  width: 16.0,
+                  width: AddSightScreen.pxl16,
                 ),
                 Expanded(
                   child: _AddSightTextField(
                     title: addSightLongitudeTitle,
-                    focusNode: focusNodeLongitude,
+                    controller: controllers["longitude"],
+                    focusNode: focusNodes["longitude"],
                     moveFocus: moveFocus,
+                    hasClearIcon: hasClearButton("longitude"),
+                    keyboardType: TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                   ),
                 ),
               ],
             ),
             _AddSightTextField(
               title: addSightDescriptionTitle,
-              focusNode: focusNodeDescription,
+              hintText: addSightDescriptionHintText,
+              maxLines: 4,
+              controller: controllers["description"],
+              focusNode: focusNodes["description"],
               moveFocus: moveFocus,
+              hasClearIcon: hasClearButton("description"),
             ),
           ],
         ),
@@ -170,13 +249,25 @@ class _AddSightTextField extends StatelessWidget {
   const _AddSightTextField({
     Key key,
     @required this.title,
+    @required this.controller,
     @required this.focusNode,
     @required this.moveFocus,
+    this.maxLines,
+    this.hintText,
+    this.keyboardType,
+    this.hasClearIcon = false,
   }) : super(key: key);
 
+  static const pxl40 = 40.0;
+
   final String title;
+  final TextEditingController controller;
   final FocusNode focusNode;
   final Function moveFocus;
+  final int maxLines;
+  final String hintText;
+  final TextInputType keyboardType;
+  final bool hasClearIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -190,14 +281,41 @@ class _AddSightTextField extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(top: 12.0),
-          child: TextField(
+          child: TextFormField(
+            maxLines: maxLines ?? 1,
+            controller: controller,
             focusNode: focusNode,
+            keyboardType: keyboardType,
             onEditingComplete: () {
               moveFocus();
             },
+            cursorColor: Theme.of(context).primaryColor,
+            cursorHeight: AddSightScreen.pxl24,
+            cursorWidth: 1,
             style: textRegular16.copyWith(
               color: Theme.of(context).primaryColor,
               height: lineHeight1_25,
+            ),
+            decoration: InputDecoration(
+              hintText: hintText,
+              suffixIcon: !hasClearIcon
+                  ? null
+                  : Padding(
+                      padding: const EdgeInsets.all(AddSightScreen.pxl10),
+                      child: GestureDetector(
+                        onTap: () {
+                          controller.clear();
+                        },
+                        child: SvgPicture.asset(
+                          AppIcons.clear,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ),
+              suffixIconConstraints: BoxConstraints(
+                maxHeight: pxl40,
+                maxWidth: pxl40,
+              ),
             ),
           ),
         ),

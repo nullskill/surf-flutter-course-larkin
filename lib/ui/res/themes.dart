@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/border_radiuses.dart';
+import 'package:places/ui/res/text_styles.dart';
 
 /// Основные темы приложения:
 /// Светлая тема
@@ -38,7 +39,7 @@ final lightTheme = ThemeData(
     activeTrackColor: LightMode.greenColor,
   ),
 
-  //TextField
+  //TextField InputDecorationTheme
   inputDecorationTheme: _BaseProps.inputDecorationTheme.copyWith(
     enabledBorder: OutlineInputBorder(
       borderSide: const BorderSide(color: LightMode.inputBorderColor),
@@ -46,6 +47,10 @@ final lightTheme = ThemeData(
     focusedBorder: OutlineInputBorder(
       borderSide:
           const BorderSide(color: LightMode.inputBorderColor, width: 2.0),
+    ),
+    hintStyle: textRegular16.copyWith(
+      color: inactiveColor,
+      height: lineHeight1_25,
     ),
   ),
 
@@ -105,7 +110,7 @@ final darkTheme = ThemeData(
     activeTrackColor: DarkMode.greenColor,
   ),
 
-  //TextField
+  //TextField InputDecorationTheme
   inputDecorationTheme: _BaseProps.inputDecorationTheme.copyWith(
     enabledBorder: OutlineInputBorder(
       borderSide: const BorderSide(color: DarkMode.inputBorderColor),
@@ -113,6 +118,10 @@ final darkTheme = ThemeData(
     focusedBorder: OutlineInputBorder(
       borderSide:
           const BorderSide(color: DarkMode.inputBorderColor, width: 2.0),
+    ),
+    hintStyle: textRegular16.copyWith(
+      color: inactiveColor,
+      height: lineHeight1_25,
     ),
   ),
 
@@ -156,7 +165,7 @@ class _BaseProps {
     rangeTrackShape: _SliderTrackShape(), //RangeSlider only
   );
 
-  //TextField
+  //TextField InputDecorationTheme
   static const inputDecorationTheme = InputDecorationTheme(
     isDense: true,
     contentPadding: const EdgeInsets.symmetric(
