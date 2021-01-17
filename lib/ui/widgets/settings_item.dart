@@ -24,6 +24,7 @@ class SettingsItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
+      behavior: HitTestBehavior.translucent,
       child: Column(
         children: [
           Padding(
