@@ -37,16 +37,6 @@ class _AddSightScreenState extends State<AddSightScreen> {
     "description": FocusNode(),
   };
 
-  void moveFocus() {
-    if (focusNodes["name"].hasFocus) {
-      focusNodes["latitude"].requestFocus();
-    } else if (focusNodes["latitude"].hasFocus) {
-      focusNodes["longitude"].requestFocus();
-    } else if (focusNodes["longitude"].hasFocus) {
-      focusNodes["description"].requestFocus();
-    }
-  }
-
   FocusNode currentFocusNode;
 
   @override
@@ -75,6 +65,16 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
   void controllerListener(String controllerName) {
     setState(() {});
+  }
+
+  void moveFocus() {
+    if (focusNodes["name"].hasFocus) {
+      focusNodes["latitude"].requestFocus();
+    } else if (focusNodes["latitude"].hasFocus) {
+      focusNodes["longitude"].requestFocus();
+    } else if (focusNodes["longitude"].hasFocus) {
+      focusNodes["description"].requestFocus();
+    }
   }
 
   @override
@@ -160,7 +160,7 @@ class _AddSightBody extends StatelessWidget {
 
   bool hasClearButton(fieldName) =>
       currentFocusNode == focusNodes[fieldName] &&
-      controllers[fieldName].text.length > 0;
+      controllers[fieldName].text.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -171,6 +171,7 @@ class _AddSightBody extends StatelessWidget {
           vertical: AddSightScreen.pxl24,
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _AddSightSubtitle(
               subtitle: addSightCategoryTitle,
@@ -196,7 +197,7 @@ class _AddSightBody extends StatelessWidget {
               controller: controllers["name"],
               focusNode: focusNodes["name"],
               moveFocus: moveFocus,
-              hasClearIcon: hasClearButton("name"),
+              hasClearButton: hasClearButton("name"),
             ),
             Row(
               children: [
@@ -206,7 +207,7 @@ class _AddSightBody extends StatelessWidget {
                     controller: controllers["latitude"],
                     focusNode: focusNodes["latitude"],
                     moveFocus: moveFocus,
-                    hasClearIcon: hasClearButton("latitude"),
+                    hasClearButton: hasClearButton("latitude"),
                     keyboardType: TextInputType.numberWithOptions(
                       decimal: true,
                     ),
@@ -221,13 +222,28 @@ class _AddSightBody extends StatelessWidget {
                     controller: controllers["longitude"],
                     focusNode: focusNodes["longitude"],
                     moveFocus: moveFocus,
-                    hasClearIcon: hasClearButton("longitude"),
+                    hasClearButton: hasClearButton("longitude"),
                     keyboardType: TextInputType.numberWithOptions(
                       decimal: true,
                     ),
                   ),
                 ),
               ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0, bottom: 13.0),
+              child: GestureDetector(
+                onTap: () {
+                  print("Select on map tapped");
+                },
+                child: Text(
+                  addSightSelectOnMapTitle,
+                  style: textMedium16.copyWith(
+                    color: Theme.of(context).buttonColor,
+                    height: lineHeight1_25,
+                  ),
+                ),
+              ),
             ),
             _AddSightTextField(
               title: addSightDescriptionTitle,
@@ -236,7 +252,7 @@ class _AddSightBody extends StatelessWidget {
               controller: controllers["description"],
               focusNode: focusNodes["description"],
               moveFocus: moveFocus,
-              hasClearIcon: hasClearButton("description"),
+              hasClearButton: hasClearButton("description"),
             ),
           ],
         ),
@@ -255,7 +271,7 @@ class _AddSightTextField extends StatelessWidget {
     this.maxLines,
     this.hintText,
     this.keyboardType,
-    this.hasClearIcon = false,
+    this.hasClearButton = false,
   }) : super(key: key);
 
   static const pxl40 = 40.0;
@@ -267,7 +283,7 @@ class _AddSightTextField extends StatelessWidget {
   final int maxLines;
   final String hintText;
   final TextInputType keyboardType;
-  final bool hasClearIcon;
+  final bool hasClearButton;
 
   @override
   Widget build(BuildContext context) {
@@ -282,6 +298,7 @@ class _AddSightTextField extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 12.0),
           child: TextFormField(
+            scrollPadding: const EdgeInsets.all(100.0),
             maxLines: maxLines ?? 1,
             controller: controller,
             focusNode: focusNode,
@@ -298,7 +315,7 @@ class _AddSightTextField extends StatelessWidget {
             ),
             decoration: InputDecoration(
               hintText: hintText,
-              suffixIcon: !hasClearIcon
+              suffixIcon: !hasClearButton
                   ? null
                   : Padding(
                       padding: const EdgeInsets.all(AddSightScreen.pxl10),

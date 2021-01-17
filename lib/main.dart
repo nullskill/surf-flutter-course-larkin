@@ -31,7 +31,7 @@ class App extends StatelessWidget {
             darkTheme: darkTheme,
             themeMode: notifier.darkTheme ? ThemeMode.dark : ThemeMode.light,
             title: "Places",
-            // home: SettingsScreen(),
+            // home: FiltersScreen(),
             home: AddSightScreen(),
           );
         },
