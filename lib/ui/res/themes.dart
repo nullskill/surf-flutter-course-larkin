@@ -17,6 +17,7 @@ final lightTheme = ThemeData(
   canvasColor: whiteColor,
   backgroundColor: backgroundColor,
   shadowColor: blackColor,
+  accentColor: LightMode.yellowColor,
 
   //AppBar
   appBarTheme: _BaseProps.appBarTheme.copyWith(
@@ -88,6 +89,7 @@ final darkTheme = ThemeData(
   canvasColor: DarkMode.primaryColor,
   backgroundColor: DarkMode.darkColor,
   shadowColor: whiteColor,
+  accentColor: DarkMode.yellowColor,
 
   //AppBar
   appBarTheme: _BaseProps.appBarTheme.copyWith(

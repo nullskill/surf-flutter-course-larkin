@@ -1,19 +1,21 @@
 import 'package:places/ui/screens/add_sight_screen.dart';
 
 /// Строковые константы
-const String sightListScreenText = 'Список\nинтересных мест',
+//SightListScreen
+const String sightListAppBarTitle = "Список\nинтересных мест",
+    sightListFabLabel = "Новое место",
 
 //SightCard
     sightCardPlanned = "Запланировано на",
     sightCardVisited = "Цель достигнута",
 
-//SightDetails screen
+//SightDetailsScreen
     sightDetailsActionButtonLabel = "построить маршрут",
     sightDetailsOpenHours = "откроется в",
     sightDetailsPlan = "Запланировать",
     sightDetailsAddToFavorites = "В Избранное",
 
-//VisitingScreen screen
+//VisitingScreen
     visitingAppBarTitle = "Избранное",
     visitingWishToVisitTabText = "Хочу посетить",
     visitingWishToVisitEmptyListText =

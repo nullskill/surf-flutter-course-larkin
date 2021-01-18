@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:places/mocks.dart';
 
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
+import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/screens/add_sight_screen.dart';
 
 import 'package:places/ui/widgets/sight_card.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
+import 'package:places/ui/widgets/app_floating_action_button.dart';
 
 /// Экран отображения списка карточек интересных мест.
 class SightListScreen extends StatefulWidget {
+  static const pxl16 = 16.0;
   @override
   _SightListScreenState createState() => _SightListScreenState();
 }
@@ -21,9 +27,31 @@ class _SightListScreenState extends State<SightListScreen> {
       appBar: _SightListScreenAppBar(),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(SightListScreen.pxl16),
           child: _CardColumn(),
         ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: AppFloatingActionButton(
+        icon: SvgPicture.asset(
+          AppIcons.plus,
+          color: Theme.of(context).primaryColor,
+        ),
+        label: Text(
+          sightListFabLabel.toUpperCase(),
+          style: textBold14.copyWith(
+            color: Theme.of(context).primaryColor,
+            height: lineHeight1_3,
+          ),
+        ),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddSightScreen(),
+            ),
+          );
+        },
       ),
       bottomNavigationBar: AppBottomNavigationBar(
         currentIndex: 0,
@@ -43,12 +71,12 @@ class _SightListScreenAppBar extends StatelessWidget
         alignment: Alignment.bottomLeft,
         child: Container(
           margin: EdgeInsets.only(
-            left: 16,
-            right: 16,
-            bottom: 16,
+            left: SightListScreen.pxl16,
+            right: SightListScreen.pxl16,
+            bottom: SightListScreen.pxl16,
           ),
           child: Text(
-            sightListScreenText,
+            sightListAppBarTitle,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: textBold32.copyWith(
@@ -73,7 +101,7 @@ class _CardColumn extends StatelessWidget {
         for (var sight in mocks) ...[
           SightCard(sight: sight),
           SizedBox(
-            height: 16,
+            height: SightListScreen.pxl16,
           ),
         ],
       ],
