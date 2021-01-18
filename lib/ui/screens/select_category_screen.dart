@@ -17,6 +17,11 @@ import 'package:places/ui/widgets/settings_item.dart';
 class SelectCategoryScreen extends StatefulWidget {
   static const pxl16 = 16.0, pxl24 = 24.0;
 
+  final Category selectedCategory;
+
+  const SelectCategoryScreen({Key key, this.selectedCategory})
+      : super(key: key);
+
   @override
   _SelectCategoryScreenState createState() => _SelectCategoryScreenState();
 }
@@ -25,7 +30,15 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
   Category selectedCategory;
 
   @override
+  void initState() {
+    super.initState();
+
+    selectedCategory = widget.selectedCategory;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print("SelectCategory selectedCategory $selectedCategory");
     return Scaffold(
       appBar: _SelectCategoryAppBar(),
       body: SingleChildScrollView(
@@ -66,7 +79,8 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
         ),
         child: ActionButton(
           label: selectCategoryActionButtonLabel,
-          isDisabled: true,
+          isDisabled: selectedCategory == null,
+          onPressed: () => Navigator.pop(context, selectedCategory),
           // isDisabled: false,
         ),
       ),

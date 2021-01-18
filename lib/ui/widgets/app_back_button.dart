@@ -30,7 +30,7 @@ class AppBackButton extends StatelessWidget {
           borderRadius: allBorderRadius10,
         ),
         onPressed: () {
-          print("AppBackButton pressed");
+          Navigator.pop(context);
         },
         child: SvgPicture.asset(
           AppIcons.arrow,

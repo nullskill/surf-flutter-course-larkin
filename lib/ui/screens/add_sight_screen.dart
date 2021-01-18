@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:places/domain/sight.dart';
+
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/assets.dart';
+
+import 'package:places/ui/screens/select_category_screen.dart';
 
 import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/ui/widgets/settings_item.dart';
@@ -38,6 +42,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
   };
 
   FocusNode currentFocusNode;
+  Category selectedCategory;
 
   @override
   void initState() {
@@ -77,6 +82,12 @@ class _AddSightScreenState extends State<AddSightScreen> {
     }
   }
 
+  void setSelectedCategory(selectedCategory) {
+    setState(() {
+      this.selectedCategory = selectedCategory;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,8 +96,9 @@ class _AddSightScreenState extends State<AddSightScreen> {
         controllers: controllers,
         focusNodes: focusNodes,
         currentFocusNode: currentFocusNode,
-        // isEmptyField: isEmptyField,
         moveFocus: moveFocus,
+        selectedCategory: selectedCategory,
+        setSelectedCategory: setSelectedCategory,
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(
@@ -119,7 +131,7 @@ class _AddSightAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         child: FlatButton(
           onPressed: () {
-            print("Cancel button pressed");
+            Navigator.pop(context);
           },
           child: Text(
             addSightCancelButtonLabel,
@@ -151,12 +163,16 @@ class _AddSightBody extends StatelessWidget {
     @required this.focusNodes,
     @required this.currentFocusNode,
     @required this.moveFocus,
+    this.selectedCategory,
+    @required this.setSelectedCategory,
   }) : super(key: key);
 
   final Map<String, TextEditingController> controllers;
   final Map<String, FocusNode> focusNodes;
   final FocusNode currentFocusNode;
   final Function moveFocus;
+  final Category selectedCategory;
+  final Function setSelectedCategory;
 
   bool hasClearButton(fieldName) =>
       currentFocusNode == focusNodes[fieldName] &&
@@ -177,10 +193,17 @@ class _AddSightBody extends StatelessWidget {
               subtitle: addSightCategoryTitle,
             ),
             SettingsItem(
-              title: addSightNoCategoryTitle,
+              title: selectedCategory?.name ?? addSightNoCategoryTitle,
               isGreyedOut: true,
-              onTap: () {
-                print("category selection tapped");
+              onTap: () async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SelectCategoryScreen(
+                        selectedCategory: selectedCategory),
+                  ),
+                );
+                result != null && setSelectedCategory(result);
               },
               trailing: SvgPicture.asset(
                 AppIcons.view,
