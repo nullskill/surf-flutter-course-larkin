@@ -188,25 +188,28 @@ class _CardBottom extends StatelessWidget {
         left: pxl16,
         right: pxl16,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            sight.name,
-            style: textMedium16.copyWith(
-              height: lineHeight1_25,
-              color: Theme.of(context).primaryColor,
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              sight.name,
+              style: textMedium16.copyWith(
+                height: lineHeight1_25,
+                color: Theme.of(context).primaryColor,
+              ),
             ),
-          ),
-          SizedBox(
-            height: pxl2,
-          ),
-          _getDescriptionText(sight, Theme.of(context).buttonColor),
-          SizedBox(
-            height: pxl2,
-          ),
-          _getOpenHoursText(sight),
-        ],
+            SizedBox(
+              height: pxl2,
+            ),
+            _getDescriptionText(sight, Theme.of(context).buttonColor),
+            SizedBox(
+              height: pxl2,
+            ),
+            _getOpenHoursText(sight),
+          ],
+        ),
       ),
     );
   }

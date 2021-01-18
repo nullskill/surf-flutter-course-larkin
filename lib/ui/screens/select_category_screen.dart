@@ -38,7 +38,6 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("SelectCategory selectedCategory $selectedCategory");
     return Scaffold(
       appBar: _SelectCategoryAppBar(),
       body: SingleChildScrollView(

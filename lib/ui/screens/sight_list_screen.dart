@@ -23,6 +23,7 @@ class SightListScreen extends StatefulWidget {
 class _SightListScreenState extends State<SightListScreen> {
   @override
   Widget build(BuildContext context) {
+    // print("needUpdate $needUpdate");
     return Scaffold(
       appBar: _SightListScreenAppBar(),
       body: SingleChildScrollView(
@@ -44,13 +45,14 @@ class _SightListScreenState extends State<SightListScreen> {
             height: lineHeight1_3,
           ),
         ),
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => AddSightScreen(),
             ),
           );
+          setState(() {});
         },
       ),
       bottomNavigationBar: AppBottomNavigationBar(

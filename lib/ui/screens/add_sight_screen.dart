@@ -44,6 +44,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
 
   FocusNode currentFocusNode;
   Category selectedCategory;
+  bool allDone = false;
 
   @override
   void initState() {
@@ -58,7 +59,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
   @override
   void dispose() {
     for (var focusNode in focusNodes.values) focusNode.dispose();
-    for (var controller in focusNodes.values) controller.dispose();
+    for (var controller in controllers.values) controller.dispose();
 
     super.dispose();
   }
@@ -70,7 +71,17 @@ class _AddSightScreenState extends State<AddSightScreen> {
   }
 
   void controllerListener(String controllerName) {
-    setState(() {});
+    bool _allDone = true;
+
+    for (var controller in controllers.values)
+      if (controller.text.isEmpty) {
+        _allDone = false;
+        break;
+      }
+
+    setState(() {
+      allDone = _allDone;
+    });
   }
 
   void moveFocus() {
@@ -109,8 +120,21 @@ class _AddSightScreenState extends State<AddSightScreen> {
         ),
         child: ActionButton(
           label: addSightActionButtonLabel,
-          isDisabled: true,
-          // isDisabled: false,
+          isDisabled: !allDone,
+          onPressed: () {
+            mocks.add(
+              Sight(
+                name: controllers["name"].text,
+                lat: double.tryParse(controllers["latitude"].text),
+                lng: double.tryParse(controllers["longitude"].text),
+                url:
+                    "https://vogazeta.ru/uploads/full_size_1575545015-c59f0314cb936df655a6a19ca760f02c.jpg",
+                details: controllers["description"].text,
+                type: selectedCategory.type,
+              ),
+            );
+            Navigator.pop(context);
+          },
         ),
       ),
     );
@@ -325,6 +349,7 @@ class _AddSightTextField extends StatelessWidget {
             controller: controller,
             focusNode: focusNode,
             keyboardType: keyboardType,
+            textCapitalization: TextCapitalization.sentences,
             onEditingComplete: () {
               moveFocus();
             },
