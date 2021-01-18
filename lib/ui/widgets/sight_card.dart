@@ -13,6 +13,8 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/assets.dart';
 
+import 'package:places/ui/screens/sight_details_screen.dart';
+
 /// Виджет карточки интересного места.
 class SightCard extends StatelessWidget {
   final Sight sight;
@@ -40,7 +42,13 @@ class SightCard extends StatelessWidget {
                   type: MaterialType.transparency,
                   child: InkWell(
                     onTap: () {
-                      print('Card tapped');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              SightDetailsScreen(sight: sight),
+                        ),
+                      );
                     },
                   ),
                 ),

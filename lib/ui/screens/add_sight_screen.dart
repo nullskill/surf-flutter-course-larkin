@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:places/domain/sight.dart';
+import 'package:places/mocks.dart';
 
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
@@ -86,6 +87,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
     setState(() {
       this.selectedCategory = selectedCategory;
     });
+    if (selectedCategory != null) focusNodes["name"].requestFocus();
   }
 
   @override
@@ -194,7 +196,7 @@ class _AddSightBody extends StatelessWidget {
             ),
             SettingsItem(
               title: selectedCategory?.name ?? addSightNoCategoryTitle,
-              isGreyedOut: true,
+              isGreyedOut: selectedCategory == null,
               onTap: () async {
                 final result = await Navigator.push(
                   context,
