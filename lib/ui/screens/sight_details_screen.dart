@@ -128,6 +128,9 @@ class _SightDetailsBody extends StatelessWidget {
                 ActionButton(
                   iconName: AppIcons.go,
                   label: sightDetailsActionButtonLabel,
+                  onPressed: () {
+                    print("ActionButton pressed");
+                  },
                 ),
                 SizedBox(
                   height: pxl24,

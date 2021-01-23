@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:places/mocks.dart';
 
+import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/assets.dart';
@@ -36,12 +37,12 @@ class _SightListScreenState extends State<SightListScreen> {
       floatingActionButton: AppFloatingActionButton(
         icon: SvgPicture.asset(
           AppIcons.plus,
-          color: Theme.of(context).primaryColor,
+          color: whiteColor,
         ),
         label: Text(
           sightListFabLabel.toUpperCase(),
           style: textBold14.copyWith(
-            color: Theme.of(context).primaryColor,
+            color: whiteColor,
             height: lineHeight1_3,
           ),
         ),

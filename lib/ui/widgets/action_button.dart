@@ -28,14 +28,12 @@ class ActionButton extends StatelessWidget {
       width: double.infinity,
       child: RaisedButton.icon(
         elevation: 0,
-        // disabledTextColor: Theme.of(context).colorScheme.appDisabledTextColor,
         icon: iconName != null
-            ? SvgPicture.asset(
-                iconName,
+            ? SvgPicture.asset(iconName,
                 width: 24,
                 height: 24,
-                color: whiteColor,
-              )
+                color:
+                    isDisabled ? Theme.of(context).disabledColor : whiteColor)
             : SizedBox(),
         label: Text(
           label.toUpperCase(),

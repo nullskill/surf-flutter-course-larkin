@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:places/ui/res/app_color_scheme.dart';
+
 class AppFloatingActionButton extends StatelessWidget {
   const AppFloatingActionButton({
     Key key,
@@ -22,7 +24,7 @@ class AppFloatingActionButton extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Theme.of(context).accentColor,
+              Theme.of(context).colorScheme.appPrimaryGradientColor,
               Theme.of(context).buttonColor,
             ],
           ),

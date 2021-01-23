@@ -80,7 +80,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
       }
 
     setState(() {
-      allDone = _allDone;
+      allDone = _allDone && selectedCategory != null;
     });
   }
 
@@ -91,6 +91,8 @@ class _AddSightScreenState extends State<AddSightScreen> {
       focusNodes["longitude"].requestFocus();
     } else if (focusNodes["longitude"].hasFocus) {
       focusNodes["description"].requestFocus();
+    } else {
+      FocusScope.of(context).unfocus();
     }
   }
 
@@ -205,6 +207,7 @@ class _AddSightBody extends StatelessWidget {
       controllers[fieldName].text.isNotEmpty;
 
   @override
+  // ignore: long-method
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
@@ -226,7 +229,8 @@ class _AddSightBody extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => SelectCategoryScreen(
-                        selectedCategory: selectedCategory),
+                      selectedCategory: selectedCategory,
+                    ),
                   ),
                 );
                 result != null && setSelectedCategory(result);
@@ -246,6 +250,7 @@ class _AddSightBody extends StatelessWidget {
               hasClearButton: hasClearButton("name"),
             ),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: _AddSightTextField(
@@ -257,6 +262,8 @@ class _AddSightBody extends StatelessWidget {
                     keyboardType: TextInputType.numberWithOptions(
                       decimal: true,
                     ),
+                    validator: (String value) =>
+                        _validateCoordinate(value, _Coordinates.lat),
                   ),
                 ),
                 SizedBox(
@@ -272,6 +279,8 @@ class _AddSightBody extends StatelessWidget {
                     keyboardType: TextInputType.numberWithOptions(
                       decimal: true,
                     ),
+                    validator: (String value) =>
+                        _validateCoordinate(value, _Coordinates.lng),
                   ),
                 ),
               ],
@@ -299,6 +308,7 @@ class _AddSightBody extends StatelessWidget {
               focusNode: focusNodes["description"],
               moveFocus: moveFocus,
               hasClearButton: hasClearButton("description"),
+              isLastField: true,
             ),
           ],
         ),
@@ -318,6 +328,8 @@ class _AddSightTextField extends StatelessWidget {
     this.hintText,
     this.keyboardType,
     this.hasClearButton = false,
+    this.isLastField = false,
+    this.validator,
   }) : super(key: key);
 
   static const pxl40 = 40.0;
@@ -330,8 +342,11 @@ class _AddSightTextField extends StatelessWidget {
   final String hintText;
   final TextInputType keyboardType;
   final bool hasClearButton;
+  final bool isLastField;
+  final Function validator;
 
   @override
+  // ignore: long-method
   Widget build(BuildContext context) {
     return Column(
       children: [
@@ -344,12 +359,18 @@ class _AddSightTextField extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 12.0),
           child: TextFormField(
+            autovalidateMode: validator != null
+                ? AutovalidateMode.always
+                : AutovalidateMode.disabled,
+            validator: validator,
             scrollPadding: const EdgeInsets.all(100.0),
             maxLines: maxLines ?? 1,
             controller: controller,
             focusNode: focusNode,
             keyboardType: keyboardType,
             textCapitalization: TextCapitalization.sentences,
+            textInputAction:
+                isLastField ? TextInputAction.done : TextInputAction.next,
             onEditingComplete: () {
               moveFocus();
             },
@@ -410,3 +431,18 @@ class _AddSightSubtitle extends StatelessWidget {
     );
   }
 }
+
+String _validateCoordinate(String value, _Coordinates coordinate) {
+  const wrong = "Неправильный ввод";
+  final lat = RegExp(r"^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$");
+  final lng = RegExp(r"^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$");
+
+  if (value.isEmpty) return null;
+  if (double.tryParse(value) == null) return wrong;
+  if (coordinate == _Coordinates.lat && !lat.hasMatch(value)) return wrong;
+  if (coordinate == _Coordinates.lng && !lng.hasMatch(value)) return wrong;
+
+  return null;
+}
+
+enum _Coordinates { lat, lng }

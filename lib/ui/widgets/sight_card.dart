@@ -22,6 +22,7 @@ class SightCard extends StatelessWidget {
   const SightCard({Key key, this.sight}) : super(key: key);
 
   @override
+  // ignore: long-method
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 3 / 2,

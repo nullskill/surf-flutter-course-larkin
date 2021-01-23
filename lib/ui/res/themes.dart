@@ -17,7 +17,8 @@ final lightTheme = ThemeData(
   canvasColor: whiteColor,
   backgroundColor: backgroundColor,
   shadowColor: blackColor,
-  accentColor: LightMode.yellowColor,
+  accentColor: LightMode.greenColor,
+  errorColor: LightMode.redColor,
 
   //AppBar
   appBarTheme: _BaseProps.appBarTheme.copyWith(
@@ -43,11 +44,21 @@ final lightTheme = ThemeData(
   //TextField InputDecorationTheme
   inputDecorationTheme: _BaseProps.inputDecorationTheme.copyWith(
     enabledBorder: OutlineInputBorder(
+      borderRadius: allBorderRadius8,
       borderSide: const BorderSide(color: LightMode.inputBorderColor),
     ),
     focusedBorder: OutlineInputBorder(
+      borderRadius: allBorderRadius8,
       borderSide:
           const BorderSide(color: LightMode.inputBorderColor, width: 2.0),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: allBorderRadius8,
+      borderSide: const BorderSide(color: LightMode.redColor),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderRadius: allBorderRadius8,
+      borderSide: const BorderSide(color: LightMode.redColor, width: 2.0),
     ),
     hintStyle: textRegular16.copyWith(
       color: inactiveColor,
@@ -89,7 +100,8 @@ final darkTheme = ThemeData(
   canvasColor: DarkMode.primaryColor,
   backgroundColor: DarkMode.darkColor,
   shadowColor: whiteColor,
-  accentColor: DarkMode.yellowColor,
+  accentColor: DarkMode.greenColor,
+  errorColor: DarkMode.redColor,
 
   //AppBar
   appBarTheme: _BaseProps.appBarTheme.copyWith(
@@ -115,11 +127,21 @@ final darkTheme = ThemeData(
   //TextField InputDecorationTheme
   inputDecorationTheme: _BaseProps.inputDecorationTheme.copyWith(
     enabledBorder: OutlineInputBorder(
+      borderRadius: allBorderRadius8,
       borderSide: const BorderSide(color: DarkMode.inputBorderColor),
     ),
     focusedBorder: OutlineInputBorder(
+      borderRadius: allBorderRadius8,
       borderSide:
           const BorderSide(color: DarkMode.inputBorderColor, width: 2.0),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: allBorderRadius8,
+      borderSide: const BorderSide(color: DarkMode.redColor),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderRadius: allBorderRadius8,
+      borderSide: const BorderSide(color: DarkMode.redColor, width: 2.0),
     ),
     hintStyle: textRegular16.copyWith(
       color: inactiveColor,
@@ -173,9 +195,6 @@ class _BaseProps {
     contentPadding: const EdgeInsets.symmetric(
       vertical: 10,
       horizontal: 16,
-    ),
-    border: OutlineInputBorder(
-      borderRadius: const BorderRadius.all(Radius.circular(8.0)),
     ),
   );
 
