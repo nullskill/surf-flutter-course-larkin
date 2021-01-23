@@ -8,15 +8,18 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/assets.dart';
-import 'package:places/ui/screens/add_sight_screen.dart';
 
+import 'package:places/ui/widgets/search_bar.dart';
 import 'package:places/ui/widgets/sight_card.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_floating_action_button.dart';
 
+import 'package:places/ui/screens/add_sight_screen.dart';
+
 /// Экран отображения списка карточек интересных мест.
 class SightListScreen extends StatefulWidget {
   static const pxl16 = 16.0;
+  static const pxl6 = 6.0;
   @override
   _SightListScreenState createState() => _SightListScreenState();
 }
@@ -65,28 +68,40 @@ class _SightListScreenState extends State<SightListScreen> {
 
 class _SightListScreenAppBar extends StatelessWidget
     implements PreferredSizeWidget {
-  final Size preferredSize = Size.fromHeight(152);
+  final Size preferredSize = Size.fromHeight(116);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      flexibleSpace: Align(
-        alignment: Alignment.bottomLeft,
-        child: Container(
-          margin: EdgeInsets.only(
-            left: SightListScreen.pxl16,
-            right: SightListScreen.pxl16,
-            bottom: SightListScreen.pxl16,
-          ),
-          child: Text(
-            sightListAppBarTitle,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: textBold32.copyWith(
-              color: Theme.of(context).primaryColor,
+      flexibleSpace: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top + SightListScreen.pxl16,
+              bottom: SightListScreen.pxl16,
+            ),
+            child: Text(
+              sightListAppBarTitle,
+              style: textMedium18.copyWith(
+                color: Theme.of(context).primaryColor,
+                height: lineHeight1_3,
+              ),
             ),
           ),
-        ),
+          SearchBar(
+            readOnly: true,
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => AddSightScreen(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

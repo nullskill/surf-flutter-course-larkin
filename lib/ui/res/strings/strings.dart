@@ -2,7 +2,7 @@ import 'package:places/ui/screens/add_sight_screen.dart';
 
 /// Строковые константы
 //SightListScreen
-const String sightListAppBarTitle = "Список\nинтересных мест",
+const String sightListAppBarTitle = "Список интересных мест",
     sightListFabLabel = "Новое место",
 
 //SightCard

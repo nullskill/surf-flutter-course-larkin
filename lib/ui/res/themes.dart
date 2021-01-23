@@ -19,9 +19,11 @@ final lightTheme = ThemeData(
   shadowColor: blackColor,
   accentColor: LightMode.greenColor,
   errorColor: LightMode.redColor,
+  //Text (disabled)
+  disabledColor: inactiveColor,
 
   //AppBar
-  appBarTheme: _BaseProps.appBarTheme.copyWith(
+  appBarTheme: BaseProps.appBarTheme.copyWith(
     brightness: Brightness.light,
   ),
 
@@ -36,13 +38,13 @@ final lightTheme = ThemeData(
   ),
 
   //Slider & RangeSlider
-  sliderTheme: _BaseProps.sliderTheme.copyWith(
+  sliderTheme: BaseProps.sliderTheme.copyWith(
     overlayColor: LightMode.greenColor.withAlpha(32),
     activeTrackColor: LightMode.greenColor,
   ),
 
   //TextField InputDecorationTheme
-  inputDecorationTheme: _BaseProps.inputDecorationTheme.copyWith(
+  inputDecorationTheme: BaseProps.inputDecorationTheme.copyWith(
     enabledBorder: OutlineInputBorder(
       borderRadius: allBorderRadius8,
       borderSide: const BorderSide(color: LightMode.inputBorderColor),
@@ -66,9 +68,6 @@ final lightTheme = ThemeData(
     ),
   ),
 
-  //Text (disabled)
-  disabledColor: inactiveColor,
-
   //Button
   buttonTheme: ButtonThemeData(
     buttonColor: LightMode.greenColor,
@@ -76,12 +75,12 @@ final lightTheme = ThemeData(
   ),
 
   //FAB
-  floatingActionButtonTheme: _BaseProps.floatingActionButtonTheme.copyWith(
+  floatingActionButtonTheme: BaseProps.floatingActionButtonTheme.copyWith(
     backgroundColor: LightMode.greenColor,
   ),
 
   //BottomNavigationBar
-  bottomNavigationBarTheme: _BaseProps.bottomNavigationBarTheme.copyWith(
+  bottomNavigationBarTheme: BaseProps.bottomNavigationBarTheme.copyWith(
     backgroundColor: whiteColor,
     selectedItemColor: LightMode.primaryColor,
     unselectedItemColor: inactiveColor,
@@ -102,9 +101,11 @@ final darkTheme = ThemeData(
   shadowColor: whiteColor,
   accentColor: DarkMode.greenColor,
   errorColor: DarkMode.redColor,
+  //Text (disabled)
+  disabledColor: inactiveColor,
 
   //AppBar
-  appBarTheme: _BaseProps.appBarTheme.copyWith(
+  appBarTheme: BaseProps.appBarTheme.copyWith(
     brightness: Brightness.dark,
   ),
 
@@ -119,13 +120,13 @@ final darkTheme = ThemeData(
   ),
 
   //Slider & RangeSlider
-  sliderTheme: _BaseProps.sliderTheme.copyWith(
+  sliderTheme: BaseProps.sliderTheme.copyWith(
     overlayColor: DarkMode.greenColor.withAlpha(32),
     activeTrackColor: DarkMode.greenColor,
   ),
 
   //TextField InputDecorationTheme
-  inputDecorationTheme: _BaseProps.inputDecorationTheme.copyWith(
+  inputDecorationTheme: BaseProps.inputDecorationTheme.copyWith(
     enabledBorder: OutlineInputBorder(
       borderRadius: allBorderRadius8,
       borderSide: const BorderSide(color: DarkMode.inputBorderColor),
@@ -149,9 +150,6 @@ final darkTheme = ThemeData(
     ),
   ),
 
-  //Text (disabled)
-  disabledColor: inactiveColor,
-
   //Button
   buttonTheme: ButtonThemeData(
     buttonColor: DarkMode.greenColor,
@@ -159,19 +157,25 @@ final darkTheme = ThemeData(
   ),
 
   //FAB
-  floatingActionButtonTheme: _BaseProps.floatingActionButtonTheme.copyWith(
+  floatingActionButtonTheme: BaseProps.floatingActionButtonTheme.copyWith(
     backgroundColor: DarkMode.greenColor,
   ),
 
   //BottomNavigationBar
-  bottomNavigationBarTheme: _BaseProps.bottomNavigationBarTheme.copyWith(
+  bottomNavigationBarTheme: BaseProps.bottomNavigationBarTheme.copyWith(
     backgroundColor: DarkMode.primaryColor,
     selectedItemColor: whiteColor,
     unselectedItemColor: secondaryColor2,
   ),
 );
 
-class _BaseProps {
+/// Класс общих настроек для тем
+class BaseProps {
+  // This class is not meant to be instantiated or extended; this constructor
+  // prevents instantiation and extension.
+  // ignore: unused_element
+  BaseProps._();
+
   //AppBar
   static const appBarTheme = AppBarTheme(
     color: transparentColor,
