@@ -9,6 +9,9 @@ const String sightListAppBarTitle = "Список интересных мест"
     sightCardPlanned = "Запланировано на",
     sightCardVisited = "Цель достигнута",
 
+//SearchBar
+    searchBarHintText = "Поиск",
+
 //SightDetailsScreen
     sightDetailsActionButtonLabel = "построить маршрут",
     sightDetailsOpenHours = "откроется в",
