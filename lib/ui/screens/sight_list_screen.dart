@@ -9,8 +9,8 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/assets.dart';
 
-import 'package:places/ui/widgets/search_bar.dart';
 import 'package:places/ui/widgets/sight_card.dart';
+import 'package:places/ui/widgets/app_search_bar.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_floating_action_button.dart';
 
@@ -28,9 +28,18 @@ class SightListScreen extends StatefulWidget {
 class _SightListScreenState extends State<SightListScreen> {
   @override
   Widget build(BuildContext context) {
-    // print("needUpdate $needUpdate");
     return Scaffold(
-      appBar: _SightListScreenAppBar(),
+      appBar: AppSearchBar(
+        title: sightListAppBarTitle,
+        readOnly: true,
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => SightSearchScreen(),
+            ),
+          );
+        },
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(SightListScreen.pxl16),
@@ -62,47 +71,6 @@ class _SightListScreenState extends State<SightListScreen> {
       ),
       bottomNavigationBar: AppBottomNavigationBar(
         currentIndex: 0,
-      ),
-    );
-  }
-}
-
-class _SightListScreenAppBar extends StatelessWidget
-    implements PreferredSizeWidget {
-  final Size preferredSize = Size.fromHeight(116);
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      flexibleSpace: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top + SightListScreen.pxl16,
-              bottom: SightListScreen.pxl16,
-            ),
-            child: Text(
-              sightListAppBarTitle,
-              style: textMedium18.copyWith(
-                color: Theme.of(context).primaryColor,
-                height: lineHeight1_3,
-              ),
-            ),
-          ),
-          SearchBar(
-            readOnly: true,
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => SightSearchScreen(),
-                ),
-              );
-            },
-          ),
-        ],
       ),
     );
   }

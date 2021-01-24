@@ -9,11 +9,57 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/themes.dart';
 import 'package:places/ui/res/assets.dart';
 
-/// Виджет SearchBar предоставляет поле для поиска
-class SearchBar extends StatelessWidget {
-  const SearchBar({
+/// Виджет AppSearchBar предоставляет AppBar вместе с полем для поиска
+class AppSearchBar extends StatelessWidget implements PreferredSizeWidget {
+  static const pxl16 = 16.0;
+
+  final Size preferredSize = Size.fromHeight(116);
+  final String title;
+  final bool readOnly;
+  final Function onTap;
+
+  AppSearchBar({
     Key key,
+    @required this.title,
     this.readOnly = false,
+    @required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      flexibleSpace: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top + pxl16,
+              bottom: pxl16,
+            ),
+            child: Text(
+              title,
+              style: textMedium18.copyWith(
+                color: Theme.of(context).primaryColor,
+                height: lineHeight1_3,
+              ),
+            ),
+          ),
+          _SearchBar(
+            readOnly: readOnly,
+            onTap: onTap,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SearchBar extends StatelessWidget {
+  const _SearchBar({
+    Key key,
+    @required this.readOnly,
     @required this.onTap,
   }) : super(key: key);
 
@@ -80,10 +126,12 @@ class SearchBar extends StatelessWidget {
                 vertical: pxl8,
                 horizontal: pxl12,
               ),
-              child: SvgPicture.asset(
-                AppIcons.filter,
-                color: Theme.of(context).buttonColor,
-              ),
+              child: readOnly
+                  ? SvgPicture.asset(
+                      AppIcons.filter,
+                      color: Theme.of(context).buttonColor,
+                    )
+                  : SizedBox(),
             ),
           ),
         ),
