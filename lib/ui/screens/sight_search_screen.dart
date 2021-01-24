@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 import 'package:places/ui/res/strings/strings.dart';
@@ -11,14 +13,37 @@ class SightSearchScreen extends StatefulWidget {
 }
 
 class _SightSearchScreenState extends State<SightSearchScreen> {
+  final TextEditingController searchController = TextEditingController();
+  bool hasClearButton = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    searchController.addListener(searchControllerListener);
+  }
+
+  void searchControllerListener() {
+    setState(() {
+      hasClearButton = searchController.text.isNotEmpty;
+    });
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppSearchBar(
         title: sightListAppBarTitle,
-        onTap: () {
-          print("search tapped");
-        },
+        hasBackButton: true,
+        hasClearButton: hasClearButton,
+        searchController: searchController,
       ),
     );
   }

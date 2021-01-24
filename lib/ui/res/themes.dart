@@ -197,7 +197,7 @@ class BaseProps {
   static const inputDecorationTheme = InputDecorationTheme(
     isDense: true,
     contentPadding: const EdgeInsets.symmetric(
-      vertical: 10,
+      vertical: 12,
       horizontal: 16,
     ),
   );
