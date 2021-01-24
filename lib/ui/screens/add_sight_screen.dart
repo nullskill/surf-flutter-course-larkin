@@ -96,11 +96,13 @@ class _AddSightScreenState extends State<AddSightScreen> {
     }
   }
 
-  void setSelectedCategory(selectedCategory) {
+  bool setSelectedCategory(selectedCategory) {
     setState(() {
       this.selectedCategory = selectedCategory;
     });
     if (selectedCategory != null) focusNodes["name"].requestFocus();
+
+    return true;
   }
 
   @override
@@ -116,9 +118,11 @@ class _AddSightScreenState extends State<AddSightScreen> {
         setSelectedCategory: setSelectedCategory,
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AddSightScreen.pxl16,
-          vertical: AddSightScreen.pxl8,
+        padding: EdgeInsets.fromLTRB(
+          AddSightScreen.pxl16,
+          AddSightScreen.pxl8,
+          AddSightScreen.pxl16,
+          MediaQuery.of(context).padding.bottom + 8.0,
         ),
         child: ActionButton(
           label: addSightActionButtonLabel,
@@ -260,6 +264,7 @@ class _AddSightBody extends StatelessWidget {
                     moveFocus: moveFocus,
                     hasClearButton: hasClearButton("latitude"),
                     keyboardType: TextInputType.numberWithOptions(
+                      signed: true,
                       decimal: true,
                     ),
                     validator: (String value) =>
@@ -277,6 +282,7 @@ class _AddSightBody extends StatelessWidget {
                     moveFocus: moveFocus,
                     hasClearButton: hasClearButton("longitude"),
                     keyboardType: TextInputType.numberWithOptions(
+                      signed: true,
                       decimal: true,
                     ),
                     validator: (String value) =>

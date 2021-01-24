@@ -20,6 +20,8 @@ import 'package:places/ui/widgets/app_range_slider/app_range_slider.dart';
 
 /// Экран фильтров
 class FiltersScreen extends StatefulWidget {
+  static const pxl8 = 8.0, pxl16 = 16.0, pxl24 = 24.0;
+
   @override
   _FiltersScreenState createState() => _FiltersScreenState();
 
@@ -28,7 +30,6 @@ class FiltersScreen extends StatefulWidget {
 }
 
 class _FiltersScreenState extends State<FiltersScreen> {
-  static const pxl8 = 8.0, pxl16 = 16.0, pxl24 = 24.0;
   int _filteredCardsNumber = 0;
   List<Category> _categories;
   RangeValues _currentRangeValues;
@@ -89,9 +90,11 @@ class _FiltersScreenState extends State<FiltersScreen> {
       appBar: _FiltersAppBar(),
       body: _FiltersBody(currentRangeValues: _currentRangeValues),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: pxl16,
-          vertical: pxl8,
+        padding: EdgeInsets.fromLTRB(
+          FiltersScreen.pxl16,
+          FiltersScreen.pxl8,
+          FiltersScreen.pxl16,
+          MediaQuery.of(context).padding.bottom + 8.0,
         ),
         child: ActionButton(
           label: "$filtersActionButtonLabel ($_filteredCardsNumber)",
@@ -157,8 +160,8 @@ class _FiltersBody extends StatelessWidget {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: _FiltersScreenState.pxl16,
-          vertical: _FiltersScreenState.pxl24,
+          horizontal: FiltersScreen.pxl16,
+          vertical: FiltersScreen.pxl24,
         ),
         child: Column(
           children: [
@@ -174,9 +177,9 @@ class _FiltersBody extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(
-                _FiltersScreenState.pxl8,
-                _FiltersScreenState.pxl24,
-                _FiltersScreenState.pxl8,
+                FiltersScreen.pxl8,
+                FiltersScreen.pxl24,
+                FiltersScreen.pxl8,
                 56,
               ),
               child: _Categories(),
