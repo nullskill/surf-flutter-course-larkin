@@ -15,7 +15,7 @@ import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_floating_action_button.dart';
 
 import 'package:places/ui/screens/add_sight_screen.dart';
-import 'package:places/ui/screens/sight_search_screen.dart';
+import 'package:places/ui/screens/sight_search_screen/sight_search_screen.dart';
 
 /// Экран отображения списка карточек интересных мест.
 class SightListScreen extends StatefulWidget {
