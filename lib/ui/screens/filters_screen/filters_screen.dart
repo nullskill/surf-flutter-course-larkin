@@ -98,6 +98,10 @@ class _FiltersScreenState extends State<FiltersScreen> {
         ),
         child: ActionButton(
           label: "$filtersActionButtonLabel ($_filteredCardsNumber)",
+          isDisabled: _filteredCardsNumber == 0,
+          onPressed: () {
+            print("Show button pressed");
+          },
         ),
       ),
     );

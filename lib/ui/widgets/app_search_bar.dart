@@ -6,8 +6,9 @@ import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
-import 'package:places/ui/res/themes.dart';
 import 'package:places/ui/res/assets.dart';
+
+import 'package:places/ui/screens/filters_screen/filters_screen.dart';
 
 import 'package:places/ui/widgets/app_back_button.dart';
 
@@ -92,88 +93,126 @@ class _SearchBar extends StatelessWidget {
         vertical: 6.0,
         horizontal: 16.0,
       ),
-      child: Theme(
-        data: Theme.of(context).copyWith(
-          inputDecorationTheme: BaseProps.inputDecorationTheme.copyWith(
-            filled: true,
-            fillColor: Theme.of(context).backgroundColor,
-            enabledBorder: OutlineInputBorder(
-              borderRadius: allBorderRadius12,
-              borderSide: const BorderSide(
-                style: BorderStyle.none,
+      child: Stack(
+        children: [
+          Theme(
+            data: Theme.of(context).copyWith(
+              inputDecorationTheme: InputDecorationTheme(
+                filled: true,
+                fillColor: Theme.of(context).backgroundColor,
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: allBorderRadius12,
+                  borderSide: const BorderSide(
+                    style: BorderStyle.none,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: allBorderRadius12,
+                  borderSide: const BorderSide(
+                    style: BorderStyle.none,
+                  ),
+                ),
               ),
             ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: allBorderRadius12,
-              borderSide: const BorderSide(
-                style: BorderStyle.none,
+            child: TextField(
+              readOnly: readOnly,
+              onTap: onTap,
+              controller: searchController,
+              cursorColor: Theme.of(context).primaryColor,
+              cursorHeight: 24.0,
+              cursorWidth: 1,
+              style: textRegular16.copyWith(
+                color: Theme.of(context).primaryColor,
+                height: lineHeight1_5,
+              ),
+              textInputAction: TextInputAction.search,
+              decoration: InputDecoration(
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: pxl8,
+                  horizontal: pxl12,
+                ),
+                hintText: searchBarHintText,
+                hintStyle: textRegular16.copyWith(
+                  color: inactiveColor,
+                  height: lineHeight1_5,
+                ),
+                prefixIconConstraints: BoxConstraints(
+                  maxHeight: pxl40,
+                ),
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: pxl8,
+                    horizontal: pxl12,
+                  ),
+                  child: SvgPicture.asset(
+                    AppIcons.search,
+                    color: inactiveColor,
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-        child: TextField(
-          readOnly: readOnly,
-          onTap: onTap,
-          controller: searchController,
-          cursorColor: Theme.of(context).primaryColor,
-          cursorHeight: 24.0,
-          cursorWidth: 1,
-          style: textRegular16.copyWith(
-            color: Theme.of(context).primaryColor,
-            height: lineHeight1_25,
-          ),
-          textInputAction: TextInputAction.search,
-          onEditingComplete: () {
-            print("onEditingComplete");
-          },
-          decoration: InputDecoration(
-            isDense: true,
-            hintText: searchBarHintText,
-            hintStyle: textRegular16.copyWith(
-              color: inactiveColor,
-              height: lineHeight1_25,
-            ),
-            prefixIconConstraints: BoxConstraints(
-              maxHeight: pxl40,
-            ),
-            prefixIcon: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: pxl8,
-                horizontal: pxl12,
-              ),
-              child: SvgPicture.asset(
-                AppIcons.search,
-                color: inactiveColor,
-              ),
-            ),
-            suffixIconConstraints: BoxConstraints(
-              maxHeight: pxl40,
-            ),
-            suffixIcon: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: pxl8,
-                horizontal: pxl12,
-              ),
-              child: readOnly
-                  ? SvgPicture.asset(
-                      AppIcons.filter,
-                      color: Theme.of(context).buttonColor,
-                    )
-                  : hasClearButton
-                      ? GestureDetector(
-                          onTap: () {
-                            searchController.clear();
-                          },
-                          child: SvgPicture.asset(
-                            AppIcons.clear,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        )
-                      : SizedBox(),
+          Positioned(
+            top: pxl8,
+            right: pxl12,
+            child: _SuffixIcon(
+              readOnly: readOnly,
+              hasClearButton: hasClearButton,
+              searchController: searchController,
             ),
           ),
-        ),
+        ],
       ),
     );
+  }
+}
+
+class _SuffixIcon extends StatelessWidget {
+  const _SuffixIcon({
+    Key key,
+    @required this.readOnly,
+    @required this.hasClearButton,
+    @required this.searchController,
+  }) : super(key: key);
+
+  final bool readOnly;
+  final bool hasClearButton;
+  final TextEditingController searchController;
+
+  @override
+  Widget build(BuildContext context) {
+    return readOnly
+        ? FlatButton(
+            height: 24,
+            minWidth: 24,
+            padding: EdgeInsets.zero,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: RoundedRectangleBorder(
+              borderRadius: allBorderRadius8,
+            ),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => FiltersScreen(),
+                ),
+              );
+            },
+            child: SvgPicture.asset(
+              AppIcons.filter,
+              color: Theme.of(context).buttonColor,
+            ),
+          )
+        : hasClearButton
+            ? GestureDetector(
+                onTap: () {
+                  searchController.clear();
+                },
+                child: SvgPicture.asset(
+                  AppIcons.clear,
+                  color: Theme.of(context).primaryColor,
+                ),
+              )
+            : SizedBox();
   }
 }
