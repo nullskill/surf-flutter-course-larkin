@@ -1,5 +1,3 @@
-import 'package:places/ui/screens/add_sight_screen.dart';
-
 /// Строковые константы
 //SightListScreen
 const String sightListAppBarTitle = "Список интересных мест",
@@ -12,6 +10,10 @@ const String sightListAppBarTitle = "Список интересных мест"
 //SearchBar
     searchBarHintText = "Поиск",
 
+//ErrorScreen
+    errorTitle = "Ошибка",
+    errorMessage = "Что то пошло не так...\nПопробуйте позже.",
+
 //SightDetailsScreen
     sightDetailsActionButtonLabel = "построить маршрут",
     sightDetailsOpenHours = "откроется в",
@@ -22,10 +24,10 @@ const String sightListAppBarTitle = "Список интересных мест"
     visitingAppBarTitle = "Избранное",
     visitingWishToVisitTabText = "Хочу посетить",
     visitingWishToVisitEmptyListText =
-        "Отмечайте понравившиеся места и они появятся здесь.",
+        "Отмечайте понравившиеся\nместа и они появятся здесь.",
     visitingVisitedTabText = "Посетил",
     visitingVisitedEmptyListText =
-        "Завершите маршрут, чтобы место попало сюда.",
+        "Завершите маршрут,\nчтобы место попало сюда.",
     visitingEmptyListText = "Пусто",
 
 //FiltersScreen
