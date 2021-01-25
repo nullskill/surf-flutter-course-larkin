@@ -1,10 +1,10 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:places/ui/res/assets.dart';
 
 import 'package:places/ui/res/strings/strings.dart';
 
 import 'package:places/ui/widgets/app_search_bar.dart';
+import 'package:places/ui/widgets/message_box.dart';
 
 /// Экран поиска интересного места.
 class SightSearchScreen extends StatefulWidget {
@@ -41,9 +41,15 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
     return Scaffold(
       appBar: AppSearchBar(
         title: sightListAppBarTitle,
+        autofocus: true,
         hasBackButton: true,
         hasClearButton: hasClearButton,
         searchController: searchController,
+      ),
+      body: MessageBox(
+        title: nothingFoundTitle,
+        iconName: AppIcons.search,
+        message: nothingFoundMessage,
       ),
     );
   }

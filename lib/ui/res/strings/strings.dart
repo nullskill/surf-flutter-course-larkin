@@ -7,12 +7,16 @@ const String sightListAppBarTitle = "Список интересных мест"
     sightCardPlanned = "Запланировано на",
     sightCardVisited = "Цель достигнута",
 
-//SearchBar
+//AppSearchBar
     searchBarHintText = "Поиск",
 
 //ErrorScreen
     errorTitle = "Ошибка",
     errorMessage = "Что то пошло не так...\nПопробуйте позже.",
+
+//SightSearchScreen
+    nothingFoundTitle = "Ничего не найдено.",
+    nothingFoundMessage = "Попробуйте изменить параметры поиска",
 
 //SightDetailsScreen
     sightDetailsActionButtonLabel = "построить маршрут",

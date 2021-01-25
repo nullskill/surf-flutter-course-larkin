@@ -19,6 +19,7 @@ class AppSearchBar extends StatelessWidget implements PreferredSizeWidget {
   final Size preferredSize = Size.fromHeight(116);
   final String title;
   final bool readOnly;
+  final bool autofocus;
   final Function onTap;
   final TextEditingController searchController;
   final bool hasBackButton;
@@ -27,7 +28,8 @@ class AppSearchBar extends StatelessWidget implements PreferredSizeWidget {
   AppSearchBar({
     Key key,
     @required this.title,
-    this.readOnly = false,
+    this.readOnly,
+    this.autofocus,
     this.onTap,
     this.searchController,
     this.hasBackButton = false,
@@ -58,6 +60,7 @@ class AppSearchBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           _SearchBar(
             readOnly: readOnly,
+            autofocus: autofocus,
             onTap: onTap,
             hasClearButton: hasClearButton,
             searchController: searchController,
@@ -71,7 +74,8 @@ class AppSearchBar extends StatelessWidget implements PreferredSizeWidget {
 class _SearchBar extends StatelessWidget {
   const _SearchBar({
     Key key,
-    @required this.readOnly,
+    this.readOnly,
+    this.autofocus,
     this.onTap,
     this.searchController,
     this.hasClearButton = false,
@@ -80,6 +84,7 @@ class _SearchBar extends StatelessWidget {
   static const pxl8 = 8.0, pxl12 = 12.0, pxl40 = 40.0;
 
   final bool readOnly;
+  final bool autofocus;
   final Function onTap;
   final TextEditingController searchController;
   final bool hasClearButton;
@@ -87,7 +92,6 @@ class _SearchBar extends StatelessWidget {
   @override
   // ignore: long-method
   Widget build(BuildContext context) {
-    print("hasClearButton: $hasClearButton");
     return Padding(
       padding: const EdgeInsets.symmetric(
         vertical: 6.0,
@@ -115,7 +119,8 @@ class _SearchBar extends StatelessWidget {
               ),
             ),
             child: TextField(
-              readOnly: readOnly,
+              readOnly: readOnly ?? false,
+              autofocus: autofocus ?? false,
               onTap: onTap,
               controller: searchController,
               cursorColor: Theme.of(context).primaryColor,
@@ -171,7 +176,7 @@ class _SearchBar extends StatelessWidget {
 class _SuffixIcon extends StatelessWidget {
   const _SuffixIcon({
     Key key,
-    @required this.readOnly,
+    this.readOnly,
     @required this.hasClearButton,
     @required this.searchController,
   }) : super(key: key);
@@ -182,7 +187,7 @@ class _SuffixIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return readOnly
+    return readOnly ?? false
         ? FlatButton(
             height: 24,
             minWidth: 24,

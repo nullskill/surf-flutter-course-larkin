@@ -21,13 +21,11 @@ class ErrorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: MessageBox(
-          title: title,
-          iconName: iconName,
-          message: message,
-          link: link,
-        ),
+      body: MessageBox(
+        title: title,
+        iconName: iconName,
+        message: message,
+        link: link,
       ),
     );
   }
