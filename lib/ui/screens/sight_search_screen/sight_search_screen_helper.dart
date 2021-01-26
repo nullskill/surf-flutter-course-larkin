@@ -5,9 +5,14 @@ import 'package:places/mocks.dart';
 class SightSearchScreenHelper {
   Stream<List<Sight>> getSightList(String searchString) async* {
     await Future.delayed(Duration(seconds: 2));
-    yield [
-      ...mocks.where((el) =>
-          el.name.contains(searchString) || el.details.contains(searchString)),
-    ];
+    if (searchString.isEmpty) {
+      yield null;
+    } else {
+      yield [
+        ...mocks.where((el) =>
+            el.name.contains(searchString) ||
+            el.details.contains(searchString)),
+      ];
+    }
   }
 }

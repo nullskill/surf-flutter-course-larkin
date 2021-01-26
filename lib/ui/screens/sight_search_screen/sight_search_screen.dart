@@ -55,23 +55,40 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
       body: StreamBuilder<List<Sight>>(
         stream: widget.helper.getSightList(searchController.text),
         builder: (context, snapshot) {
-          List<Sight> sights = snapshot.data;
-          return ListView.separated(
-            itemCount: sights.length,
-            separatorBuilder: (BuildContext context, int index) => Divider(),
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                title: Text(sights[index].name),
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+            case ConnectionState.waiting:
+            case ConnectionState.active:
+              return Center(
+                child: CircularProgressIndicator(),
               );
-            },
-          );
+            case ConnectionState.done:
+              List<Sight> sights = snapshot.data;
+              return sights == null || sights.length == 0
+                  ? MessageBox(
+                      title: nothingFoundTitle,
+                      iconName: AppIcons.search,
+                      message: nothingFoundMessage,
+                    )
+                  : ListView.separated(
+                      itemCount: sights?.length ?? 0,
+                      separatorBuilder: (BuildContext context, int index) =>
+                          Divider(),
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          title: Text(sights[index].name),
+                        );
+                      },
+                    );
+            default:
+              return MessageBox(
+                title: nothingFoundTitle,
+                iconName: AppIcons.search,
+                message: nothingFoundMessage,
+              );
+          }
         },
       ),
-      // MessageBox(
-      //   title: nothingFoundTitle,
-      //   iconName: AppIcons.search,
-      //   message: nothingFoundMessage,
-      // ),
     );
   }
 }
