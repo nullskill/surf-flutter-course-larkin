@@ -21,6 +21,7 @@ class AppSearchBar extends StatelessWidget implements PreferredSizeWidget {
   final bool readOnly;
   final bool autofocus;
   final Function onTap;
+  final Function onEditingComplete;
   final TextEditingController searchController;
   final bool hasBackButton;
   final bool hasClearButton;
@@ -31,6 +32,7 @@ class AppSearchBar extends StatelessWidget implements PreferredSizeWidget {
     this.readOnly,
     this.autofocus,
     this.onTap,
+    this.onEditingComplete,
     this.searchController,
     this.hasBackButton = false,
     this.hasClearButton = false,
@@ -62,6 +64,7 @@ class AppSearchBar extends StatelessWidget implements PreferredSizeWidget {
             readOnly: readOnly,
             autofocus: autofocus,
             onTap: onTap,
+            onEditingComplete: onEditingComplete,
             hasClearButton: hasClearButton,
             searchController: searchController,
           ),
@@ -77,6 +80,7 @@ class _SearchBar extends StatelessWidget {
     this.readOnly,
     this.autofocus,
     this.onTap,
+    this.onEditingComplete,
     this.searchController,
     this.hasClearButton = false,
   }) : super(key: key);
@@ -86,6 +90,7 @@ class _SearchBar extends StatelessWidget {
   final bool readOnly;
   final bool autofocus;
   final Function onTap;
+  final Function onEditingComplete;
   final TextEditingController searchController;
   final bool hasClearButton;
 
@@ -122,6 +127,7 @@ class _SearchBar extends StatelessWidget {
               readOnly: readOnly ?? false,
               autofocus: autofocus ?? false,
               onTap: onTap,
+              onEditingComplete: onEditingComplete,
               controller: searchController,
               cursorColor: Theme.of(context).primaryColor,
               cursorHeight: 24.0,
@@ -212,6 +218,7 @@ class _SuffixIcon extends StatelessWidget {
             ? GestureDetector(
                 onTap: () {
                   searchController.clear();
+                  FocusScope.of(context).requestFocus();
                 },
                 child: SvgPicture.asset(
                   AppIcons.clear,

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:places/domain/sight.dart';
@@ -12,6 +13,8 @@ import 'package:places/ui/widgets/message_box.dart';
 
 /// Экран поиска интересного места.
 class SightSearchScreen extends StatefulWidget {
+  static const milliseconds = 3000;
+
   final SightSearchScreenHelper helper = SightSearchScreenHelper();
 
   @override
@@ -20,6 +23,8 @@ class SightSearchScreen extends StatefulWidget {
 
 class _SightSearchScreenState extends State<SightSearchScreen> {
   final TextEditingController searchController = TextEditingController();
+  String searchText, prevSearchText;
+  Timer debounce;
   bool hasClearButton = false;
 
   @override
@@ -30,20 +35,42 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   }
 
   void searchControllerListener() {
-    setState(() {
-      hasClearButton = searchController.text.isNotEmpty;
-    });
+    if (debounce?.isActive ?? false) debounce.cancel();
+
+    if (searchText == searchController.text) return;
+
+    setState(
+      () {
+        hasClearButton = searchController.text.isNotEmpty;
+
+        debounce = Timer(
+          const Duration(
+            milliseconds: SightSearchScreen.milliseconds,
+          ),
+          () {
+            prevSearchText = searchText;
+            searchText = searchController.text;
+          },
+        );
+      },
+    );
   }
 
   @override
   void dispose() {
     searchController.dispose();
+    debounce?.cancel();
 
     super.dispose();
   }
 
+  void onEditingComplete() {
+    FocusScope.of(context).unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // print("build: $searchText");
     return Scaffold(
       appBar: AppSearchBar(
         title: sightListAppBarTitle,
@@ -51,9 +78,10 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
         hasBackButton: true,
         hasClearButton: hasClearButton,
         searchController: searchController,
+        onEditingComplete: onEditingComplete,
       ),
       body: StreamBuilder<List<Sight>>(
-        stream: widget.helper.getSightList(searchController.text),
+        stream: widget.helper.getSightList(searchText),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -63,32 +91,39 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
                 child: CircularProgressIndicator(),
               );
             case ConnectionState.done:
+              if (snapshot.hasError || !snapshot.hasData) return _MessageBox();
+
               List<Sight> sights = snapshot.data;
-              return sights == null || sights.length == 0
-                  ? MessageBox(
-                      title: nothingFoundTitle,
-                      iconName: AppIcons.search,
-                      message: nothingFoundMessage,
-                    )
-                  : ListView.separated(
-                      itemCount: sights?.length ?? 0,
-                      separatorBuilder: (BuildContext context, int index) =>
-                          Divider(),
-                      itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                          title: Text(sights[index].name),
-                        );
-                      },
-                    );
-            default:
-              return MessageBox(
-                title: nothingFoundTitle,
-                iconName: AppIcons.search,
-                message: nothingFoundMessage,
+              return ListView.separated(
+                itemCount: sights?.length ?? 0,
+                separatorBuilder: (BuildContext context, int index) =>
+                    Divider(),
+                itemBuilder: (BuildContext context, int index) {
+                  return ListTile(
+                    title: Text(sights[index].name),
+                  );
+                },
               );
+            default:
+              return _MessageBox();
           }
         },
       ),
+    );
+  }
+}
+
+class _MessageBox extends StatelessWidget {
+  const _MessageBox({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MessageBox(
+      title: nothingFoundTitle,
+      iconName: AppIcons.search,
+      message: nothingFoundMessage,
     );
   }
 }
