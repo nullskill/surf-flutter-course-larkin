@@ -175,6 +175,11 @@ class Category {
   void toggle() {
     _selected = !_selected;
   }
+
+  /// Сбрасывает признак выбранности категории
+  void reset() {
+    _selected = false;
+  }
 }
 
 /// Маппинг типа места и его названия

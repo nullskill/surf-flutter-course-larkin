@@ -13,8 +13,6 @@ import 'package:places/ui/widgets/message_box.dart';
 
 /// Экран поиска интересного места.
 class SightSearchScreen extends StatefulWidget {
-  static const milliseconds = 3000;
-
   final SightSearchScreenHelper helper = SightSearchScreenHelper();
 
   @override
@@ -22,34 +20,76 @@ class SightSearchScreen extends StatefulWidget {
 }
 
 class _SightSearchScreenState extends State<SightSearchScreen> {
-  final TextEditingController searchController = TextEditingController();
-  String searchText, prevSearchText;
+  final searchController = TextEditingController();
+  StreamController<List<Sight>> streamController;
+  StreamSubscription<List> streamSub;
   Timer debounce;
+  String prevSearchText = "";
+  bool isSearching = false;
   bool hasClearButton = false;
 
   @override
   void initState() {
     super.initState();
 
+    streamController = StreamController();
+
     searchController.addListener(searchControllerListener);
   }
 
   void searchControllerListener() {
+    if (prevSearchText != searchController.text) {
+      setState(() {
+        hasClearButton = searchController.text.isNotEmpty;
+      });
+      search();
+      prevSearchText = searchController.text;
+    }
+  }
+
+  @override
+  void dispose() {
+    debounce?.cancel();
+    streamSub?.cancel();
+    searchController.dispose();
+    streamController.close();
+
+    super.dispose();
+  }
+
+  void onEditingComplete() {
+    FocusScope.of(context).unfocus();
+    search();
+  }
+
+  void search() async {
     if (debounce?.isActive ?? false) debounce.cancel();
 
-    if (searchText == searchController.text) return;
+    if (searchController.text.isEmpty) {
+      if (prevSearchText.isNotEmpty) {
+        isSearching = false;
+        streamSub?.cancel();
+        streamController.sink.add(null);
+      }
+      return;
+    }
 
-    setState(
+    isSearching = true;
+
+    debounce = Timer(
+      const Duration(
+        milliseconds: SightSearchScreenHelper.debounceDelay,
+      ),
       () {
-        hasClearButton = searchController.text.isNotEmpty;
-
-        debounce = Timer(
-          const Duration(
-            milliseconds: SightSearchScreen.milliseconds,
-          ),
-          () {
-            prevSearchText = searchText;
-            searchText = searchController.text;
+        streamSub?.cancel();
+        streamSub = widget.helper.getSightList(searchController.text).listen(
+          (searchResult) {
+            isSearching = false;
+            streamController.sink.add(searchResult);
+          },
+          onError: (error) {
+            isSearching = false;
+            streamController.addError(error);
           },
         );
       },
@@ -57,20 +97,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   }
 
   @override
-  void dispose() {
-    searchController.dispose();
-    debounce?.cancel();
-
-    super.dispose();
-  }
-
-  void onEditingComplete() {
-    FocusScope.of(context).unfocus();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    // print("build: $searchText");
     return Scaffold(
       appBar: AppSearchBar(
         title: sightListAppBarTitle,
@@ -81,20 +108,22 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
         onEditingComplete: onEditingComplete,
       ),
       body: StreamBuilder<List<Sight>>(
-        stream: widget.helper.getSightList(searchText),
+        stream: streamController.stream,
         builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-            case ConnectionState.waiting:
-            case ConnectionState.active:
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            case ConnectionState.done:
-              if (snapshot.hasError || !snapshot.hasData) return _MessageBox();
-
-              List<Sight> sights = snapshot.data;
-              return ListView.separated(
+          // Проверять snapshot.connectionState для streamController.stream нет
+          // смысла, т.к. он изначально имеет состояние waiting, а после первого
+          // event и до конца жизни - active.
+          if (isSearching) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasData) {
+            List<Sight> sights = snapshot.data;
+            return GestureDetector(
+              onTap: () {
+                FocusScope.of(context).unfocus();
+              },
+              child: ListView.separated(
                 itemCount: sights?.length ?? 0,
                 separatorBuilder: (BuildContext context, int index) =>
                     Divider(),
@@ -103,9 +132,12 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
                     title: Text(sights[index].name),
                   );
                 },
-              );
-            default:
-              return _MessageBox();
+              ),
+            );
+          } else if (snapshot.hasError) {
+            return _MessageBox();
+          } else {
+            return _MessageBox();
           }
         },
       ),
@@ -120,10 +152,16 @@ class _MessageBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MessageBox(
-      title: nothingFoundTitle,
-      iconName: AppIcons.search,
-      message: nothingFoundMessage,
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: MessageBox(
+        title: nothingFoundTitle,
+        iconName: AppIcons.search,
+        message: nothingFoundMessage,
+      ),
     );
   }
 }

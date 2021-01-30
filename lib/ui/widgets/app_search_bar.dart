@@ -8,8 +8,6 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/assets.dart';
 
-import 'package:places/ui/screens/filters_screen/filters_screen.dart';
-
 import 'package:places/ui/widgets/app_back_button.dart';
 
 /// Виджет AppSearchBar предоставляет AppBar вместе с полем для поиска
@@ -20,22 +18,24 @@ class AppSearchBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool readOnly;
   final bool autofocus;
-  final Function onTap;
-  final Function onEditingComplete;
-  final TextEditingController searchController;
   final bool hasBackButton;
   final bool hasClearButton;
+  final Function onTap;
+  final Function onEditingComplete;
+  final Function onFilter;
+  final TextEditingController searchController;
 
   AppSearchBar({
     Key key,
     @required this.title,
     this.readOnly,
     this.autofocus,
-    this.onTap,
-    this.onEditingComplete,
-    this.searchController,
     this.hasBackButton = false,
     this.hasClearButton = false,
+    this.onTap,
+    this.onEditingComplete,
+    this.onFilter,
+    this.searchController,
   }) : super(key: key);
 
   @override
@@ -65,6 +65,7 @@ class AppSearchBar extends StatelessWidget implements PreferredSizeWidget {
             autofocus: autofocus,
             onTap: onTap,
             onEditingComplete: onEditingComplete,
+            onFilter: onFilter,
             hasClearButton: hasClearButton,
             searchController: searchController,
           ),
@@ -79,20 +80,22 @@ class _SearchBar extends StatelessWidget {
     Key key,
     this.readOnly,
     this.autofocus,
+    this.hasClearButton = false,
     this.onTap,
     this.onEditingComplete,
+    this.onFilter,
     this.searchController,
-    this.hasClearButton = false,
   }) : super(key: key);
 
   static const pxl8 = 8.0, pxl12 = 12.0, pxl40 = 40.0;
 
   final bool readOnly;
   final bool autofocus;
+  final bool hasClearButton;
   final Function onTap;
   final Function onEditingComplete;
+  final Function onFilter;
   final TextEditingController searchController;
-  final bool hasClearButton;
 
   @override
   // ignore: long-method
@@ -171,6 +174,7 @@ class _SearchBar extends StatelessWidget {
               readOnly: readOnly,
               hasClearButton: hasClearButton,
               searchController: searchController,
+              onFilter: onFilter,
             ),
           ),
         ],
@@ -185,11 +189,13 @@ class _SuffixIcon extends StatelessWidget {
     this.readOnly,
     @required this.hasClearButton,
     @required this.searchController,
+    this.onFilter,
   }) : super(key: key);
 
   final bool readOnly;
   final bool hasClearButton;
   final TextEditingController searchController;
+  final Function onFilter;
 
   @override
   Widget build(BuildContext context) {
@@ -202,13 +208,7 @@ class _SuffixIcon extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: allBorderRadius8,
             ),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => FiltersScreen(),
-                ),
-              );
-            },
+            onPressed: onFilter,
             child: SvgPicture.asset(
               AppIcons.filter,
               color: Theme.of(context).buttonColor,

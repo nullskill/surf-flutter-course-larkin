@@ -31,6 +31,7 @@ class FiltersScreen extends StatefulWidget {
 
 class _FiltersScreenState extends State<FiltersScreen> {
   int _filteredCardsNumber = 0;
+  List<Sight> _filteredCards;
   List<Category> _categories;
   RangeValues _currentRangeValues;
 
@@ -39,6 +40,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   @override
   void initState() {
     super.initState();
+    for (var category in categories) category.reset();
     _categories = [...categories];
     _resetRangeValues();
   }
@@ -73,15 +75,17 @@ class _FiltersScreenState extends State<FiltersScreen> {
       for (var category in _categories)
         if (category.selected) category.type,
     ];
-    final filteredCards = mocks.where((el) =>
-        selectedTypes.contains(el.type) &&
-        FiltersScreenHelper.arePointsNear(
-          checkPoint: el,
-          centerPoint: FiltersScreenHelper.centerPoint,
-          minValue: _currentRangeValues.start,
-          maxValue: _currentRangeValues.end,
-        ));
-    _filteredCardsNumber = filteredCards.length;
+    _filteredCards = mocks
+        .where((el) =>
+            selectedTypes.contains(el.type) &&
+            FiltersScreenHelper.arePointsNear(
+              checkPoint: el,
+              centerPoint: FiltersScreenHelper.centerPoint,
+              minValue: _currentRangeValues.start,
+              maxValue: _currentRangeValues.end,
+            ))
+        .toList();
+    _filteredCardsNumber = _filteredCards.length;
   }
 
   @override
@@ -100,7 +104,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
           label: "$filtersActionButtonLabel ($_filteredCardsNumber)",
           isDisabled: _filteredCardsNumber == 0,
           onPressed: () {
-            print("Show button pressed");
+            Navigator.pop(context, _filteredCards);
           },
         ),
       ),

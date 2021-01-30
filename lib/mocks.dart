@@ -1,7 +1,7 @@
 import 'package:places/domain/sight.dart';
 
 /// Список интересных мест
-final List mocks = [
+final List<Sight> mocks = [
   Sight(
     name: "Центр современного искусства «Винзавод»",
     lat: 55.75569,
