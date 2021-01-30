@@ -14,8 +14,9 @@ class SightSearchScreenHelper {
     await Future.delayed(Duration(milliseconds: searchDelay));
     yield [
       ...mocks.where((el) =>
-          el.name.toLowerCase().contains(searchString) ||
-          el.details.toLowerCase().contains(searchString)),
+          filteredMocks.contains(el) &
+          (el.name.toLowerCase().contains(searchString) ||
+              el.details.toLowerCase().contains(searchString))),
     ];
   }
 }
