@@ -145,6 +145,8 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
                 },
               ),
             );
+          } else if (snapshot.hasData) {
+            return _MessageBox();
           } else if (snapshot.hasError) {
             return _MessageBox(hasError: true);
           } else {
@@ -251,7 +253,7 @@ class _MessageBox extends StatelessWidget {
       },
       child: MessageBox(
         title: hasError ? hasErrorTitle : nothingFoundTitle,
-        iconName: hasError ? AppIcons.emptyError : AppIcons.search,
+        iconName: hasError ? AppIcons.emptyError : AppIcons.emptySearch,
         message: hasError ? hasErrorMessage : nothingFoundMessage,
       ),
     );
