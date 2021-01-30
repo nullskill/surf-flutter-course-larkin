@@ -104,7 +104,10 @@ class _FiltersScreenState extends State<FiltersScreen> {
           label: "$filtersActionButtonLabel ($_filteredCardsNumber)",
           isDisabled: _filteredCardsNumber == 0,
           onPressed: () {
-            Navigator.pop(context, _filteredCards);
+            filteredMocks.clear();
+            filteredMocks.addAll(_filteredCards);
+
+            Navigator.pop(context);
           },
         ),
       ),

@@ -57,10 +57,9 @@ class _SightListScreenState extends State<SightListScreen> {
               builder: (context) => FiltersScreen(),
             ),
           );
-          if (result != null)
-            setState(() {
-              _sights = result;
-            });
+          setState(() {
+            _sights = filteredMocks;
+          });
         },
       ),
       body: SingleChildScrollView(
