@@ -17,6 +17,8 @@ const String sightListAppBarTitle = "Список интересных мест"
 //SightSearchScreen
     nothingFoundTitle = "Ничего не найдено.",
     nothingFoundMessage = "Попробуйте изменить параметры поиска",
+    hasErrorTitle = "Ошибка",
+    hasErrorMessage = "Что то пошло не так.\nПопробуйте позже.",
 
 //SightDetailsScreen
     sightDetailsActionButtonLabel = "построить маршрут",

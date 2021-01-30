@@ -10,10 +10,16 @@ class SightSearchScreenHelper {
   static const debounceDelay = 3000;
   static const maxHistoryLength = 5;
 
+  int requestCounter = 0;
+
   Stream<List<Sight>> getSightList(String searchString) async* {
     final _searchString = searchString.trim().toLowerCase();
 
     await Future.delayed(Duration(milliseconds: searchDelay));
+
+    requestCounter++;
+    if (requestCounter % 3 == 0) throw "Exception";
+
     yield [
       ...getFilteredMocks().where((el) =>
           el.name.toLowerCase().contains(_searchString) ||

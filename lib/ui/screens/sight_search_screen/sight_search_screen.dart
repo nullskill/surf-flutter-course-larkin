@@ -146,7 +146,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
               ),
             );
           } else if (snapshot.hasError) {
-            return _MessageBox();
+            return _MessageBox(hasError: true);
           } else {
             return SingleChildScrollView(
               child: Padding(
@@ -237,7 +237,10 @@ class _ListTile extends StatelessWidget {
 class _MessageBox extends StatelessWidget {
   const _MessageBox({
     Key key,
+    this.hasError = false,
   }) : super(key: key);
+
+  final hasError;
 
   @override
   Widget build(BuildContext context) {
@@ -247,9 +250,9 @@ class _MessageBox extends StatelessWidget {
         FocusScope.of(context).unfocus();
       },
       child: MessageBox(
-        title: nothingFoundTitle,
-        iconName: AppIcons.search,
-        message: nothingFoundMessage,
+        title: hasError ? hasErrorTitle : nothingFoundTitle,
+        iconName: hasError ? AppIcons.emptyError : AppIcons.search,
+        message: hasError ? hasErrorMessage : nothingFoundMessage,
       ),
     );
   }
