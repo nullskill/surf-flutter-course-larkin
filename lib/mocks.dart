@@ -83,6 +83,11 @@ final visitedMocks = <VisitedSight>[];
 /// Список посещенных мест
 final filteredMocks = <Sight>[];
 
+/// Функция возвращает [filteredMocks], если не пустой, иначе [mocks]
+List<Sight> getFilteredMocks() {
+  return filteredMocks.isEmpty ? mocks : filteredMocks;
+}
+
 /// Список категорий интересных мест
 final categories = <Category>[
   for (var type in SightType.values)

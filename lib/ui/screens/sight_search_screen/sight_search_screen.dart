@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 
@@ -15,6 +17,7 @@ import 'package:places/ui/screens/sight_details_screen.dart';
 
 import 'package:places/ui/widgets/app_search_bar.dart';
 import 'package:places/ui/widgets/message_box.dart';
+import 'package:places/ui/widgets/settings_item.dart';
 
 /// Экран поиска интересного места.
 class SightSearchScreen extends StatefulWidget {
@@ -26,6 +29,7 @@ class SightSearchScreen extends StatefulWidget {
 
 class _SightSearchScreenState extends State<SightSearchScreen> {
   final searchController = TextEditingController();
+  final history = <String>[];
   StreamController<List<Sight>> streamController;
   StreamSubscription<List> streamSub;
   Timer debounce;
@@ -93,6 +97,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
           (searchResult) {
             isSearching = false;
             streamController.sink.add(searchResult);
+            widget.helper.addToHistory(searchController.text, history);
           },
           onError: (error) {
             isSearching = false;
@@ -143,7 +148,34 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
           } else if (snapshot.hasError) {
             return _MessageBox();
           } else {
-            return _MessageBox();
+            return SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    for (var item in widget.helper.getHistory(history))
+                      SettingsItem(
+                        title: item,
+                        isGreyedOut: true,
+                        onTap: () {
+                          searchController.text = item;
+                          search();
+                        },
+                        trailing: GestureDetector(
+                          onTap: () {
+                            widget.helper.deleteFromHistory(item, history);
+                            setState(() {});
+                          },
+                          child: SvgPicture.asset(
+                            AppIcons.delete,
+                            color: inactiveColor,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            );
           }
         },
       ),
@@ -156,6 +188,8 @@ class _ListTile extends StatelessWidget {
     Key key,
     @required this.sight,
   }) : super(key: key);
+
+  static const pxl56 = 56.0;
 
   final Sight sight;
 
@@ -171,8 +205,8 @@ class _ListTile extends StatelessWidget {
         );
       },
       leading: Container(
-        width: 56.0,
-        height: 56.0,
+        width: pxl56,
+        height: pxl56,
         decoration: BoxDecoration(
           color: placeholderColor,
           borderRadius: allBorderRadius12,

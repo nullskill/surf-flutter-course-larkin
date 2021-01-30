@@ -58,7 +58,7 @@ class _SightListScreenState extends State<SightListScreen> {
             ),
           );
           setState(() {
-            _sights = filteredMocks;
+            _sights = getFilteredMocks();
           });
         },
       ),
