@@ -16,6 +16,7 @@ import 'package:places/ui/screens/sight_search_screen/sight_search_screen_helper
 import 'package:places/ui/screens/sight_details_screen.dart';
 
 import 'package:places/ui/widgets/app_search_bar.dart';
+import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/link.dart';
 import 'package:places/ui/widgets/message_box.dart';
 import 'package:places/ui/widgets/settings_item.dart';
@@ -143,9 +144,7 @@ class _SightSearchScreenState extends State<SightSearchScreen>
           // event и до конца жизни - active.
           hasError = snapshot.hasError;
           if (isSearching) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return _SearchIndicator();
           } else if (snapshot.hasData && snapshot.data.isNotEmpty) {
             List<Sight> sights = snapshot.data;
             return GestureDetector(
@@ -227,6 +226,36 @@ class _SightSearchScreenState extends State<SightSearchScreen>
                   );
           }
         },
+      ),
+      bottomNavigationBar: AppBottomNavigationBar(
+        currentIndex: 0,
+      ),
+    );
+  }
+}
+
+class _SearchIndicator extends StatelessWidget {
+  const _SearchIndicator({
+    Key key,
+  }) : super(key: key);
+
+  static const pxl40 = 40.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topCenter,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10.0),
+        child: SizedBox(
+          width: pxl40,
+          height: pxl40,
+          child: CircularProgressIndicator(
+            strokeWidth: 6.0,
+            backgroundColor: Theme.of(context).backgroundColor,
+            valueColor: new AlwaysStoppedAnimation<Color>(secondaryColor2),
+          ),
+        ),
       ),
     );
   }
