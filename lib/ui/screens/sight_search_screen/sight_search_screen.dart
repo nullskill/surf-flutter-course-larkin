@@ -23,16 +23,14 @@ import 'package:places/ui/widgets/subtitle.dart';
 
 /// Экран поиска интересного места.
 class SightSearchScreen extends StatefulWidget {
-  final SightSearchScreenHelper helper = SightSearchScreenHelper();
-
   @override
   _SightSearchScreenState createState() => _SightSearchScreenState();
 }
 
-class _SightSearchScreenState extends State<SightSearchScreen> {
+class _SightSearchScreenState extends State<SightSearchScreen>
+    with SightSearchScreenHelper {
   final searchController = TextEditingController();
   final searchFocusNode = FocusNode();
-  final history = <String>[];
   StreamController<List<Sight>> streamController;
   StreamSubscription<List> streamSub;
   Timer debounce;
@@ -102,7 +100,6 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
     }
 
     isSearching = true;
-    print("isSearching: $isSearching");
 
     debounce = Timer(
       const Duration(
@@ -110,15 +107,13 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
       ),
       () {
         streamSub?.cancel();
-        streamSub = widget.helper.getSightList(searchController.text).listen(
+        streamSub = getSightList(searchController.text).listen(
           (searchResult) {
-            print("isSearching searchResult: $isSearching");
             isSearching = false;
             streamController.sink.add(searchResult);
-            widget.helper.addToHistory(searchController.text, history);
+            addToHistory(searchController.text);
           },
           onError: (error) {
-            print("isSearching onError: $isSearching");
             isSearching = false;
             streamController.addError(error);
           },
@@ -146,7 +141,6 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
           // Проверять snapshot.connectionState для streamController.stream нет
           // смысла, т.к. он изначально имеет состояние waiting, а после первого
           // event и до конца жизни - active.
-          print("StreamBuilder triggered!");
           hasError = snapshot.hasError;
           if (isSearching) {
             return Center(
@@ -195,25 +189,18 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: Column(
                             children: [
-                              for (var item
-                                  in widget.helper.getHistory(history))
+                              for (var item in history)
                                 SettingsItem(
                                   title: item,
                                   isGreyedOut: true,
-                                  isLast: widget.helper.isLastInHistory(
-                                    item,
-                                    history,
-                                  ),
+                                  isLast: isLastInHistory(item),
                                   onTap: () {
                                     searchController.text = item;
                                     search();
                                   },
                                   trailing: GestureDetector(
                                     onTap: () {
-                                      widget.helper.deleteFromHistory(
-                                        item,
-                                        history,
-                                      );
+                                      deleteFromHistory(item);
                                       setState(() {});
                                     },
                                     child: SvgPicture.asset(
@@ -227,7 +214,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
                                 child: Link(
                                   label: sightSearchClearHistoryLabel,
                                   onTap: () {
-                                    widget.helper.clearHistory(history);
+                                    clearHistory();
                                     setState(() {});
                                   },
                                 ),

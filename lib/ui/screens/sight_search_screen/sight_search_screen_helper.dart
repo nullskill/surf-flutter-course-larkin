@@ -10,6 +10,14 @@ class SightSearchScreenHelper {
   static const debounceDelay = 3000;
   static const maxHistoryLength = 5;
 
+  final _history = <String>["центр", "площадка"];
+
+  List<String> get history => _history.reversed
+      .toList()
+      .sublist(0, min(maxHistoryLength, _history.length));
+
+  bool get isHistoryEmpty => _history.isEmpty;
+
   int requestCounter = 0;
 
   Stream<List<Sight>> getSightList(String searchString) async* {
@@ -27,29 +35,23 @@ class SightSearchScreenHelper {
     if (requestCounter % 3 == 0) throw Exception();
   }
 
-  List<String> getHistory(List<String> history) {
-    return history.reversed
-        .toList()
-        .sublist(0, min(maxHistoryLength, history.length));
+  bool isLastInHistory(String item) {
+    return history.last == item;
   }
 
-  bool isLastInHistory(String item, List<String> history) {
-    return getHistory(history).last == item;
+  void addToHistory(String item) {
+    deleteFromHistory(item);
+    _history.add(item);
+    if (_history.length > maxHistoryLength) _history.removeAt(0);
   }
 
-  void addToHistory(String item, List<String> history) {
-    deleteFromHistory(item, history);
-    history.add(item);
-    if (history.length > maxHistoryLength) history.removeAt(0);
+  void deleteFromHistory(String item) {
+    final index = _history.indexOf(item);
+
+    if (!index.isNegative) _history.removeAt(index);
   }
 
-  void deleteFromHistory(String item, List<String> history) {
-    final index = history.indexOf(item);
-
-    if (!index.isNegative) history.removeAt(index);
-  }
-
-  void clearHistory(List<String> history) {
-    history.clear();
+  void clearHistory() {
+    _history.clear();
   }
 }
