@@ -33,6 +33,10 @@ class SightSearchScreenHelper {
         .sublist(0, min(maxHistoryLength, history.length));
   }
 
+  bool isLastInHistory(String item, List<String> history) {
+    return getHistory(history).last == item;
+  }
+
   void addToHistory(String item, List<String> history) {
     deleteFromHistory(item, history);
     history.add(item);
@@ -40,8 +44,12 @@ class SightSearchScreenHelper {
   }
 
   void deleteFromHistory(String item, List<String> history) {
-    final index = history.lastIndexOf(item);
+    final index = history.indexOf(item);
 
     if (!index.isNegative) history.removeAt(index);
+  }
+
+  void clearHistory(List<String> history) {
+    history.clear();
   }
 }

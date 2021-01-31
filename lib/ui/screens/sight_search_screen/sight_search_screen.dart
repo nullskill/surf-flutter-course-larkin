@@ -16,8 +16,10 @@ import 'package:places/ui/screens/sight_search_screen/sight_search_screen_helper
 import 'package:places/ui/screens/sight_details_screen.dart';
 
 import 'package:places/ui/widgets/app_search_bar.dart';
+import 'package:places/ui/widgets/link.dart';
 import 'package:places/ui/widgets/message_box.dart';
 import 'package:places/ui/widgets/settings_item.dart';
+import 'package:places/ui/widgets/subtitle.dart';
 
 /// Экран поиска интересного места.
 class SightSearchScreen extends StatefulWidget {
@@ -159,34 +161,69 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
               onTap: removeSearchFocus,
             );
           } else {
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    for (var item in widget.helper.getHistory(history))
-                      SettingsItem(
-                        title: item,
-                        isGreyedOut: true,
-                        onTap: () {
-                          searchController.text = item;
-                          search();
-                        },
-                        trailing: GestureDetector(
-                          onTap: () {
-                            widget.helper.deleteFromHistory(item, history);
-                            setState(() {});
-                          },
-                          child: SvgPicture.asset(
-                            AppIcons.delete,
-                            color: inactiveColor,
+            return history.isEmpty
+                ? SizedBox()
+                : SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            16.0,
+                            24.0,
+                            16.0,
+                            4.0,
+                          ),
+                          child: Subtitle(
+                            subtitle: sightSearchHistoryTitle,
                           ),
                         ),
-                      ),
-                  ],
-                ),
-              ),
-            );
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Column(
+                            children: [
+                              for (var item
+                                  in widget.helper.getHistory(history))
+                                SettingsItem(
+                                  title: item,
+                                  isGreyedOut: true,
+                                  isLast: widget.helper.isLastInHistory(
+                                    item,
+                                    history,
+                                  ),
+                                  onTap: () {
+                                    searchController.text = item;
+                                    search();
+                                  },
+                                  trailing: GestureDetector(
+                                    onTap: () {
+                                      widget.helper.deleteFromHistory(
+                                        item,
+                                        history,
+                                      );
+                                      setState(() {});
+                                    },
+                                    child: SvgPicture.asset(
+                                      AppIcons.delete,
+                                      color: inactiveColor,
+                                    ),
+                                  ),
+                                ),
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Link(
+                                  label: sightSearchClearHistoryLabel,
+                                  onTap: () {
+                                    widget.helper.clearHistory(history);
+                                    setState(() {});
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
           }
         },
       ),
@@ -261,9 +298,12 @@ class _MessageBox extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       onTap: onTap ?? null,
       child: MessageBox(
-        title: hasError ? hasErrorTitle : nothingFoundTitle,
+        title:
+            hasError ? sightSearchHasErrorTitle : sightSearchNothingFoundTitle,
         iconName: hasError ? AppIcons.emptyError : AppIcons.emptySearch,
-        message: hasError ? hasErrorMessage : nothingFoundMessage,
+        message: hasError
+            ? sightSearchHasErrorMessage
+            : sightSearchNothingFoundMessage,
       ),
     );
   }

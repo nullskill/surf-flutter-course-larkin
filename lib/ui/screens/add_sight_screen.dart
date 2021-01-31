@@ -14,6 +14,7 @@ import 'package:places/ui/screens/select_category_screen.dart';
 
 import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/ui/widgets/settings_item.dart';
+import 'package:places/ui/widgets/link.dart';
 
 /// Экран добавления интересного места.
 class AddSightScreen extends StatefulWidget {
@@ -289,20 +290,11 @@ class _AddSightBody extends StatelessWidget {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0, bottom: 13.0),
-              child: GestureDetector(
-                onTap: () {
-                  print("Select on map tapped");
-                },
-                child: Text(
-                  addSightSelectOnMapTitle,
-                  style: textMedium16.copyWith(
-                    color: Theme.of(context).buttonColor,
-                    height: lineHeight1_25,
-                  ),
-                ),
-              ),
+            Link(
+              label: addSightSelectOnMapLabel,
+              onTap: () {
+                print("Select on map tapped");
+              },
             ),
             _AddSightTextField(
               title: addSightDescriptionTitle,

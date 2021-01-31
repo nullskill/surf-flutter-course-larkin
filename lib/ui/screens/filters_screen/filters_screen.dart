@@ -7,7 +7,6 @@ import 'package:places/domain/sight.dart';
 
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/app_color_scheme.dart';
 import 'package:places/ui/res/assets.dart';
 
@@ -17,6 +16,7 @@ import 'package:places/ui/widgets/app_back_button.dart';
 import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/ui/widgets/app_range_slider/app_range_slider_helper.dart';
 import 'package:places/ui/widgets/app_range_slider/app_range_slider.dart';
+import 'package:places/ui/widgets/subtitle.dart';
 
 /// Экран фильтров
 class FiltersScreen extends StatefulWidget {
@@ -176,15 +176,8 @@ class _FiltersBody extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                filtersCategoriesTitle.toUpperCase(),
-                style: textRegular12.copyWith(
-                  color: inactiveColor,
-                  height: lineHeight1_3,
-                ),
-              ),
+            Subtitle(
+              subtitle: filtersCategoriesTitle,
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(

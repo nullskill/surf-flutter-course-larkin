@@ -15,10 +15,12 @@ const String sightListAppBarTitle = "Список интересных мест"
     errorMessage = "Что то пошло не так...\nПопробуйте позже.",
 
 //SightSearchScreen
-    nothingFoundTitle = "Ничего не найдено.",
-    nothingFoundMessage = "Попробуйте изменить параметры поиска",
-    hasErrorTitle = "Ошибка",
-    hasErrorMessage = "Что то пошло не так.\nПопробуйте позже.",
+    sightSearchHistoryTitle = "Вы искали",
+    sightSearchClearHistoryLabel = "Очистить историю",
+    sightSearchNothingFoundTitle = "Ничего не найдено.",
+    sightSearchNothingFoundMessage = "Попробуйте изменить параметры поиска",
+    sightSearchHasErrorTitle = "Ошибка",
+    sightSearchHasErrorMessage = "Что то пошло не так.\nПопробуйте позже.",
 
 //SightDetailsScreen
     sightDetailsActionButtonLabel = "построить маршрут",
@@ -57,7 +59,7 @@ const String sightListAppBarTitle = "Список интересных мест"
     addSightDescriptionTitle = "Описание",
     addSightLatitudeTitle = "Широта",
     addSightLongitudeTitle = "Долгота",
-    addSightSelectOnMapTitle = "Указать на карте",
+    addSightSelectOnMapLabel = "Указать на карте",
     addSightDescriptionHintText = "введите текст",
 
 //SelectCategoryScreen
