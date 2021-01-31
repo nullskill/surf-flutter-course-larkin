@@ -38,13 +38,14 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   Timer debounce;
   String prevSearchText = "";
   bool isSearching = false;
+  bool hasError = false;
   bool hasClearButton = false;
 
   @override
   void initState() {
     super.initState();
 
-    streamController = StreamController();
+    streamController = StreamController.broadcast();
 
     searchController.addListener(searchControllerListener);
   }
@@ -81,7 +82,15 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   void search() async {
     if (debounce?.isActive ?? false) debounce.cancel();
 
-    if (searchController.text == prevSearchText && !isSearching) return;
+    if (searchController.text == prevSearchText && !isSearching) {
+      if (hasError) {
+        // После ошибки нужна возможность заново отправить запрос по кнопке,
+        // поэтому триггерим обновление стейта для ребилда виджета
+        setState(() {});
+      } else {
+        return;
+      }
+    }
 
     if (searchController.text.isEmpty) {
       if (prevSearchText.isNotEmpty) {
@@ -93,6 +102,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
     }
 
     isSearching = true;
+    print("isSearching: $isSearching");
 
     debounce = Timer(
       const Duration(
@@ -102,11 +112,13 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
         streamSub?.cancel();
         streamSub = widget.helper.getSightList(searchController.text).listen(
           (searchResult) {
+            print("isSearching searchResult: $isSearching");
             isSearching = false;
             streamController.sink.add(searchResult);
             widget.helper.addToHistory(searchController.text, history);
           },
           onError: (error) {
+            print("isSearching onError: $isSearching");
             isSearching = false;
             streamController.addError(error);
           },
@@ -134,6 +146,8 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
           // Проверять snapshot.connectionState для streamController.stream нет
           // смысла, т.к. он изначально имеет состояние waiting, а после первого
           // event и до конца жизни - active.
+          print("StreamBuilder triggered!");
+          hasError = snapshot.hasError;
           if (isSearching) {
             return Center(
               child: CircularProgressIndicator(),

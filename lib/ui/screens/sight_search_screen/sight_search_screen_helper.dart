@@ -17,14 +17,14 @@ class SightSearchScreenHelper {
 
     await Future.delayed(Duration(milliseconds: searchDelay));
 
-    requestCounter++;
-    if (requestCounter % 3 == 0) throw "Exception";
-
     yield [
       ...getFilteredMocks().where((el) =>
           el.name.toLowerCase().contains(_searchString) ||
           el.details.toLowerCase().contains(_searchString)),
     ];
+
+    requestCounter++;
+    if (requestCounter % 3 == 0) throw Exception();
   }
 
   List<String> getHistory(List<String> history) {
