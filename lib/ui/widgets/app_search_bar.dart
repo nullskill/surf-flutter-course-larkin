@@ -23,6 +23,7 @@ class AppSearchBar extends StatelessWidget implements PreferredSizeWidget {
   final Function onTap;
   final Function onEditingComplete;
   final Function onFilter;
+  final FocusNode searchFocusNode;
   final TextEditingController searchController;
 
   AppSearchBar({
@@ -35,7 +36,8 @@ class AppSearchBar extends StatelessWidget implements PreferredSizeWidget {
     this.onTap,
     this.onEditingComplete,
     this.onFilter,
-    this.searchController,
+    @required this.searchFocusNode,
+    @required this.searchController,
   }) : super(key: key);
 
   @override
@@ -67,6 +69,7 @@ class AppSearchBar extends StatelessWidget implements PreferredSizeWidget {
             onEditingComplete: onEditingComplete,
             onFilter: onFilter,
             hasClearButton: hasClearButton,
+            searchFocusNode: searchFocusNode,
             searchController: searchController,
           ),
         ],
@@ -84,10 +87,11 @@ class _SearchBar extends StatelessWidget {
     this.onTap,
     this.onEditingComplete,
     this.onFilter,
-    this.searchController,
+    @required this.searchFocusNode,
+    @required this.searchController,
   }) : super(key: key);
 
-  static const pxl8 = 8.0, pxl12 = 12.0, pxl40 = 40.0;
+  static const pxl8 = 8.0, pxl12 = 12.0, pxl24 = 24.0, pxl40 = 40.0;
 
   final bool readOnly;
   final bool autofocus;
@@ -95,6 +99,7 @@ class _SearchBar extends StatelessWidget {
   final Function onTap;
   final Function onEditingComplete;
   final Function onFilter;
+  final FocusNode searchFocusNode;
   final TextEditingController searchController;
 
   @override
@@ -131,9 +136,10 @@ class _SearchBar extends StatelessWidget {
               autofocus: autofocus ?? false,
               onTap: onTap,
               onEditingComplete: onEditingComplete,
+              focusNode: searchFocusNode,
               controller: searchController,
               cursorColor: Theme.of(context).primaryColor,
-              cursorHeight: 24.0,
+              cursorHeight: pxl24,
               cursorWidth: 1,
               style: textRegular16.copyWith(
                 color: Theme.of(context).primaryColor,
@@ -173,8 +179,11 @@ class _SearchBar extends StatelessWidget {
             child: _SuffixIcon(
               readOnly: readOnly,
               hasClearButton: hasClearButton,
-              searchController: searchController,
               onFilter: onFilter,
+              onClear: () {
+                searchController.clear();
+                FocusScope.of(context).requestFocus(searchFocusNode);
+              },
             ),
           ),
         ],
@@ -188,21 +197,21 @@ class _SuffixIcon extends StatelessWidget {
     Key key,
     this.readOnly,
     @required this.hasClearButton,
-    @required this.searchController,
     this.onFilter,
+    this.onClear,
   }) : super(key: key);
 
   final bool readOnly;
   final bool hasClearButton;
-  final TextEditingController searchController;
   final Function onFilter;
+  final Function onClear;
 
   @override
   Widget build(BuildContext context) {
     return readOnly ?? false
         ? FlatButton(
-            height: 24,
-            minWidth: 24,
+            height: _SearchBar.pxl24,
+            minWidth: _SearchBar.pxl24,
             padding: EdgeInsets.zero,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             shape: RoundedRectangleBorder(
@@ -216,10 +225,7 @@ class _SuffixIcon extends StatelessWidget {
           )
         : hasClearButton
             ? GestureDetector(
-                onTap: () {
-                  searchController.clear();
-                  FocusScope.of(context).requestFocus();
-                },
+                onTap: onClear ?? null,
                 child: SvgPicture.asset(
                   AppIcons.clear,
                   color: Theme.of(context).primaryColor,

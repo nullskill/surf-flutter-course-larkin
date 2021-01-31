@@ -29,6 +29,7 @@ class SightSearchScreen extends StatefulWidget {
 
 class _SightSearchScreenState extends State<SightSearchScreen> {
   final searchController = TextEditingController();
+  final searchFocusNode = FocusNode();
   final history = <String>[];
   StreamController<List<Sight>> streamController;
   StreamSubscription<List> streamSub;
@@ -67,8 +68,12 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   }
 
   void onEditingComplete() {
-    FocusScope.of(context).unfocus();
+    removeSearchFocus();
     search();
+  }
+
+  void removeSearchFocus() {
+    searchFocusNode.unfocus();
   }
 
   void search() async {
@@ -118,6 +123,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
         hasBackButton: true,
         hasClearButton: hasClearButton,
         searchController: searchController,
+        searchFocusNode: searchFocusNode,
         onEditingComplete: onEditingComplete,
       ),
       body: StreamBuilder<List<Sight>>(
@@ -133,9 +139,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
           } else if (snapshot.hasData && snapshot.data.isNotEmpty) {
             List<Sight> sights = snapshot.data;
             return GestureDetector(
-              onTap: () {
-                FocusScope.of(context).unfocus();
-              },
+              onTap: removeSearchFocus,
               child: ListView.separated(
                 itemCount: sights?.length ?? 0,
                 separatorBuilder: (BuildContext context, int index) =>
@@ -146,9 +150,14 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
               ),
             );
           } else if (snapshot.hasData) {
-            return _MessageBox();
+            return _MessageBox(
+              onTap: removeSearchFocus,
+            );
           } else if (snapshot.hasError) {
-            return _MessageBox(hasError: true);
+            return _MessageBox(
+              hasError: true,
+              onTap: removeSearchFocus,
+            );
           } else {
             return SingleChildScrollView(
               child: Padding(
@@ -240,17 +249,17 @@ class _MessageBox extends StatelessWidget {
   const _MessageBox({
     Key key,
     this.hasError = false,
+    this.onTap,
   }) : super(key: key);
 
-  final hasError;
+  final bool hasError;
+  final Function onTap;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
+      onTap: onTap ?? null,
       child: MessageBox(
         title: hasError ? hasErrorTitle : nothingFoundTitle,
         iconName: hasError ? AppIcons.emptyError : AppIcons.emptySearch,
