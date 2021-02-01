@@ -20,6 +20,7 @@ import 'package:places/ui/widgets/link.dart';
 import 'package:places/ui/widgets/message_box.dart';
 import 'package:places/ui/widgets/settings_item.dart';
 import 'package:places/ui/widgets/subtitle.dart';
+import 'package:places/ui/widgets/circular_progress.dart';
 
 /// Экран поиска интересного места.
 class SightSearchScreen extends StatefulWidget {
@@ -90,22 +91,16 @@ class _SearchIndicator extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  static const pxl40 = 40.0;
-
   @override
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.topCenter,
       child: Padding(
         padding: const EdgeInsets.only(top: 10.0),
-        child: SizedBox(
-          width: pxl40,
-          height: pxl40,
-          child: CircularProgressIndicator(
-            strokeWidth: 6.0,
-            backgroundColor: Theme.of(context).backgroundColor,
-            valueColor: new AlwaysStoppedAnimation<Color>(secondaryColor2),
-          ),
+        child: CircularProgress(
+          size: 40.0,
+          primaryColor: secondaryColor2,
+          secondaryColor: Theme.of(context).backgroundColor,
         ),
       ),
     );
