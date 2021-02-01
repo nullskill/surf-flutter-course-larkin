@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
@@ -53,17 +52,9 @@ class _SightSearchScreenState extends State<SightSearchScreen>
           if (isSearching) {
             return _SearchIndicator();
           } else if (snapshot.hasData && snapshot.data.isNotEmpty) {
-            List<Sight> sights = snapshot.data;
-            return GestureDetector(
-              onTap: removeSearchFocus,
-              child: ListView.separated(
-                itemCount: sights?.length ?? 0,
-                separatorBuilder: (BuildContext context, int index) =>
-                    Divider(),
-                itemBuilder: (BuildContext context, int index) {
-                  return _ListTile(sight: sights[index]);
-                },
-              ),
+            return _SearchResultsList(
+              sights: snapshot.data,
+              removeSearchFocus: removeSearchFocus,
             );
           } else if (snapshot.hasData) {
             return _MessageBox(
@@ -77,61 +68,12 @@ class _SightSearchScreenState extends State<SightSearchScreen>
           } else {
             return history.isEmpty
                 ? SizedBox()
-                : SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                            16.0,
-                            24.0,
-                            16.0,
-                            4.0,
-                          ),
-                          child: Subtitle(
-                            subtitle: sightSearchHistoryTitle,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Column(
-                            children: [
-                              for (var item in history)
-                                SettingsItem(
-                                  title: item,
-                                  isGreyedOut: true,
-                                  isLast: isLastInHistory(item),
-                                  onTap: () {
-                                    searchController.text = item;
-                                    search();
-                                  },
-                                  trailing: GestureDetector(
-                                    onTap: () {
-                                      deleteFromHistory(item);
-                                      setState(() {});
-                                    },
-                                    child: SvgPicture.asset(
-                                      AppIcons.delete,
-                                      color: inactiveColor,
-                                    ),
-                                  ),
-                                ),
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: Link(
-                                  label: sightSearchClearHistoryLabel,
-                                  onTap: () {
-                                    clearHistory();
-                                    setState(() {});
-                                    FocusScope.of(context)
-                                        .requestFocus(searchFocusNode);
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                : _SearchHistoryList(
+                    history: history,
+                    isLastInHistory: isLastInHistory,
+                    onTapOnHistory: onTapOnHistory,
+                    onClearHistory: onClearHistory,
+                    onDeleteFromHistory: onDeleteFromHistory,
                   );
           }
         },
@@ -165,6 +107,31 @@ class _SearchIndicator extends StatelessWidget {
             valueColor: new AlwaysStoppedAnimation<Color>(secondaryColor2),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _SearchResultsList extends StatelessWidget {
+  const _SearchResultsList({
+    Key key,
+    @required this.sights,
+    @required this.removeSearchFocus,
+  }) : super(key: key);
+
+  final List<Sight> sights;
+  final Function removeSearchFocus;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: removeSearchFocus,
+      child: ListView.separated(
+        itemCount: sights?.length ?? 0,
+        separatorBuilder: (BuildContext context, int index) => Divider(),
+        itemBuilder: (BuildContext context, int index) {
+          return _ListTile(sight: sights[index]);
+        },
       ),
     );
   }
@@ -243,6 +210,88 @@ class _MessageBox extends StatelessWidget {
         message: hasError
             ? sightSearchHasErrorMessage
             : sightSearchNothingFoundMessage,
+      ),
+    );
+  }
+}
+
+class _SearchHistoryList extends StatelessWidget {
+  const _SearchHistoryList({
+    Key key,
+    @required this.history,
+    @required this.isLastInHistory,
+    @required this.onTapOnHistory,
+    @required this.onDeleteFromHistory,
+    @required this.onClearHistory,
+  }) : super(key: key);
+
+  static const pxl16 = 16.0;
+
+  final List<String> history;
+  final Function isLastInHistory;
+  final Function onTapOnHistory;
+  final Function onDeleteFromHistory;
+  final Function onClearHistory;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              pxl16,
+              24.0,
+              pxl16,
+              4.0,
+            ),
+            child: Subtitle(
+              subtitle: sightSearchHistoryTitle,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: pxl16),
+            child: Column(
+              children: [
+                for (var item in history)
+                  SettingsItem(
+                    title: item,
+                    isGreyedOut: true,
+                    isLast: isLastInHistory(item),
+                    onTap: () => onTapOnHistory(item),
+                    trailing: GestureDetector(
+                      onTap: () => onDeleteFromHistory(item),
+                      child: SvgPicture.asset(
+                        AppIcons.delete,
+                        color: inactiveColor,
+                      ),
+                    ),
+                  ),
+                _ClearHistoryLink(onTap: onClearHistory),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ClearHistoryLink extends StatelessWidget {
+  const _ClearHistoryLink({
+    Key key,
+    @required this.onTap,
+  }) : super(key: key);
+
+  final Function onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Link(
+        label: sightSearchClearHistoryLabel,
+        onTap: onTap,
       ),
     );
   }

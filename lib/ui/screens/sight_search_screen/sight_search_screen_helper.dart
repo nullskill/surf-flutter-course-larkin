@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 
+/// Хранит историю поиска
+final _history = <String>["центр", "площадка"];
+
 /// Вспомогательный миксин для экрана поиска
 mixin SightSearchScreenHelper<SightSearchScreen extends StatefulWidget>
     on State<SightSearchScreen> {
@@ -12,7 +15,6 @@ mixin SightSearchScreenHelper<SightSearchScreen extends StatefulWidget>
   static const debounceDelay = 3000;
   static const maxHistoryLength = 5;
 
-  final _history = <String>["центр", "площадка"];
   final searchController = TextEditingController();
   final searchFocusNode = FocusNode();
   StreamController<List<Sight>> streamController;
@@ -39,6 +41,16 @@ mixin SightSearchScreenHelper<SightSearchScreen extends StatefulWidget>
     searchController.addListener(searchControllerListener);
   }
 
+  @override
+  void dispose() {
+    debounce?.cancel();
+    streamSub?.cancel();
+    searchController.dispose();
+    streamController.close();
+
+    super.dispose();
+  }
+
   /// Listener изменений [searchController]
   void searchControllerListener() {
     if (prevSearchText != searchController.text) {
@@ -50,23 +62,32 @@ mixin SightSearchScreenHelper<SightSearchScreen extends StatefulWidget>
     }
   }
 
-  @override
-  void dispose() {
-    debounce?.cancel();
-    streamSub?.cancel();
-    searchController.dispose();
-    streamController.close();
-
-    super.dispose();
-  }
-
   /// При окончании редактирования поля поиска
   void onEditingComplete() {
     removeSearchFocus();
     search();
   }
 
-  // Для снятия фокуса с поля поиска
+  /// При тапе на элементе истории
+  void onTapOnHistory(item) {
+    searchController.text = item;
+    search();
+  }
+
+  /// При удалении элемента истории
+  void onDeleteFromHistory(item) {
+    deleteFromHistory(item);
+    setState(() {});
+  }
+
+  /// При очистке истории
+  void onClearHistory() {
+    clearHistory();
+    setState(() {});
+    FocusScope.of(context).requestFocus(searchFocusNode);
+  }
+
+  /// Для снятия фокуса с поля поиска
   void removeSearchFocus() {
     searchFocusNode.unfocus();
   }
@@ -136,24 +157,26 @@ mixin SightSearchScreenHelper<SightSearchScreen extends StatefulWidget>
     if (requestCounter % 3 == 0) throw Exception();
   }
 
-  /// Функции для манипулирования историей поиска [_history]
-  ///
+  /// Возвращает true, если элемент последний
   bool isLastInHistory(String item) {
     return history.last == item;
   }
 
+  /// Добавляет элемент в историю
   void addToHistory(String item) {
     deleteFromHistory(item);
     _history.add(item);
     if (_history.length > maxHistoryLength) _history.removeAt(0);
   }
 
+  /// Удаляет элемент из истории
   void deleteFromHistory(String item) {
     final index = _history.indexOf(item);
 
     if (!index.isNegative) _history.removeAt(index);
   }
 
+  /// Очищает историю
   void clearHistory() {
     _history.clear();
   }
