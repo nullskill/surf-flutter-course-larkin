@@ -30,99 +30,6 @@ class SightSearchScreen extends StatefulWidget {
 
 class _SightSearchScreenState extends State<SightSearchScreen>
     with SightSearchScreenHelper {
-  final searchController = TextEditingController();
-  final searchFocusNode = FocusNode();
-  StreamController<List<Sight>> streamController;
-  StreamSubscription<List> streamSub;
-  Timer debounce;
-  String prevSearchText = "";
-  bool isSearching = false;
-  bool hasError = false;
-  bool hasClearButton = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    streamController = StreamController.broadcast();
-
-    searchController.addListener(searchControllerListener);
-  }
-
-  void searchControllerListener() {
-    if (prevSearchText != searchController.text) {
-      setState(() {
-        hasClearButton = searchController.text.isNotEmpty;
-      });
-      search();
-      prevSearchText = searchController.text;
-    }
-  }
-
-  @override
-  void dispose() {
-    debounce?.cancel();
-    streamSub?.cancel();
-    searchController.dispose();
-    streamController.close();
-
-    super.dispose();
-  }
-
-  void onEditingComplete() {
-    removeSearchFocus();
-    search();
-  }
-
-  void removeSearchFocus() {
-    searchFocusNode.unfocus();
-  }
-
-  void search() async {
-    if (debounce?.isActive ?? false) debounce.cancel();
-
-    if (searchController.text == prevSearchText && !isSearching) {
-      if (hasError) {
-        // После ошибки нужна возможность заново отправить запрос по кнопке,
-        // поэтому триггерим обновление стейта для ребилда виджета
-        setState(() {});
-      } else {
-        return;
-      }
-    }
-
-    if (searchController.text.isEmpty) {
-      if (prevSearchText.isNotEmpty) {
-        isSearching = false;
-        streamSub?.cancel();
-        streamController.sink.add(null);
-      }
-      return;
-    }
-
-    isSearching = true;
-
-    debounce = Timer(
-      const Duration(
-        milliseconds: SightSearchScreenHelper.debounceDelay,
-      ),
-      () {
-        streamSub?.cancel();
-        streamSub = getSightList(searchController.text).listen(
-          (searchResult) {
-            isSearching = false;
-            streamController.sink.add(searchResult);
-            addToHistory(searchController.text);
-          },
-          onError: (error) {
-            isSearching = false;
-            streamController.addError(error);
-          },
-        );
-      },
-    );
-  }
-
   @override
   // ignore: long-method
   Widget build(BuildContext context) {
@@ -215,6 +122,8 @@ class _SightSearchScreenState extends State<SightSearchScreen>
                                   onTap: () {
                                     clearHistory();
                                     setState(() {});
+                                    FocusScope.of(context)
+                                        .requestFocus(searchFocusNode);
                                   },
                                 ),
                               ),
