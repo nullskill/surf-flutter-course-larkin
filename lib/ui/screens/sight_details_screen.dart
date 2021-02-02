@@ -15,7 +15,12 @@ import 'package:places/ui/widgets/app_back_button.dart';
 
 /// Экран отображения подробной информации о посещаемом месте.
 class SightDetailsScreen extends StatelessWidget {
-  final sight = mocks.last;
+  final sight;
+
+  const SightDetailsScreen({
+    Key key,
+    @required this.sight,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -123,6 +128,9 @@ class _SightDetailsBody extends StatelessWidget {
                 ActionButton(
                   iconName: AppIcons.go,
                   label: sightDetailsActionButtonLabel,
+                  onPressed: () {
+                    print("ActionButton pressed");
+                  },
                 ),
                 SizedBox(
                   height: pxl24,

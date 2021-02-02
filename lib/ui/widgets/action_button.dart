@@ -12,10 +12,14 @@ class ActionButton extends StatelessWidget {
     Key key,
     this.iconName,
     @required this.label,
+    this.isDisabled = false,
+    this.onPressed,
   }) : super(key: key);
 
   final String iconName;
   final String label;
+  final bool isDisabled;
+  final Function onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -25,23 +29,21 @@ class ActionButton extends StatelessWidget {
       child: RaisedButton.icon(
         elevation: 0,
         icon: iconName != null
-            ? SvgPicture.asset(
-                iconName,
+            ? SvgPicture.asset(iconName,
                 width: 24,
                 height: 24,
-                color: whiteColor,
-              )
+                color:
+                    isDisabled ? Theme.of(context).disabledColor : whiteColor)
             : SizedBox(),
         label: Text(
           label.toUpperCase(),
-          style: textBold14.copyWith(color: whiteColor),
+          style: textBold14.copyWith(
+              color: isDisabled ? Theme.of(context).disabledColor : whiteColor),
         ),
         shape: RoundedRectangleBorder(
           borderRadius: allBorderRadius12,
         ),
-        onPressed: () {
-          print("ActionButton pressed");
-        },
+        onPressed: isDisabled ? null : onPressed,
       ),
     );
   }

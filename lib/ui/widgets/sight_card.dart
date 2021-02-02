@@ -13,6 +13,8 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/assets.dart';
 
+import 'package:places/ui/screens/sight_details_screen.dart';
+
 /// Виджет карточки интересного места.
 class SightCard extends StatelessWidget {
   final Sight sight;
@@ -20,6 +22,7 @@ class SightCard extends StatelessWidget {
   const SightCard({Key key, this.sight}) : super(key: key);
 
   @override
+  // ignore: long-method
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: 3 / 2,
@@ -40,7 +43,13 @@ class SightCard extends StatelessWidget {
                   type: MaterialType.transparency,
                   child: InkWell(
                     onTap: () {
-                      print('Card tapped');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              SightDetailsScreen(sight: sight),
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -168,6 +177,7 @@ class _CardBottom extends StatelessWidget {
     @required this.sight,
   }) : super(key: key);
 
+  static const pxl2 = 2.0;
   static const pxl16 = 16.0;
   final Sight sight;
 
@@ -179,25 +189,28 @@ class _CardBottom extends StatelessWidget {
         left: pxl16,
         right: pxl16,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            sight.name,
-            style: textMedium16.copyWith(
-              height: 1.25,
-              color: Theme.of(context).primaryColor,
+      child: Align(
+        alignment: Alignment.topLeft,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              sight.name,
+              style: textMedium16.copyWith(
+                height: lineHeight1_25,
+                color: Theme.of(context).primaryColor,
+              ),
             ),
-          ),
-          SizedBox(
-            height: 2,
-          ),
-          _getDescriptionText(sight, Theme.of(context).buttonColor),
-          SizedBox(
-            height: 2,
-          ),
-          _getOpenHoursText(sight),
-        ],
+            SizedBox(
+              height: pxl2,
+            ),
+            _getDescriptionText(sight, Theme.of(context).buttonColor),
+            SizedBox(
+              height: pxl2,
+            ),
+            _getOpenHoursText(sight),
+          ],
+        ),
       ),
     );
   }
@@ -209,7 +222,7 @@ Widget _getDescriptionText(final sight, final Color descriptionColor) {
       return Text(
         "$sightCardPlanned ${DateFormat.yMMMd().format(sight.plannedDate)}",
         style: textRegular14.copyWith(
-          height: 1.3,
+          height: lineHeight1_3,
           color: descriptionColor,
         ),
       );
@@ -218,7 +231,7 @@ Widget _getDescriptionText(final sight, final Color descriptionColor) {
       return Text(
         "$sightCardVisited ${DateFormat.yMMMd().format(sight.visitedDate)}",
         style: textRegular14.copyWith(
-          height: 1.3,
+          height: lineHeight1_3,
           color: secondaryColor2,
         ),
       );
@@ -230,7 +243,7 @@ Widget _getDescriptionText(final sight, final Color descriptionColor) {
         maxLines: 5,
         overflow: TextOverflow.ellipsis,
         style: textRegular14.copyWith(
-          // height: 1.3, // don't auto size with line height!
+          // height: lineHeight1_3, // don't auto size with line height!
           color: secondaryColor2,
         ),
       );
@@ -244,7 +257,7 @@ Widget _getOpenHoursText(var sight) {
       return Text(
         "$sightDetailsOpenHours ${DateFormat.Hm().format(sight.openHour)}",
         style: textRegular14.copyWith(
-          height: 1.3,
+          height: lineHeight1_3,
           color: secondaryColor2,
         ),
       );

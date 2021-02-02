@@ -1,17 +1,21 @@
+import 'package:places/ui/screens/add_sight_screen.dart';
+
 /// Строковые константы
-const String sightListScreenText = 'Список\nинтересных мест',
+//SightListScreen
+const String sightListAppBarTitle = "Список\nинтересных мест",
+    sightListFabLabel = "Новое место",
 
 //SightCard
     sightCardPlanned = "Запланировано на",
     sightCardVisited = "Цель достигнута",
 
-//SightDetails screen
+//SightDetailsScreen
     sightDetailsActionButtonLabel = "построить маршрут",
     sightDetailsOpenHours = "откроется в",
     sightDetailsPlan = "Запланировать",
     sightDetailsAddToFavorites = "В Избранное",
 
-//VisitingScreen screen
+//VisitingScreen
     visitingAppBarTitle = "Избранное",
     visitingWishToVisitTabText = "Хочу посетить",
     visitingWishToVisitEmptyListText =
@@ -22,7 +26,7 @@ const String sightListScreenText = 'Список\nинтересных мест'
     visitingEmptyListText = "Пусто",
 
 //FiltersScreen
-    filtersActionButtonLabel = "показать",
+    filtersActionButtonLabel = "Показать",
     filtersClearButtonLabel = "Очистить",
     filtersDistanceTitle = "Расстояние",
     filtersCategoriesTitle = "Категории",
@@ -30,4 +34,21 @@ const String sightListScreenText = 'Список\nинтересных мест'
 //SettingsScreen
     settingsAppBarTitle = "Настройки",
     settingsThemeSettingTitle = "Тёмная тема",
-    settingsWatchTutorialTitle = "Смотреть туториал";
+    settingsWatchTutorialTitle = "Смотреть туториал",
+
+//AddSightScreen
+    addSightActionButtonLabel = "Создать",
+    addSightAppBarTitle = "Новое место",
+    addSightCancelButtonLabel = "Отмена",
+    addSightCategoryTitle = "Категория",
+    addSightNoCategoryTitle = "Не выбрано",
+    addSightNameTitle = "Название",
+    addSightDescriptionTitle = "Описание",
+    addSightLatitudeTitle = "Широта",
+    addSightLongitudeTitle = "Долгота",
+    addSightSelectOnMapTitle = "Указать на карте",
+    addSightDescriptionHintText = "введите текст",
+
+//SelectCategoryScreen
+    selectCategoryActionButtonLabel = "Сохранить",
+    selectCategoryAppBarTitle = "Категория";

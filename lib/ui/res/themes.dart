@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/border_radiuses.dart';
+import 'package:places/ui/res/text_styles.dart';
 
 /// Основные темы приложения:
 /// Светлая тема
@@ -16,6 +17,8 @@ final lightTheme = ThemeData(
   canvasColor: whiteColor,
   backgroundColor: backgroundColor,
   shadowColor: blackColor,
+  accentColor: LightMode.greenColor,
+  errorColor: LightMode.redColor,
 
   //AppBar
   appBarTheme: _BaseProps.appBarTheme.copyWith(
@@ -36,6 +39,40 @@ final lightTheme = ThemeData(
   sliderTheme: _BaseProps.sliderTheme.copyWith(
     overlayColor: LightMode.greenColor.withAlpha(32),
     activeTrackColor: LightMode.greenColor,
+  ),
+
+  //TextField InputDecorationTheme
+  inputDecorationTheme: _BaseProps.inputDecorationTheme.copyWith(
+    enabledBorder: OutlineInputBorder(
+      borderRadius: allBorderRadius8,
+      borderSide: const BorderSide(color: LightMode.inputBorderColor),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: allBorderRadius8,
+      borderSide:
+          const BorderSide(color: LightMode.inputBorderColor, width: 2.0),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: allBorderRadius8,
+      borderSide: const BorderSide(color: LightMode.redColor),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderRadius: allBorderRadius8,
+      borderSide: const BorderSide(color: LightMode.redColor, width: 2.0),
+    ),
+    hintStyle: textRegular16.copyWith(
+      color: inactiveColor,
+      height: lineHeight1_25,
+    ),
+  ),
+
+  //Text (disabled)
+  disabledColor: inactiveColor,
+
+  //Button
+  buttonTheme: ButtonThemeData(
+    buttonColor: LightMode.greenColor,
+    disabledColor: backgroundColor,
   ),
 
   //FAB
@@ -63,6 +100,8 @@ final darkTheme = ThemeData(
   canvasColor: DarkMode.primaryColor,
   backgroundColor: DarkMode.darkColor,
   shadowColor: whiteColor,
+  accentColor: DarkMode.greenColor,
+  errorColor: DarkMode.redColor,
 
   //AppBar
   appBarTheme: _BaseProps.appBarTheme.copyWith(
@@ -83,6 +122,40 @@ final darkTheme = ThemeData(
   sliderTheme: _BaseProps.sliderTheme.copyWith(
     overlayColor: DarkMode.greenColor.withAlpha(32),
     activeTrackColor: DarkMode.greenColor,
+  ),
+
+  //TextField InputDecorationTheme
+  inputDecorationTheme: _BaseProps.inputDecorationTheme.copyWith(
+    enabledBorder: OutlineInputBorder(
+      borderRadius: allBorderRadius8,
+      borderSide: const BorderSide(color: DarkMode.inputBorderColor),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: allBorderRadius8,
+      borderSide:
+          const BorderSide(color: DarkMode.inputBorderColor, width: 2.0),
+    ),
+    errorBorder: OutlineInputBorder(
+      borderRadius: allBorderRadius8,
+      borderSide: const BorderSide(color: DarkMode.redColor),
+    ),
+    focusedErrorBorder: OutlineInputBorder(
+      borderRadius: allBorderRadius8,
+      borderSide: const BorderSide(color: DarkMode.redColor, width: 2.0),
+    ),
+    hintStyle: textRegular16.copyWith(
+      color: inactiveColor,
+      height: lineHeight1_25,
+    ),
+  ),
+
+  //Text (disabled)
+  disabledColor: inactiveColor,
+
+  //Button
+  buttonTheme: ButtonThemeData(
+    buttonColor: DarkMode.greenColor,
+    disabledColor: DarkMode.darkColor,
   ),
 
   //FAB
@@ -114,6 +187,15 @@ class _BaseProps {
     activeTickMarkColor: transparentColor,
     inactiveTickMarkColor: transparentColor,
     rangeTrackShape: _SliderTrackShape(), //RangeSlider only
+  );
+
+  //TextField InputDecorationTheme
+  static const inputDecorationTheme = InputDecorationTheme(
+    isDense: true,
+    contentPadding: const EdgeInsets.symmetric(
+      vertical: 10,
+      horizontal: 16,
+    ),
   );
 
   //FAB

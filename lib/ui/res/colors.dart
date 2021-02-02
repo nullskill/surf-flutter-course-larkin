@@ -20,7 +20,8 @@ class LightMode {
   static const greenColor = Color(0xFF4CAF50),
       yellowColor = Color(0xFFFCDD3D),
       redColor = Color(0xFFEF4343),
-      primaryColor = Color(0xFF252849);
+      primaryColor = Color(0xFF252849),
+      inputBorderColor = Color.fromRGBO(76, 175, 80, 0.4);
 }
 
 /// Класс цветовых констант для темной темы
@@ -34,5 +35,6 @@ class DarkMode {
       yellowColor = Color(0xFFFFE769),
       redColor = Color(0xFFCF2A2A),
       darkColor = Color(0xFF1A1A20),
-      primaryColor = Color(0xFF21222C);
+      primaryColor = Color(0xFF21222C),
+      inputBorderColor = Color.fromRGBO(106, 218, 111, 0.4);
 }

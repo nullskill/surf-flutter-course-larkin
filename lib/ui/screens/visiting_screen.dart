@@ -13,6 +13,7 @@ import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/widgets/sight_card.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 
+/// Экран избранных/посещенных интересных мест
 class VisitingScreen extends StatefulWidget {
   @override
   _VisitingScreenState createState() => _VisitingScreenState();

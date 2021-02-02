@@ -9,6 +9,8 @@ extension AppColorScheme on ColorScheme {
       getColorByBrightness(secondaryColor, secondaryColor2);
   Color get appSecondarySubtitleColor =>
       getColorByBrightness(secondaryColor2, inactiveColor);
+  Color get appPrimaryGradientColor =>
+      getColorByBrightness(LightMode.yellowColor, DarkMode.yellowColor);
 
   /// Метод возвращает либо lightThemeColor, либо darkThemeColor,
   /// в зависимости от свойства brightness
