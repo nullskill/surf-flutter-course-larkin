@@ -6,7 +6,7 @@ import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 
 /// Хранит историю поиска
-final _history = <String>["центр", "площадка"];
+final _history = <String>[];
 
 /// Вспомогательный миксин для экрана поиска
 mixin SightSearchScreenHelper<SightSearchScreen extends StatefulWidget>
@@ -94,7 +94,7 @@ mixin SightSearchScreenHelper<SightSearchScreen extends StatefulWidget>
 
   /// Осуществляет поиск через подписку на стрим getSightList через заданный
   /// интервал [debounceDelay], отменяя при необходимости текущий. Результат
-  /// поиска проваливается в [streamController], откуда поступает в [StreamBuilder]
+  /// поиска проваливается в [streamController] и попадает в [StreamBuilder]
   void search() async {
     if (debounce?.isActive ?? false) debounce.cancel();
 

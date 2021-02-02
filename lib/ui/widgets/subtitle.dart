@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
 
+/// Виджет для вывода подзаголовка экрана
 class Subtitle extends StatelessWidget {
   const Subtitle({
     Key key,

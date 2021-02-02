@@ -47,11 +47,7 @@ class SettingsItem extends StatelessWidget {
               ],
             ),
           ),
-          isLast
-              ? SizedBox()
-              : Divider(
-                  height: .8,
-                ),
+          isLast ? SizedBox() : Divider(height: .8),
         ],
       ),
     );
