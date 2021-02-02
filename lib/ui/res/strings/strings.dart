@@ -1,13 +1,26 @@
-import 'package:places/ui/screens/add_sight_screen.dart';
-
 /// Строковые константы
 //SightListScreen
-const String sightListAppBarTitle = "Список\nинтересных мест",
+const String sightListAppBarTitle = "Список интересных мест",
     sightListFabLabel = "Новое место",
 
 //SightCard
     sightCardPlanned = "Запланировано на",
     sightCardVisited = "Цель достигнута",
+
+//AppSearchBar
+    searchBarHintText = "Поиск",
+
+//ErrorScreen
+    errorTitle = "Ошибка",
+    errorMessage = "Что то пошло не так...\nПопробуйте позже.",
+
+//SightSearchScreen
+    sightSearchHistoryTitle = "Вы искали",
+    sightSearchClearHistoryLabel = "Очистить историю",
+    sightSearchNothingFoundTitle = "Ничего не найдено.",
+    sightSearchNothingFoundMessage = "Попробуйте изменить параметры поиска",
+    sightSearchHasErrorTitle = "Ошибка",
+    sightSearchHasErrorMessage = "Что то пошло не так.\nПопробуйте позже.",
 
 //SightDetailsScreen
     sightDetailsActionButtonLabel = "построить маршрут",
@@ -19,10 +32,10 @@ const String sightListAppBarTitle = "Список\nинтересных мест
     visitingAppBarTitle = "Избранное",
     visitingWishToVisitTabText = "Хочу посетить",
     visitingWishToVisitEmptyListText =
-        "Отмечайте понравившиеся места и они появятся здесь.",
+        "Отмечайте понравившиеся\nместа и они появятся здесь.",
     visitingVisitedTabText = "Посетил",
     visitingVisitedEmptyListText =
-        "Завершите маршрут, чтобы место попало сюда.",
+        "Завершите маршрут,\nчтобы место попало сюда.",
     visitingEmptyListText = "Пусто",
 
 //FiltersScreen
@@ -46,7 +59,7 @@ const String sightListAppBarTitle = "Список\nинтересных мест
     addSightDescriptionTitle = "Описание",
     addSightLatitudeTitle = "Широта",
     addSightLongitudeTitle = "Долгота",
-    addSightSelectOnMapTitle = "Указать на карте",
+    addSightSelectOnMapLabel = "Указать на карте",
     addSightDescriptionHintText = "введите текст",
 
 //SelectCategoryScreen

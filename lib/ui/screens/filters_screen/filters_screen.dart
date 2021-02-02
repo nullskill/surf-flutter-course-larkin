@@ -7,7 +7,6 @@ import 'package:places/domain/sight.dart';
 
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/app_color_scheme.dart';
 import 'package:places/ui/res/assets.dart';
 
@@ -17,9 +16,12 @@ import 'package:places/ui/widgets/app_back_button.dart';
 import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/ui/widgets/app_range_slider/app_range_slider_helper.dart';
 import 'package:places/ui/widgets/app_range_slider/app_range_slider.dart';
+import 'package:places/ui/widgets/subtitle.dart';
 
 /// Экран фильтров
 class FiltersScreen extends StatefulWidget {
+  static const pxl8 = 8.0, pxl16 = 16.0, pxl24 = 24.0;
+
   @override
   _FiltersScreenState createState() => _FiltersScreenState();
 
@@ -28,8 +30,8 @@ class FiltersScreen extends StatefulWidget {
 }
 
 class _FiltersScreenState extends State<FiltersScreen> {
-  static const pxl8 = 8.0, pxl16 = 16.0, pxl24 = 24.0;
   int _filteredCardsNumber = 0;
+  List<Sight> _filteredCards;
   List<Category> _categories;
   RangeValues _currentRangeValues;
 
@@ -38,6 +40,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   @override
   void initState() {
     super.initState();
+    for (var category in categories) category.reset();
     _categories = [...categories];
     _resetRangeValues();
   }
@@ -72,15 +75,17 @@ class _FiltersScreenState extends State<FiltersScreen> {
       for (var category in _categories)
         if (category.selected) category.type,
     ];
-    final filteredCards = mocks.where((el) =>
-        selectedTypes.contains(el.type) &&
-        FiltersScreenHelper.arePointsNear(
-          checkPoint: el,
-          centerPoint: FiltersScreenHelper.centerPoint,
-          minValue: _currentRangeValues.start,
-          maxValue: _currentRangeValues.end,
-        ));
-    _filteredCardsNumber = filteredCards.length;
+    _filteredCards = mocks
+        .where((el) =>
+            selectedTypes.contains(el.type) &&
+            FiltersScreenHelper.arePointsNear(
+              checkPoint: el,
+              centerPoint: FiltersScreenHelper.centerPoint,
+              minValue: _currentRangeValues.start,
+              maxValue: _currentRangeValues.end,
+            ))
+        .toList();
+    _filteredCardsNumber = _filteredCards.length;
   }
 
   @override
@@ -89,12 +94,21 @@ class _FiltersScreenState extends State<FiltersScreen> {
       appBar: _FiltersAppBar(),
       body: _FiltersBody(currentRangeValues: _currentRangeValues),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: pxl16,
-          vertical: pxl8,
+        padding: EdgeInsets.fromLTRB(
+          FiltersScreen.pxl16,
+          FiltersScreen.pxl8,
+          FiltersScreen.pxl16,
+          MediaQuery.of(context).padding.bottom + 8.0,
         ),
         child: ActionButton(
           label: "$filtersActionButtonLabel ($_filteredCardsNumber)",
+          isDisabled: _filteredCardsNumber == 0,
+          onPressed: () {
+            filteredMocks.clear();
+            filteredMocks.addAll(_filteredCards);
+
+            Navigator.pop(context);
+          },
         ),
       ),
     );
@@ -157,26 +171,19 @@ class _FiltersBody extends StatelessWidget {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: _FiltersScreenState.pxl16,
-          vertical: _FiltersScreenState.pxl24,
+          horizontal: FiltersScreen.pxl16,
+          vertical: FiltersScreen.pxl24,
         ),
         child: Column(
           children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                filtersCategoriesTitle.toUpperCase(),
-                style: textRegular12.copyWith(
-                  color: inactiveColor,
-                  height: lineHeight1_3,
-                ),
-              ),
+            Subtitle(
+              subtitle: filtersCategoriesTitle,
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(
-                _FiltersScreenState.pxl8,
-                _FiltersScreenState.pxl24,
-                _FiltersScreenState.pxl8,
+                FiltersScreen.pxl8,
+                FiltersScreen.pxl24,
+                FiltersScreen.pxl8,
                 56,
               ),
               child: _Categories(),

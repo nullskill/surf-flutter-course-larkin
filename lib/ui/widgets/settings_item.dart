@@ -11,6 +11,7 @@ class SettingsItem extends StatelessWidget {
     @required this.trailing,
     this.paddingValue = 14.0,
     this.isGreyedOut = false,
+    this.isLast = false,
     this.onTap,
   }) : super(key: key);
 
@@ -18,6 +19,7 @@ class SettingsItem extends StatelessWidget {
   final Widget trailing;
   final double paddingValue;
   final bool isGreyedOut;
+  final bool isLast;
   final Function onTap;
 
   @override
@@ -45,9 +47,7 @@ class SettingsItem extends StatelessWidget {
               ],
             ),
           ),
-          Divider(
-            height: .8,
-          ),
+          isLast ? SizedBox() : Divider(height: .8),
         ],
       ),
     );

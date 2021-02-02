@@ -15,7 +15,7 @@ import 'package:places/ui/widgets/settings_item.dart';
 
 /// Экран выбора категории.
 class SelectCategoryScreen extends StatefulWidget {
-  static const pxl16 = 16.0, pxl24 = 24.0;
+  static const pxl8 = 8.0, pxl16 = 16.0, pxl24 = 24.0;
 
   final Category selectedCategory;
 
@@ -72,9 +72,11 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
         ),
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: SelectCategoryScreen.pxl16,
-          vertical: 8,
+        padding: EdgeInsets.fromLTRB(
+          SelectCategoryScreen.pxl16,
+          SelectCategoryScreen.pxl8,
+          SelectCategoryScreen.pxl16,
+          MediaQuery.of(context).padding.bottom + 8.0,
         ),
         child: ActionButton(
           label: selectCategoryActionButtonLabel,

@@ -1,7 +1,7 @@
 import 'package:places/domain/sight.dart';
 
 /// Список интересных мест
-final List mocks = [
+final mocks = <Sight>[
   Sight(
     name: "Центр современного искусства «Винзавод»",
     lat: 55.75569,
@@ -69,7 +69,7 @@ final List mocks = [
 ];
 
 /// Список, желаемых к посещению мест
-final List favoriteMocks = [
+final favoriteMocks = <FavoriteSight>[
   FavoriteSight.fromSight(
     sight: mocks.first,
     plannedDate: DateTime.now(),
@@ -78,10 +78,18 @@ final List favoriteMocks = [
 ];
 
 /// Список посещенных мест
-final List visitedMocks = [];
+final visitedMocks = <VisitedSight>[];
+
+/// Список посещенных мест
+final filteredMocks = <Sight>[];
+
+/// Функция возвращает [filteredMocks], если не пустой, иначе [mocks]
+List<Sight> getFilteredMocks() {
+  return filteredMocks.isEmpty ? mocks : filteredMocks;
+}
 
 /// Список категорий интересных мест
-final List categories = [
+final categories = <Category>[
   for (var type in SightType.values)
     Category.fromType(
       type: type,

@@ -14,6 +14,7 @@ import 'package:places/ui/screens/select_category_screen.dart';
 
 import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/ui/widgets/settings_item.dart';
+import 'package:places/ui/widgets/link.dart';
 
 /// Экран добавления интересного места.
 class AddSightScreen extends StatefulWidget {
@@ -116,9 +117,11 @@ class _AddSightScreenState extends State<AddSightScreen> {
         setSelectedCategory: setSelectedCategory,
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AddSightScreen.pxl16,
-          vertical: AddSightScreen.pxl8,
+        padding: EdgeInsets.fromLTRB(
+          AddSightScreen.pxl16,
+          AddSightScreen.pxl8,
+          AddSightScreen.pxl16,
+          MediaQuery.of(context).padding.bottom + 8.0,
         ),
         child: ActionButton(
           label: addSightActionButtonLabel,
@@ -191,16 +194,16 @@ class _AddSightBody extends StatelessWidget {
     @required this.focusNodes,
     @required this.currentFocusNode,
     @required this.moveFocus,
-    this.selectedCategory,
     @required this.setSelectedCategory,
+    this.selectedCategory,
   }) : super(key: key);
 
   final Map<String, TextEditingController> controllers;
   final Map<String, FocusNode> focusNodes;
   final FocusNode currentFocusNode;
-  final Function moveFocus;
   final Category selectedCategory;
   final Function setSelectedCategory;
+  final Function moveFocus;
 
   bool hasClearButton(fieldName) =>
       currentFocusNode == focusNodes[fieldName] &&
@@ -233,7 +236,7 @@ class _AddSightBody extends StatelessWidget {
                     ),
                   ),
                 );
-                result != null && setSelectedCategory(result);
+                if (result != null) setSelectedCategory(result);
               },
               trailing: SvgPicture.asset(
                 AppIcons.view,
@@ -244,10 +247,10 @@ class _AddSightBody extends StatelessWidget {
             ),
             _AddSightTextField(
               title: addSightNameTitle,
+              hasClearButton: hasClearButton("name"),
               controller: controllers["name"],
               focusNode: focusNodes["name"],
               moveFocus: moveFocus,
-              hasClearButton: hasClearButton("name"),
             ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,11 +258,12 @@ class _AddSightBody extends StatelessWidget {
                 Expanded(
                   child: _AddSightTextField(
                     title: addSightLatitudeTitle,
+                    hasClearButton: hasClearButton("latitude"),
                     controller: controllers["latitude"],
                     focusNode: focusNodes["latitude"],
                     moveFocus: moveFocus,
-                    hasClearButton: hasClearButton("latitude"),
                     keyboardType: TextInputType.numberWithOptions(
+                      signed: true,
                       decimal: true,
                     ),
                     validator: (String value) =>
@@ -272,11 +276,12 @@ class _AddSightBody extends StatelessWidget {
                 Expanded(
                   child: _AddSightTextField(
                     title: addSightLongitudeTitle,
+                    hasClearButton: hasClearButton("longitude"),
                     controller: controllers["longitude"],
                     focusNode: focusNodes["longitude"],
                     moveFocus: moveFocus,
-                    hasClearButton: hasClearButton("longitude"),
                     keyboardType: TextInputType.numberWithOptions(
+                      signed: true,
                       decimal: true,
                     ),
                     validator: (String value) =>
@@ -285,30 +290,21 @@ class _AddSightBody extends StatelessWidget {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0, bottom: 13.0),
-              child: GestureDetector(
-                onTap: () {
-                  print("Select on map tapped");
-                },
-                child: Text(
-                  addSightSelectOnMapTitle,
-                  style: textMedium16.copyWith(
-                    color: Theme.of(context).buttonColor,
-                    height: lineHeight1_25,
-                  ),
-                ),
-              ),
+            Link(
+              label: addSightSelectOnMapLabel,
+              onTap: () {
+                print("Select on map tapped");
+              },
             ),
             _AddSightTextField(
               title: addSightDescriptionTitle,
               hintText: addSightDescriptionHintText,
               maxLines: 4,
+              isLastField: true,
+              hasClearButton: hasClearButton("description"),
               controller: controllers["description"],
               focusNode: focusNodes["description"],
               moveFocus: moveFocus,
-              hasClearButton: hasClearButton("description"),
-              isLastField: true,
             ),
           ],
         ),
@@ -326,23 +322,23 @@ class _AddSightTextField extends StatelessWidget {
     @required this.moveFocus,
     this.maxLines,
     this.hintText,
-    this.keyboardType,
-    this.hasClearButton = false,
     this.isLastField = false,
+    this.hasClearButton = false,
+    this.keyboardType,
     this.validator,
   }) : super(key: key);
 
   static const pxl40 = 40.0;
 
+  final int maxLines;
   final String title;
+  final String hintText;
+  final bool isLastField;
+  final bool hasClearButton;
+  final TextInputType keyboardType;
   final TextEditingController controller;
   final FocusNode focusNode;
   final Function moveFocus;
-  final int maxLines;
-  final String hintText;
-  final TextInputType keyboardType;
-  final bool hasClearButton;
-  final bool isLastField;
   final Function validator;
 
   @override
