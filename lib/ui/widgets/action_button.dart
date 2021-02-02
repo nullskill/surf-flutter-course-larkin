@@ -29,16 +29,19 @@ class ActionButton extends StatelessWidget {
       child: RaisedButton.icon(
         elevation: 0,
         icon: iconName != null
-            ? SvgPicture.asset(iconName,
+            ? SvgPicture.asset(
+                iconName,
                 width: 24,
                 height: 24,
                 color:
-                    isDisabled ? Theme.of(context).disabledColor : whiteColor)
+                    isDisabled ? Theme.of(context).disabledColor : whiteColor,
+              )
             : SizedBox(),
         label: Text(
           label.toUpperCase(),
           style: textBold14.copyWith(
-              color: isDisabled ? Theme.of(context).disabledColor : whiteColor),
+            color: isDisabled ? Theme.of(context).disabledColor : whiteColor,
+          ),
         ),
         shape: RoundedRectangleBorder(
           borderRadius: allBorderRadius12,

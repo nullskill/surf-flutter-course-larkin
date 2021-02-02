@@ -19,6 +19,8 @@ final lightTheme = ThemeData(
   shadowColor: blackColor,
   accentColor: LightMode.greenColor,
   errorColor: LightMode.redColor,
+  //Text (disabled)
+  disabledColor: inactiveColor,
 
   //AppBar
   appBarTheme: _BaseProps.appBarTheme.copyWith(
@@ -66,9 +68,6 @@ final lightTheme = ThemeData(
     ),
   ),
 
-  //Text (disabled)
-  disabledColor: inactiveColor,
-
   //Button
   buttonTheme: ButtonThemeData(
     buttonColor: LightMode.greenColor,
@@ -102,6 +101,8 @@ final darkTheme = ThemeData(
   shadowColor: whiteColor,
   accentColor: DarkMode.greenColor,
   errorColor: DarkMode.redColor,
+  //Text (disabled)
+  disabledColor: inactiveColor,
 
   //AppBar
   appBarTheme: _BaseProps.appBarTheme.copyWith(
@@ -149,9 +150,6 @@ final darkTheme = ThemeData(
     ),
   ),
 
-  //Text (disabled)
-  disabledColor: inactiveColor,
-
   //Button
   buttonTheme: ButtonThemeData(
     buttonColor: DarkMode.greenColor,
@@ -171,7 +169,13 @@ final darkTheme = ThemeData(
   ),
 );
 
+/// Класс общих настроек для тем
 class _BaseProps {
+  // This class is not meant to be instantiated or extended; this constructor
+  // prevents instantiation and extension.
+  // ignore: unused_element
+  _BaseProps._();
+
   //AppBar
   static const appBarTheme = AppBarTheme(
     color: transparentColor,
@@ -193,7 +197,7 @@ class _BaseProps {
   static const inputDecorationTheme = InputDecorationTheme(
     isDense: true,
     contentPadding: const EdgeInsets.symmetric(
-      vertical: 10,
+      vertical: 12,
       horizontal: 16,
     ),
   );

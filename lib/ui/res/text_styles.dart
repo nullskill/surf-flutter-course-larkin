@@ -30,4 +30,7 @@ TextStyle _text = const TextStyle(
     textBold32 = textBold.copyWith(fontSize: 32.0);
 
 /// Высоты строк
-const lineHeight1_2 = 1.2, lineHeight1_25 = 1.25, lineHeight1_3 = 1.3;
+const lineHeight1_2 = 1.2,
+    lineHeight1_25 = 1.25,
+    lineHeight1_3 = 1.3,
+    lineHeight1_5 = 1.5;
