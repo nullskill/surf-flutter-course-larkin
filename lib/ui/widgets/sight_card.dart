@@ -177,17 +177,15 @@ class _CardBottom extends StatelessWidget {
     @required this.sight,
   }) : super(key: key);
 
-  static const pxl2 = 2.0;
-  static const pxl16 = 16.0;
   final Sight sight;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-        top: pxl16,
-        left: pxl16,
-        right: pxl16,
+        top: 16.0,
+        left: 16.0,
+        right: 16.0,
       ),
       child: Align(
         alignment: Alignment.topLeft,
@@ -202,11 +200,11 @@ class _CardBottom extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: pxl2,
+              height: 2.0,
             ),
             _getDescriptionText(sight, Theme.of(context).buttonColor),
             SizedBox(
-              height: pxl2,
+              height: 2.0,
             ),
             _getOpenHoursText(sight),
           ],

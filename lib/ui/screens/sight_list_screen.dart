@@ -21,8 +21,6 @@ import 'package:places/ui/screens/sight_search_screen/sight_search_screen.dart';
 
 /// Экран отображения списка карточек интересных мест.
 class SightListScreen extends StatefulWidget {
-  static const pxl16 = 16.0;
-  static const pxl6 = 6.0;
   @override
   _SightListScreenState createState() => _SightListScreenState();
 }
@@ -52,7 +50,7 @@ class _SightListScreenState extends State<SightListScreen> {
           );
         },
         onFilter: () async {
-          final result = await Navigator.of(context).push(
+          await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => FiltersScreen(),
             ),
@@ -64,7 +62,7 @@ class _SightListScreenState extends State<SightListScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(SightListScreen.pxl16),
+          padding: const EdgeInsets.all(16.0),
           child: _CardColumn(
             sights: _sights,
           ),
@@ -115,7 +113,7 @@ class _CardColumn extends StatelessWidget {
         for (var sight in sights) ...[
           SightCard(sight: sight),
           SizedBox(
-            height: SightListScreen.pxl16,
+            height: 16.0,
           ),
         ],
       ],

@@ -94,7 +94,6 @@ class _SightDetailsBody extends StatelessWidget {
     @required this.sight,
   }) : super(key: key);
 
-  static const pxl24 = 24.0;
   final sight;
 
   @override
@@ -106,14 +105,14 @@ class _SightDetailsBody extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.symmetric(
               horizontal: 16.0,
-              vertical: pxl24,
+              vertical: 24.0,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _CardLabel(sight: sight),
                 SizedBox(
-                  height: pxl24,
+                  height: 24.0,
                 ),
                 Text(
                   sight.details,
@@ -123,7 +122,7 @@ class _SightDetailsBody extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  height: pxl24,
+                  height: 24.0,
                 ),
                 ActionButton(
                   iconName: AppIcons.go,
@@ -133,7 +132,7 @@ class _SightDetailsBody extends StatelessWidget {
                   },
                 ),
                 SizedBox(
-                  height: pxl24,
+                  height: 24.0,
                 ),
                 _CardMenu(),
               ],
@@ -242,8 +241,6 @@ class _ExpandedButton extends StatelessWidget {
     this.selected = false,
   }) : super(key: key);
 
-  static const pxl24 = 24.0;
-
   @override
   Widget build(BuildContext context) {
     final color =
@@ -257,8 +254,8 @@ class _ExpandedButton extends StatelessWidget {
         },
         icon: SvgPicture.asset(
           iconName,
-          width: pxl24,
-          height: pxl24,
+          width: 24.0,
+          height: 24.0,
           color: color,
         ),
         label: Text(

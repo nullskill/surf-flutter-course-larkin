@@ -108,7 +108,6 @@ class _VisitingScreenList extends StatelessWidget {
     this.hasVisited = false,
   }) : super(key: key);
 
-  static const pxl16 = 16.0;
   final bool hasVisited;
 
   @override
@@ -124,14 +123,14 @@ class _VisitingScreenList extends StatelessWidget {
           )
         : SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(pxl16),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   for (var sight in sights) ...[
                     SightCard(sight: sight),
                     SizedBox(
-                      height: pxl16,
+                      height: 16.0,
                     ),
                   ],
                 ],
