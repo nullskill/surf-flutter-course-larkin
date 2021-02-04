@@ -59,12 +59,14 @@ class _AddSightScreenState extends State<AddSightScreen> {
     super.dispose();
   }
 
+  /// Listener для FocusNode
   void focusNodeListener(String focusNodeName) {
     setState(() {
       currentFocusNode = focusNodes[focusNodeName];
     });
   }
 
+  /// Listener для TextEditingController
   void controllerListener(String controllerName) {
     bool _allDone = true;
 
@@ -79,6 +81,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
     });
   }
 
+  /// Перемещает фокус на следующий TextFormField
   void moveFocus() {
     if (focusNodes["name"].hasFocus) {
       focusNodes["latitude"].requestFocus();
@@ -91,6 +94,7 @@ class _AddSightScreenState extends State<AddSightScreen> {
     }
   }
 
+  /// Устанавливает выбранную категорию в качестве текущей
   void setSelectedCategory(selectedCategory) {
     setState(() {
       this.selectedCategory = selectedCategory;
