@@ -18,12 +18,6 @@ import 'package:places/ui/widgets/link.dart';
 
 /// Экран добавления интересного места.
 class AddSightScreen extends StatefulWidget {
-  static const pxl8 = 8.0,
-      pxl10 = 10.0,
-      pxl16 = 16.0,
-      pxl24 = 24.0,
-      pxl56 = 56.0;
-
   @override
   _AddSightScreenState createState() => _AddSightScreenState();
 }
@@ -118,9 +112,9 @@ class _AddSightScreenState extends State<AddSightScreen> {
       ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.fromLTRB(
-          AddSightScreen.pxl16,
-          AddSightScreen.pxl8,
-          AddSightScreen.pxl16,
+          16.0,
+          8.0,
+          16.0,
           MediaQuery.of(context).padding.bottom + 8.0,
         ),
         child: ActionButton(
@@ -151,14 +145,14 @@ class _AddSightAppBar extends StatelessWidget implements PreferredSizeWidget {
     Key key,
   }) : super(key: key);
 
-  final Size preferredSize = Size.fromHeight(AddSightScreen.pxl56);
+  final Size preferredSize = Size.fromHeight(56.0);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       leading: Padding(
         padding: const EdgeInsets.symmetric(
-          vertical: AddSightScreen.pxl10,
+          vertical: 10.0,
         ),
         child: FlatButton(
           onPressed: () {
@@ -215,8 +209,8 @@ class _AddSightBody extends StatelessWidget {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AddSightScreen.pxl16,
-          vertical: AddSightScreen.pxl24,
+          horizontal: 16.0,
+          vertical: 24.0,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -240,8 +234,8 @@ class _AddSightBody extends StatelessWidget {
               },
               trailing: SvgPicture.asset(
                 AppIcons.view,
-                width: AddSightScreen.pxl24,
-                height: AddSightScreen.pxl24,
+                width: 24.0,
+                height: 24.0,
                 color: Theme.of(context).primaryColor,
               ),
             ),
@@ -271,7 +265,7 @@ class _AddSightBody extends StatelessWidget {
                   ),
                 ),
                 SizedBox(
-                  width: AddSightScreen.pxl16,
+                  width: 16.0,
                 ),
                 Expanded(
                   child: _AddSightTextField(
@@ -328,8 +322,6 @@ class _AddSightTextField extends StatelessWidget {
     this.validator,
   }) : super(key: key);
 
-  static const pxl40 = 40.0;
-
   final int maxLines;
   final String title;
   final String hintText;
@@ -347,7 +339,7 @@ class _AddSightTextField extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: AddSightScreen.pxl24),
+          padding: const EdgeInsets.only(top: 24.0),
           child: _AddSightSubtitle(
             subtitle: title,
           ),
@@ -371,7 +363,7 @@ class _AddSightTextField extends StatelessWidget {
               moveFocus();
             },
             cursorColor: Theme.of(context).primaryColor,
-            cursorHeight: AddSightScreen.pxl24,
+            cursorHeight: 24.0,
             cursorWidth: 1,
             style: textRegular16.copyWith(
               color: Theme.of(context).primaryColor,
@@ -382,7 +374,7 @@ class _AddSightTextField extends StatelessWidget {
               suffixIcon: !hasClearButton
                   ? null
                   : Padding(
-                      padding: const EdgeInsets.all(AddSightScreen.pxl10),
+                      padding: const EdgeInsets.all(10.0),
                       child: GestureDetector(
                         onTap: () {
                           controller.clear();
@@ -394,8 +386,8 @@ class _AddSightTextField extends StatelessWidget {
                       ),
                     ),
               suffixIconConstraints: BoxConstraints(
-                maxHeight: pxl40,
-                maxWidth: pxl40,
+                maxHeight: 40.0,
+                maxWidth: 40.0,
               ),
             ),
           ),

@@ -55,20 +55,23 @@ class _SettingsBody extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  static const pxl24 = 24.0;
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: pxl24),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
         child: Column(
           children: [
             SettingsItem(
               title: settingsThemeSettingTitle,
               paddingValue: 10,
               trailing: Consumer<ThemeNotifier>(
-                builder: (context, notifier, child) => CupertinoSwitch(
+                builder: (
+                  context,
+                  notifier,
+                  child,
+                ) =>
+                    CupertinoSwitch(
                   value: notifier.darkTheme,
                   onChanged: (newValue) {
                     notifier.toggleTheme();
@@ -84,8 +87,8 @@ class _SettingsBody extends StatelessWidget {
                 },
                 child: SvgPicture.asset(
                   AppIcons.info,
-                  width: pxl24,
-                  height: pxl24,
+                  width: 24.0,
+                  height: 24.0,
                   color: Theme.of(context).buttonColor,
                 ),
               ),

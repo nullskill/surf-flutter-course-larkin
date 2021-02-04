@@ -15,8 +15,6 @@ class MessageBox extends StatelessWidget {
     this.link,
   }) : super(key: key);
 
-  static const pxl64 = 64.0;
-
   final String title, iconName, message;
   final Map<String, String> link;
 
@@ -28,8 +26,8 @@ class MessageBox extends StatelessWidget {
         children: [
           SvgPicture.asset(
             iconName,
-            width: pxl64,
-            height: pxl64,
+            width: 64.0,
+            height: 64.0,
             color: inactiveColor,
           ),
           SizedBox(

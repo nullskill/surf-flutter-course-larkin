@@ -20,8 +20,6 @@ import 'package:places/ui/widgets/subtitle.dart';
 
 /// Экран фильтров
 class FiltersScreen extends StatefulWidget {
-  static const pxl8 = 8.0, pxl16 = 16.0, pxl24 = 24.0;
-
   @override
   _FiltersScreenState createState() => _FiltersScreenState();
 
@@ -95,9 +93,9 @@ class _FiltersScreenState extends State<FiltersScreen> {
       body: _FiltersBody(currentRangeValues: _currentRangeValues),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.fromLTRB(
-          FiltersScreen.pxl16,
-          FiltersScreen.pxl8,
-          FiltersScreen.pxl16,
+          16.0,
+          8.0,
+          16.0,
           MediaQuery.of(context).padding.bottom + 8.0,
         ),
         child: ActionButton(
@@ -171,8 +169,8 @@ class _FiltersBody extends StatelessWidget {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: FiltersScreen.pxl16,
-          vertical: FiltersScreen.pxl24,
+          horizontal: 16.0,
+          vertical: 24.0,
         ),
         child: Column(
           children: [
@@ -181,9 +179,9 @@ class _FiltersBody extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(
-                FiltersScreen.pxl8,
-                FiltersScreen.pxl24,
-                FiltersScreen.pxl8,
+                8.0,
+                24.0,
+                8.0,
                 56,
               ),
               child: _Categories(),
@@ -223,8 +221,6 @@ class _Category extends StatelessWidget {
     @required this.category,
   }) : super(key: key);
 
-  static const pxl32 = 32.0, pxl96 = 96.0;
-
   final Category category;
 
   @override
@@ -237,15 +233,15 @@ class _Category extends StatelessWidget {
             Material(
               type: MaterialType.transparency,
               child: InkWell(
-                borderRadius: BorderRadius.circular(pxl32),
+                borderRadius: BorderRadius.circular(32.0),
                 child: CircleAvatar(
-                  radius: _Category.pxl32,
+                  radius: 32.0,
                   backgroundColor:
                       Theme.of(context).buttonColor.withOpacity(.16),
                   child: SvgPicture.asset(
                     category.iconName,
-                    width: pxl32,
-                    height: pxl32,
+                    width: 32.0,
+                    height: 32.0,
                     color: Theme.of(context).buttonColor,
                   ),
                 ),
@@ -258,7 +254,7 @@ class _Category extends StatelessWidget {
           ],
         ),
         SizedBox(
-          width: pxl96,
+          width: 96.0,
           height: 12,
         ),
         _CategoryLabel(label: category.name),
@@ -272,7 +268,7 @@ class _CategoryTick extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  static const pxl16 = 16.0, zero = 0.0;
+  static const zero = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -284,8 +280,8 @@ class _CategoryTick extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
         child: SvgPicture.asset(
           AppIcons.tick,
-          width: pxl16,
-          height: pxl16,
+          width: 16.0,
+          height: 16.0,
           color: Theme.of(context).canvasColor,
         ),
       ),
@@ -305,7 +301,7 @@ class _CategoryLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: BoxConstraints.loose(
-        const Size.fromWidth(_Category.pxl96),
+        const Size.fromWidth(96.0),
       ),
       child: Text(
         label,

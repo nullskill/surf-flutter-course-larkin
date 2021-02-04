@@ -12,8 +12,6 @@ import 'package:places/ui/widgets/app_back_button.dart';
 
 /// Виджет AppSearchBar предоставляет AppBar вместе с полем для поиска
 class AppSearchBar extends StatelessWidget implements PreferredSizeWidget {
-  static const pxl16 = 16.0;
-
   final Size preferredSize = Size.fromHeight(116);
   final String title;
   final bool readOnly;
@@ -36,8 +34,8 @@ class AppSearchBar extends StatelessWidget implements PreferredSizeWidget {
     this.onTap,
     this.onEditingComplete,
     this.onFilter,
-    @required this.searchFocusNode,
-    @required this.searchController,
+    this.searchFocusNode,
+    this.searchController,
   }) : super(key: key);
 
   @override
@@ -51,8 +49,8 @@ class AppSearchBar extends StatelessWidget implements PreferredSizeWidget {
         children: [
           Padding(
             padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top + pxl16,
-              bottom: pxl16,
+              top: MediaQuery.of(context).padding.top + 16.0,
+              bottom: 16.0,
             ),
             child: Text(
               title,
@@ -87,11 +85,9 @@ class _SearchBar extends StatelessWidget {
     this.onTap,
     this.onEditingComplete,
     this.onFilter,
-    @required this.searchFocusNode,
-    @required this.searchController,
+    this.searchFocusNode,
+    this.searchController,
   }) : super(key: key);
-
-  static const pxl8 = 8.0, pxl12 = 12.0, pxl24 = 24.0, pxl40 = 40.0;
 
   final bool readOnly;
   final bool autofocus;
@@ -139,7 +135,7 @@ class _SearchBar extends StatelessWidget {
               focusNode: searchFocusNode,
               controller: searchController,
               cursorColor: Theme.of(context).primaryColor,
-              cursorHeight: pxl24,
+              cursorHeight: 24.0,
               cursorWidth: 1,
               style: textRegular16.copyWith(
                 color: Theme.of(context).primaryColor,
@@ -149,8 +145,8 @@ class _SearchBar extends StatelessWidget {
               decoration: InputDecoration(
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(
-                  vertical: pxl8,
-                  horizontal: pxl12,
+                  vertical: 8.0,
+                  horizontal: 12.0,
                 ),
                 hintText: searchBarHintText,
                 hintStyle: textRegular16.copyWith(
@@ -158,12 +154,12 @@ class _SearchBar extends StatelessWidget {
                   height: lineHeight1_5,
                 ),
                 prefixIconConstraints: BoxConstraints(
-                  maxHeight: pxl40,
+                  maxHeight: 40.0,
                 ),
                 prefixIcon: Padding(
                   padding: const EdgeInsets.symmetric(
-                    vertical: pxl8,
-                    horizontal: pxl12,
+                    vertical: 8.0,
+                    horizontal: 12.0,
                   ),
                   child: SvgPicture.asset(
                     AppIcons.search,
@@ -174,15 +170,15 @@ class _SearchBar extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: pxl8,
-            right: pxl12,
+            top: 8.0,
+            right: 12.0,
             child: _SuffixIcon(
               readOnly: readOnly,
               hasClearButton: hasClearButton,
               onFilter: onFilter,
               onClear: () {
-                searchController.clear();
-                FocusScope.of(context).requestFocus(searchFocusNode);
+                searchController?.clear();
+                searchFocusNode?.requestFocus();
               },
             ),
           ),
@@ -210,8 +206,8 @@ class _SuffixIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return readOnly ?? false
         ? FlatButton(
-            height: _SearchBar.pxl24,
-            minWidth: _SearchBar.pxl24,
+            height: 24.0,
+            minWidth: 24.0,
             padding: EdgeInsets.zero,
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             shape: RoundedRectangleBorder(

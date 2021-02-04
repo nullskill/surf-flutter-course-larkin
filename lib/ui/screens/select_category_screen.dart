@@ -15,8 +15,6 @@ import 'package:places/ui/widgets/settings_item.dart';
 
 /// Экран выбора категории.
 class SelectCategoryScreen extends StatefulWidget {
-  static const pxl8 = 8.0, pxl16 = 16.0, pxl24 = 24.0;
-
   final Category selectedCategory;
 
   const SelectCategoryScreen({Key key, this.selectedCategory})
@@ -43,8 +41,8 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: SelectCategoryScreen.pxl16,
-            vertical: SelectCategoryScreen.pxl24,
+            horizontal: 16.0,
+            vertical: 24.0,
           ),
           child: Column(
             children: [
@@ -58,12 +56,12 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                   },
                   trailing: selectedCategory != category
                       ? SizedBox(
-                          height: SelectCategoryScreen.pxl24,
+                          height: 24.0,
                         )
                       : SvgPicture.asset(
                           AppIcons.tick,
-                          width: SelectCategoryScreen.pxl24,
-                          height: SelectCategoryScreen.pxl24,
+                          width: 24.0,
+                          height: 24.0,
                           color: Theme.of(context).buttonColor,
                         ),
                 ),
@@ -73,9 +71,9 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
       ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.fromLTRB(
-          SelectCategoryScreen.pxl16,
-          SelectCategoryScreen.pxl8,
-          SelectCategoryScreen.pxl16,
+          16.0,
+          8.0,
+          16.0,
           MediaQuery.of(context).padding.bottom + 8.0,
         ),
         child: ActionButton(

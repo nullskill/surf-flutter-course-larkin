@@ -138,8 +138,6 @@ class _ListTile extends StatelessWidget {
     @required this.sight,
   }) : super(key: key);
 
-  static const pxl56 = 56.0;
-
   final Sight sight;
 
   @override
@@ -154,8 +152,8 @@ class _ListTile extends StatelessWidget {
         );
       },
       leading: Container(
-        width: pxl56,
-        height: pxl56,
+        width: 56.0,
+        height: 56.0,
         decoration: BoxDecoration(
           color: placeholderColor,
           borderRadius: allBorderRadius12,
@@ -220,8 +218,6 @@ class _SearchHistoryList extends StatelessWidget {
     @required this.onClearHistory,
   }) : super(key: key);
 
-  static const pxl16 = 16.0;
-
   final List<String> history;
   final Function isLastInHistory;
   final Function onTapOnHistory;
@@ -235,9 +231,9 @@ class _SearchHistoryList extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(
-              pxl16,
+              16.0,
               24.0,
-              pxl16,
+              16.0,
               4.0,
             ),
             child: Subtitle(
@@ -245,7 +241,7 @@ class _SearchHistoryList extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: pxl16),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               children: [
                 for (var item in history)
