@@ -66,7 +66,11 @@ class SightCard extends StatelessWidget {
                   iconName: sight.runtimeType == Sight
                       ? AppIcons.heart
                       : AppIcons.close,
-                  onTap: sight.runtimeType == Sight ? () {} : onRemoveCard,
+                  onTap: sight.runtimeType == Sight
+                      ? () {
+                          // TODO: Add callback body
+                        }
+                      : onRemoveCard,
                 ),
               ),
               //Показываем различные иконки, в зависимости от типа карточки

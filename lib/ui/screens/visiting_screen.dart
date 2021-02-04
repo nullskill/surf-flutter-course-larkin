@@ -152,7 +152,7 @@ class _VisitingScreenList extends StatelessWidget {
                 children: [
                   for (var sight in sights) ...[
                     SightCard(
-                      key: ObjectKey(sight),
+                      key: ValueKey(sight.name),
                       sight: sight,
                       onRemoveCard: () => onRemoveCard(hasVisited, sight),
                     ),
