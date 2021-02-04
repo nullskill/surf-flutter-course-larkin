@@ -230,12 +230,8 @@ class _SearchHistoryList extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(
-              16.0,
-              24.0,
-              16.0,
-              4.0,
-            ),
+            // ignore: prefer-trailing-comma
+            padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 4.0),
             child: Subtitle(
               subtitle: sightSearchHistoryTitle,
             ),

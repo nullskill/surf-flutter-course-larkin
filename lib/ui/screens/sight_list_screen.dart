@@ -15,7 +15,7 @@ import 'package:places/ui/widgets/app_search_bar.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_floating_action_button.dart';
 
-import 'package:places/ui/screens/add_sight_screen.dart';
+import 'package:places/ui/screens/add_sight_screen/add_sight_screen.dart';
 import 'package:places/ui/screens/filters_screen/filters_screen.dart';
 import 'package:places/ui/screens/sight_search_screen/sight_search_screen.dart';
 
