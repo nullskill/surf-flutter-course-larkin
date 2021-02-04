@@ -18,8 +18,13 @@ import 'package:places/ui/screens/sight_details_screen.dart';
 /// Виджет карточки интересного места.
 class SightCard extends StatelessWidget {
   final Sight sight;
+  final Function onRemoveCard;
 
-  const SightCard({Key key, this.sight}) : super(key: key);
+  const SightCard({
+    Key key,
+    @required this.sight,
+    this.onRemoveCard,
+  }) : super(key: key);
 
   @override
   // ignore: long-method
@@ -61,6 +66,7 @@ class SightCard extends StatelessWidget {
                   iconName: sight.runtimeType == Sight
                       ? AppIcons.heart
                       : AppIcons.close,
+                  onTap: sight.runtimeType == Sight ? () {} : onRemoveCard,
                 ),
               ),
               //Показываем различные иконки, в зависимости от типа карточки
@@ -72,6 +78,7 @@ class SightCard extends StatelessWidget {
                         iconName: sight.runtimeType == FavoriteSight
                             ? AppIcons.calendar
                             : AppIcons.share,
+                        onTap: () {},
                       ),
                     )
                   : SizedBox(),
@@ -151,16 +158,16 @@ class _CardIcon extends StatelessWidget {
   const _CardIcon({
     Key key,
     @required this.iconName,
+    @required this.onTap,
   }) : super(key: key);
 
   final String iconName;
+  final Function onTap;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        print("Card icon pressed");
-      },
+      onTap: onTap,
       child: SvgPicture.asset(
         iconName,
         width: 24,

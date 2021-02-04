@@ -18,6 +18,19 @@ class VisitingScreen extends StatefulWidget {
 }
 
 class _VisitingScreenState extends State<VisitingScreen> {
+  List _favoriteMocks = favoriteMocks;
+  List _visitedMocks = visitedMocks;
+
+  /// При удалении карточки из списка
+  void onRemoveCard(hasVisited, sight) {
+    setState(() {
+      if (hasVisited)
+        _visitedMocks.remove(sight);
+      else
+        _favoriteMocks.remove(sight);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -27,8 +40,15 @@ class _VisitingScreenState extends State<VisitingScreen> {
         appBar: _VisitingScreenAppBar(),
         body: TabBarView(
           children: [
-            _VisitingScreenList(),
-            _VisitingScreenList(hasVisited: true),
+            _VisitingScreenList(
+              sights: _favoriteMocks,
+              onRemoveCard: onRemoveCard,
+            ),
+            _VisitingScreenList(
+              sights: _visitedMocks,
+              hasVisited: true,
+              onRemoveCard: onRemoveCard,
+            ),
           ],
         ),
         bottomNavigationBar: AppBottomNavigationBar(
@@ -105,14 +125,17 @@ class _AppBarBottom extends StatelessWidget implements PreferredSizeWidget {
 class _VisitingScreenList extends StatelessWidget {
   const _VisitingScreenList({
     Key key,
+    @required this.sights,
     this.hasVisited = false,
+    this.onRemoveCard,
   }) : super(key: key);
 
+  final List sights;
   final bool hasVisited;
+  final Function onRemoveCard;
 
   @override
   Widget build(BuildContext context) {
-    var sights = hasVisited ? visitedMocks : favoriteMocks;
     return sights.isEmpty
         ? MessageBox(
             iconName: hasVisited ? AppIcons.emptyGo : AppIcons.emptyCard,
@@ -128,7 +151,11 @@ class _VisitingScreenList extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   for (var sight in sights) ...[
-                    SightCard(sight: sight),
+                    SightCard(
+                      key: ObjectKey(sight),
+                      sight: sight,
+                      onRemoveCard: () => onRemoveCard(hasVisited, sight),
+                    ),
                     SizedBox(
                       height: 16.0,
                     ),
