@@ -15,6 +15,7 @@ import 'package:places/ui/screens/select_category_screen.dart';
 import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/ui/widgets/settings_item.dart';
 import 'package:places/ui/widgets/link.dart';
+import 'package:places/ui/widgets/subtitle.dart';
 
 /// Экран добавления интересного места.
 class AddSightScreen extends StatefulWidget {
@@ -219,7 +220,7 @@ class _AddSightBody extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _AddSightSubtitle(
+            Subtitle(
               subtitle: addSightCategoryTitle,
             ),
             SettingsItem(
@@ -344,7 +345,7 @@ class _AddSightTextField extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 24.0),
-          child: _AddSightSubtitle(
+          child: Subtitle(
             subtitle: title,
           ),
         ),
@@ -397,29 +398,6 @@ class _AddSightTextField extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _AddSightSubtitle extends StatelessWidget {
-  const _AddSightSubtitle({
-    Key key,
-    @required this.subtitle,
-  }) : super(key: key);
-
-  final String subtitle;
-
-  @override
-  Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topLeft,
-      child: Text(
-        subtitle.toUpperCase(),
-        style: textRegular12.copyWith(
-          color: inactiveColor,
-          height: lineHeight1_3,
-        ),
-      ),
     );
   }
 }
