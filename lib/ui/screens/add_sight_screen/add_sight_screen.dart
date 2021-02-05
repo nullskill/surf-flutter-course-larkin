@@ -14,6 +14,7 @@ import 'package:places/ui/screens/add_sight_screen/add_sight_screen_helper.dart'
 import 'package:places/ui/screens/select_category_screen.dart';
 
 import 'package:places/ui/widgets/action_button.dart';
+import 'package:places/ui/widgets/clear_button.dart';
 import 'package:places/ui/widgets/settings_item.dart';
 import 'package:places/ui/widgets/link.dart';
 import 'package:places/ui/widgets/subtitle.dart';
@@ -34,9 +35,9 @@ class _AddSightScreenState extends State<AddSightScreen>
         controllers: controllers,
         focusNodes: focusNodes,
         currentFocusNode: currentFocusNode,
-        moveFocus: moveFocus,
         selectedCategory: selectedCategory,
         setSelectedCategory: setSelectedCategory,
+        moveFocus: moveFocus,
       ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.fromLTRB(
@@ -243,7 +244,6 @@ class _ImageCards extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Padding(
-        // ignore: prefer-trailing-comma
         padding: const EdgeInsets.only(
           left: 16.0,
           top: 24.0,
@@ -355,14 +355,10 @@ class _AddSightTextField extends StatelessWidget {
                   ? null
                   : Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: GestureDetector(
+                      child: ClearButton(
                         onTap: () {
                           controller.clear();
                         },
-                        child: SvgPicture.asset(
-                          AppIcons.clear,
-                          color: Theme.of(context).primaryColor,
-                        ),
                       ),
                     ),
               suffixIconConstraints: BoxConstraints(
