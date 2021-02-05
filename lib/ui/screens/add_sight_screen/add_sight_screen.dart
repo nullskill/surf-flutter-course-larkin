@@ -252,7 +252,7 @@ class _ImageCards extends StatelessWidget {
         child: IntrinsicHeight(
           child: Row(
             children: [
-              _ImageCard(),
+              _AddImageCard(),
               SizedBox(width: _cardsSpacing),
               _ImageCard(),
               SizedBox(width: _cardsSpacing),
@@ -262,6 +262,52 @@ class _ImageCards extends StatelessWidget {
               SizedBox(width: _cardsSpacing),
               _ImageCard(),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AddImageCard extends StatelessWidget {
+  const _AddImageCard({
+    Key key,
+  }) : super(key: key);
+
+  static const _cardSize = 72.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 16.0),
+      child: Container(
+        width: _cardSize,
+        height: _cardSize,
+        decoration: BoxDecoration(
+          color: Theme.of(context).canvasColor,
+          borderRadius: allBorderRadius12,
+          border: Border.fromBorderSide(
+            Theme.of(context).inputDecorationTheme.focusedBorder.borderSide,
+          ),
+          boxShadow: [
+            BoxShadow(
+              // ignore: prefer-trailing-comma
+              color: Color.fromRGBO(26, 26, 32, 0.16),
+              spreadRadius: 0,
+              blurRadius: 16,
+              offset: Offset(0, 4), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Align(
+          alignment: Alignment.topRight,
+          child: Center(
+            child: SvgPicture.asset(
+              AppIcons.plus,
+              width: 48.0,
+              height: 48.0,
+              color: Theme.of(context).buttonColor,
+            ),
           ),
         ),
       ),
@@ -284,6 +330,18 @@ class _ImageCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: placeholderColor,
         borderRadius: allBorderRadius12,
+      ),
+      child: Align(
+        alignment: Alignment.topRight,
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: ClearButton(
+            isDeletion: true,
+            onTap: () {
+              // TODO: make card delete callback
+            },
+          ),
+        ),
       ),
     );
   }
