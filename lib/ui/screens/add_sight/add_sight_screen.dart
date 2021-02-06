@@ -28,16 +28,23 @@ class AddSightScreen extends StatefulWidget {
 class _AddSightScreenState extends State<AddSightScreen>
     with AddSightScreenHelper {
   @override
+  // ignore: long-method
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _AddSightAppBar(),
-      body: _AddSightBody(
-        controllers: controllers,
-        focusNodes: focusNodes,
-        currentFocusNode: currentFocusNode,
-        selectedCategory: selectedCategory,
-        setSelectedCategory: setSelectedCategory,
-        moveFocus: moveFocus,
+      body: CustomScrollView(
+        slivers: [
+          _AddSightAppBar(),
+          _AddSightBody(
+            imgUrls: imgUrls,
+            controllers: controllers,
+            focusNodes: focusNodes,
+            currentFocusNode: currentFocusNode,
+            selectedCategory: selectedCategory,
+            setSelectedCategory: setSelectedCategory,
+            moveFocus: moveFocus,
+            onDeleteImageCard: onDeleteImageCard,
+          ),
+        ],
       ),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.fromLTRB(
@@ -56,16 +63,17 @@ class _AddSightScreenState extends State<AddSightScreen>
   }
 }
 
-class _AddSightAppBar extends StatelessWidget implements PreferredSizeWidget {
-  _AddSightAppBar({
+class _AddSightAppBar extends StatelessWidget {
+  const _AddSightAppBar({
     Key key,
   }) : super(key: key);
 
-  final Size preferredSize = Size.fromHeight(56.0);
-
   @override
   Widget build(BuildContext context) {
-    return AppBar(
+    return SliverAppBar(
+      pinned: false,
+      elevation: 0,
+      toolbarHeight: 56.0,
       leading: Padding(
         padding: const EdgeInsets.symmetric(
           vertical: 10.0,
@@ -100,20 +108,24 @@ class _AddSightAppBar extends StatelessWidget implements PreferredSizeWidget {
 class _AddSightBody extends StatelessWidget {
   _AddSightBody({
     Key key,
+    @required this.imgUrls,
     @required this.controllers,
     @required this.focusNodes,
     @required this.currentFocusNode,
     @required this.moveFocus,
     @required this.setSelectedCategory,
+    @required this.onDeleteImageCard,
     this.selectedCategory,
   }) : super(key: key);
 
+  final List<String> imgUrls;
   final Map<String, TextEditingController> controllers;
   final Map<String, FocusNode> focusNodes;
   final FocusNode currentFocusNode;
   final Category selectedCategory;
   final Function setSelectedCategory;
   final Function moveFocus;
+  final Function onDeleteImageCard;
 
   bool hasClearButton(fieldName) =>
       currentFocusNode == focusNodes[fieldName] &&
@@ -122,10 +134,14 @@ class _AddSightBody extends StatelessWidget {
   @override
   // ignore: long-method
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return SliverToBoxAdapter(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _ImageCards(),
+          _ImageCards(
+            imgUrls: imgUrls,
+            onDeleteImageCard: onDeleteImageCard,
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 16.0,
@@ -235,9 +251,12 @@ class _AddSightBody extends StatelessWidget {
 class _ImageCards extends StatelessWidget {
   const _ImageCards({
     Key key,
+    @required this.imgUrls,
+    @required this.onDeleteImageCard,
   }) : super(key: key);
 
-  static const _cardsSpacing = 16.0;
+  final List<String> imgUrls;
+  final Function onDeleteImageCard;
 
   @override
   Widget build(BuildContext context) {
@@ -253,14 +272,11 @@ class _ImageCards extends StatelessWidget {
           child: Row(
             children: [
               _AddImageCard(),
-              SizedBox(width: _cardsSpacing),
-              _ImageCard(),
-              SizedBox(width: _cardsSpacing),
-              _ImageCard(),
-              SizedBox(width: _cardsSpacing),
-              _ImageCard(),
-              SizedBox(width: _cardsSpacing),
-              _ImageCard(),
+              for (var imgUrl in imgUrls)
+                _ImageCard(
+                  imgUrl: imgUrl,
+                  onDeleteImageCard: onDeleteImageCard,
+                ),
             ],
           ),
         ),
@@ -319,28 +335,36 @@ class _AddImageCard extends StatelessWidget {
 class _ImageCard extends StatelessWidget {
   const _ImageCard({
     Key key,
+    @required this.imgUrl,
+    @required this.onDeleteImageCard,
   }) : super(key: key);
 
   static const _cardSize = 72.0;
+  final String imgUrl;
+  final Function onDeleteImageCard;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: _cardSize,
-      height: _cardSize,
-      decoration: BoxDecoration(
-        color: placeholderColor,
-        borderRadius: allBorderRadius12,
-      ),
-      child: Align(
-        alignment: Alignment.topRight,
-        child: Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: ClearButton(
-            isDeletion: true,
-            onTap: () {
-              // TODO: make card delete callback
-            },
+    return Dismissible(
+      key: ValueKey(imgUrl),
+      direction: DismissDirection.up,
+      onDismissed: (_) => onDeleteImageCard(imgUrl),
+      child: Container(
+        width: _cardSize,
+        height: _cardSize,
+        margin: const EdgeInsets.only(left: 16.0),
+        decoration: BoxDecoration(
+          color: placeholderColor,
+          borderRadius: allBorderRadius12,
+        ),
+        child: Align(
+          alignment: Alignment.topRight,
+          child: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: ClearButton(
+              isDeletion: true,
+              onTap: () => onDeleteImageCard(imgUrl),
+            ),
           ),
         ),
       ),

@@ -6,6 +6,13 @@ import 'package:places/mocks.dart';
 /// Перечисление типов координат
 enum Coordinates { lat, lng }
 
+/// Хранит список URL картинок места
+final _imgUrls = <String>[
+  "1",
+  "2",
+  "3",
+];
+
 /// Вспомогательный миксин для экрана добавления нового места
 mixin AddSightScreenHelper<AddSightScreen extends StatefulWidget>
     on State<AddSightScreen> {
@@ -26,6 +33,8 @@ mixin AddSightScreenHelper<AddSightScreen extends StatefulWidget>
   FocusNode currentFocusNode;
   Category selectedCategory;
   bool allDone = false;
+
+  List<String> get imgUrls => _imgUrls;
 
   /// Валидация введенной координаты
   static String validateCoordinate(String value, Coordinates coordinate) {
@@ -100,6 +109,12 @@ mixin AddSightScreenHelper<AddSightScreen extends StatefulWidget>
       this.selectedCategory = selectedCategory;
     });
     if (selectedCategory != null) focusNodes["name"].requestFocus();
+  }
+
+  void onDeleteImageCard(imgUrl) {
+    setState(() {
+      _imgUrls.removeAt(_imgUrls.indexOf(imgUrl));
+    });
   }
 
   /// При нажатии на ActionButton
