@@ -11,7 +11,7 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/assets.dart';
 
-import 'package:places/ui/screens/sight_search_screen/sight_search_screen_helper.dart';
+import 'package:places/ui/screens/sight_search/sight_search_screen_helper.dart';
 import 'package:places/ui/screens/sight_details_screen.dart';
 
 import 'package:places/ui/widgets/app_search_bar.dart';

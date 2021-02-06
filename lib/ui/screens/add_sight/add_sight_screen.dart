@@ -10,7 +10,7 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/assets.dart';
 
-import 'package:places/ui/screens/add_sight_screen/add_sight_screen_helper.dart';
+import 'package:places/ui/screens/add_sight/add_sight_screen_helper.dart';
 import 'package:places/ui/screens/select_category_screen.dart';
 
 import 'package:places/ui/widgets/action_button.dart';
@@ -279,6 +279,7 @@ class _AddImageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
+      // ignore: prefer-trailing-comma
       padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 16.0),
       child: Container(
         width: _cardSize,

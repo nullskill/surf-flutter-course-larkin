@@ -10,7 +10,7 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/app_color_scheme.dart';
 import 'package:places/ui/res/assets.dart';
 
-import 'package:places/ui/screens/filters_screen/filters_screen_helper.dart';
+import 'package:places/ui/screens/filters/filters_screen_helper.dart';
 
 import 'package:places/ui/widgets/app_back_button.dart';
 import 'package:places/ui/widgets/action_button.dart';
