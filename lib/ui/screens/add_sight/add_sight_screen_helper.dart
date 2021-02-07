@@ -36,6 +36,66 @@ mixin AddSightScreenHelper<AddSightScreen extends StatefulWidget>
 
   List<String> get imgUrls => _imgUrls;
 
+  String imgKey;
+  bool isPointerDownOnImageCard = false;
+  bool isPointerMoveOnImageCard = false;
+  bool isPointerUpOnImageCard = false;
+
+  void onPointerDownOnImageCard(imgKey) {
+    setState(() {
+      this.imgKey = imgKey;
+      isPointerDownOnImageCard = true;
+      isPointerMoveOnImageCard = false;
+      isPointerUpOnImageCard = false;
+    });
+  }
+
+  void onPointerMoveOnImageCard(imgKey) {
+    setState(() {
+      this.imgKey = imgKey;
+      isPointerDownOnImageCard = false;
+      isPointerMoveOnImageCard = true;
+      isPointerUpOnImageCard = false;
+    });
+  }
+
+  void onPointerUpOnImageCard(imgKey) {
+    setState(() {
+      this.imgKey = imgKey;
+      isPointerDownOnImageCard = false;
+      isPointerMoveOnImageCard = false;
+      isPointerUpOnImageCard = true;
+    });
+  }
+
+  List<BoxShadow> getBoxShadow(imgKey) {
+    if (this.imgKey != imgKey) return [];
+
+    if (isPointerMoveOnImageCard)
+      return [
+        BoxShadow(
+          // ignore: prefer-trailing-comma
+          color: Color.fromRGBO(26, 26, 32, 0.16),
+          spreadRadius: 0,
+          blurRadius: 16,
+          offset: Offset(0, 4), // changes position of shadow
+        ),
+      ];
+
+    if (isPointerDownOnImageCard)
+      return [
+        BoxShadow(
+          // ignore: prefer-trailing-comma
+          color: Color.fromRGBO(26, 26, 32, 0.16),
+          spreadRadius: 0,
+          blurRadius: 8,
+          offset: Offset(0, 2), // changes position of shadow
+        ),
+      ];
+
+    return [];
+  }
+
   /// Валидация введенной координаты
   static String validateCoordinate(String value, Coordinates coordinate) {
     const wrong = "Неправильный ввод";

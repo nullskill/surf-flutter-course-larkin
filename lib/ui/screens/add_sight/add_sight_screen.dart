@@ -33,7 +33,14 @@ class _AddSightScreenState extends State<AddSightScreen>
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          _AddSightAppBar(),
+          _AddSightAppBar(
+            imgUrls: imgUrls,
+            onDeleteImageCard: onDeleteImageCard,
+            onPointerDownOnImageCard: onPointerDownOnImageCard,
+            onPointerMoveOnImageCard: onPointerMoveOnImageCard,
+            onPointerUpOnImageCard: onPointerUpOnImageCard,
+            getBoxShadow: getBoxShadow,
+          ),
           _AddSightBody(
             imgUrls: imgUrls,
             controllers: controllers,
@@ -66,7 +73,20 @@ class _AddSightScreenState extends State<AddSightScreen>
 class _AddSightAppBar extends StatelessWidget {
   const _AddSightAppBar({
     Key key,
+    @required this.imgUrls,
+    @required this.onDeleteImageCard,
+    @required this.onPointerDownOnImageCard,
+    @required this.onPointerMoveOnImageCard,
+    @required this.onPointerUpOnImageCard,
+    @required this.getBoxShadow,
   }) : super(key: key);
+
+  final List<String> imgUrls;
+  final Function onDeleteImageCard;
+  final Function onPointerDownOnImageCard;
+  final Function onPointerMoveOnImageCard;
+  final Function onPointerUpOnImageCard;
+  final Function getBoxShadow;
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +121,20 @@ class _AddSightAppBar extends StatelessWidget {
         ),
       ),
       centerTitle: true,
+      bottom: PreferredSize(
+        preferredSize: Size.fromHeight(96.0),
+        child: Align(
+          alignment: Alignment.bottomLeft,
+          child: _ImageCards(
+            imgUrls: imgUrls,
+            onDeleteImageCard: onDeleteImageCard,
+            onPointerDownOnImageCard: onPointerDownOnImageCard,
+            onPointerMoveOnImageCard: onPointerMoveOnImageCard,
+            onPointerUpOnImageCard: onPointerUpOnImageCard,
+            getBoxShadow: getBoxShadow,
+          ),
+        ),
+      ),
     );
   }
 }
@@ -138,10 +172,10 @@ class _AddSightBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _ImageCards(
-            imgUrls: imgUrls,
-            onDeleteImageCard: onDeleteImageCard,
-          ),
+          // _ImageCards(
+          //   imgUrls: imgUrls,
+          //   onDeleteImageCard: onDeleteImageCard,
+          // ),
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 16.0,
@@ -253,10 +287,18 @@ class _ImageCards extends StatelessWidget {
     Key key,
     @required this.imgUrls,
     @required this.onDeleteImageCard,
+    @required this.onPointerDownOnImageCard,
+    @required this.onPointerMoveOnImageCard,
+    @required this.onPointerUpOnImageCard,
+    @required this.getBoxShadow,
   }) : super(key: key);
 
   final List<String> imgUrls;
   final Function onDeleteImageCard;
+  final Function onPointerDownOnImageCard;
+  final Function onPointerMoveOnImageCard;
+  final Function onPointerUpOnImageCard;
+  final Function getBoxShadow;
 
   @override
   Widget build(BuildContext context) {
@@ -265,7 +307,6 @@ class _ImageCards extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(
           left: 16.0,
-          top: 24.0,
           right: 8.0,
         ),
         child: IntrinsicHeight(
@@ -276,6 +317,10 @@ class _ImageCards extends StatelessWidget {
                 _ImageCard(
                   imgUrl: imgUrl,
                   onDeleteImageCard: onDeleteImageCard,
+                  onPointerDownOnImageCard: onPointerDownOnImageCard,
+                  onPointerMoveOnImageCard: onPointerMoveOnImageCard,
+                  onPointerUpOnImageCard: onPointerUpOnImageCard,
+                  getBoxShadow: getBoxShadow,
                 ),
             ],
           ),
@@ -306,15 +351,6 @@ class _AddImageCard extends StatelessWidget {
           border: Border.fromBorderSide(
             Theme.of(context).inputDecorationTheme.focusedBorder.borderSide,
           ),
-          boxShadow: [
-            BoxShadow(
-              // ignore: prefer-trailing-comma
-              color: Color.fromRGBO(26, 26, 32, 0.16),
-              spreadRadius: 0,
-              blurRadius: 16,
-              offset: Offset(0, 4), // changes position of shadow
-            ),
-          ],
         ),
         child: Align(
           alignment: Alignment.topRight,
@@ -337,11 +373,19 @@ class _ImageCard extends StatelessWidget {
     Key key,
     @required this.imgUrl,
     @required this.onDeleteImageCard,
+    @required this.onPointerDownOnImageCard,
+    @required this.onPointerMoveOnImageCard,
+    @required this.onPointerUpOnImageCard,
+    @required this.getBoxShadow,
   }) : super(key: key);
 
   static const _cardSize = 72.0;
   final String imgUrl;
   final Function onDeleteImageCard;
+  final Function onPointerDownOnImageCard;
+  final Function onPointerMoveOnImageCard;
+  final Function onPointerUpOnImageCard;
+  final Function getBoxShadow;
 
   @override
   Widget build(BuildContext context) {
@@ -349,21 +393,27 @@ class _ImageCard extends StatelessWidget {
       key: ValueKey(imgUrl),
       direction: DismissDirection.up,
       onDismissed: (_) => onDeleteImageCard(imgUrl),
-      child: Container(
-        width: _cardSize,
-        height: _cardSize,
-        margin: const EdgeInsets.only(left: 16.0),
-        decoration: BoxDecoration(
-          color: placeholderColor,
-          borderRadius: allBorderRadius12,
-        ),
-        child: Align(
-          alignment: Alignment.topRight,
-          child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: ClearButton(
-              isDeletion: true,
-              onTap: () => onDeleteImageCard(imgUrl),
+      child: Listener(
+        onPointerDown: (_) => onPointerDownOnImageCard(imgUrl),
+        onPointerMove: (_) => onPointerMoveOnImageCard(imgUrl),
+        onPointerUp: (_) => onPointerUpOnImageCard(imgUrl),
+        child: Container(
+          width: _cardSize,
+          height: _cardSize,
+          margin: const EdgeInsets.only(left: 16.0),
+          decoration: BoxDecoration(
+            color: placeholderColor,
+            borderRadius: allBorderRadius12,
+            boxShadow: getBoxShadow(imgUrl),
+          ),
+          child: Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: ClearButton(
+                isDeletion: true,
+                onTap: () => onDeleteImageCard(imgUrl),
+              ),
             ),
           ),
         ),
