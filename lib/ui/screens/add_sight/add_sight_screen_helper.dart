@@ -101,6 +101,20 @@ mixin AddSightScreenHelper<AddSightScreen extends StatefulWidget>
     return [];
   }
 
+  /// При добавлении карточки картинки
+  void onAddImageCard() {
+    setState(() {
+      _imgUrls.add((_imgUrls.length + 2).toString());
+    });
+  }
+
+  /// При удалении карточки картинки
+  void onDeleteImageCard(imgUrl) {
+    setState(() {
+      _imgUrls.removeAt(_imgUrls.indexOf(imgUrl));
+    });
+  }
+
   /// Валидация введенной координаты
   static String validateCoordinate(String value, Coordinates coordinate) {
     const wrong = "Неправильный ввод";
@@ -174,12 +188,6 @@ mixin AddSightScreenHelper<AddSightScreen extends StatefulWidget>
       this.selectedCategory = selectedCategory;
     });
     if (selectedCategory != null) focusNodes["name"].requestFocus();
-  }
-
-  void onDeleteImageCard(imgUrl) {
-    setState(() {
-      _imgUrls.removeAt(_imgUrls.indexOf(imgUrl));
-    });
   }
 
   /// При нажатии на ActionButton

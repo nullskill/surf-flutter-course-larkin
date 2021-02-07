@@ -40,6 +40,7 @@ class _AddSightScreenState extends State<AddSightScreen>
             onPointerMoveOnImageCard: onPointerMoveOnImageCard,
             onPointerUpOnImageCard: onPointerUpOnImageCard,
             getBoxShadow: getBoxShadow,
+            onAddImageCard: onAddImageCard,
           ),
           _AddSightBody(
             imgUrls: imgUrls,
@@ -79,6 +80,7 @@ class _AddSightAppBar extends StatelessWidget {
     @required this.onPointerMoveOnImageCard,
     @required this.onPointerUpOnImageCard,
     @required this.getBoxShadow,
+    @required this.onAddImageCard,
   }) : super(key: key);
 
   final List<String> imgUrls;
@@ -87,6 +89,7 @@ class _AddSightAppBar extends StatelessWidget {
   final Function onPointerMoveOnImageCard;
   final Function onPointerUpOnImageCard;
   final Function getBoxShadow;
+  final Function onAddImageCard;
 
   @override
   Widget build(BuildContext context) {
@@ -132,6 +135,7 @@ class _AddSightAppBar extends StatelessWidget {
             onPointerMoveOnImageCard: onPointerMoveOnImageCard,
             onPointerUpOnImageCard: onPointerUpOnImageCard,
             getBoxShadow: getBoxShadow,
+            onAddImageCard: onAddImageCard,
           ),
         ),
       ),
@@ -291,6 +295,7 @@ class _ImageCards extends StatelessWidget {
     @required this.onPointerMoveOnImageCard,
     @required this.onPointerUpOnImageCard,
     @required this.getBoxShadow,
+    @required this.onAddImageCard,
   }) : super(key: key);
 
   final List<String> imgUrls;
@@ -299,6 +304,7 @@ class _ImageCards extends StatelessWidget {
   final Function onPointerMoveOnImageCard;
   final Function onPointerUpOnImageCard;
   final Function getBoxShadow;
+  final Function onAddImageCard;
 
   @override
   Widget build(BuildContext context) {
@@ -312,7 +318,9 @@ class _ImageCards extends StatelessWidget {
         child: IntrinsicHeight(
           child: Row(
             children: [
-              _AddImageCard(),
+              _AddImageCard(
+                onAddImageCard: onAddImageCard,
+              ),
               for (var imgUrl in imgUrls)
                 _ImageCard(
                   imgUrl: imgUrl,
@@ -333,30 +341,36 @@ class _ImageCards extends StatelessWidget {
 class _AddImageCard extends StatelessWidget {
   const _AddImageCard({
     Key key,
+    @required this.onAddImageCard,
   }) : super(key: key);
 
   static const _cardSize = 72.0;
+  final Function onAddImageCard;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: _cardSize,
-      height: _cardSize,
-      decoration: BoxDecoration(
-        color: Theme.of(context).canvasColor,
-        borderRadius: allBorderRadius12,
-        border: Border.fromBorderSide(
-          Theme.of(context).inputDecorationTheme.focusedBorder.borderSide,
-        ),
-      ),
-      child: Align(
-        alignment: Alignment.topRight,
-        child: Center(
-          child: SvgPicture.asset(
-            AppIcons.plus,
-            width: 48.0,
-            height: 48.0,
-            color: Theme.of(context).buttonColor,
+    return Material(
+      borderRadius: allBorderRadius12,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onAddImageCard,
+        child: Container(
+          width: _cardSize,
+          height: _cardSize,
+          decoration: BoxDecoration(
+            // color: Theme.of(context).canvasColor,
+            borderRadius: allBorderRadius12,
+            border: Border.fromBorderSide(
+              Theme.of(context).inputDecorationTheme.focusedBorder.borderSide,
+            ),
+          ),
+          child: Center(
+            child: SvgPicture.asset(
+              AppIcons.plus,
+              width: 48.0,
+              height: 48.0,
+              color: Theme.of(context).buttonColor,
+            ),
           ),
         ),
       ),
