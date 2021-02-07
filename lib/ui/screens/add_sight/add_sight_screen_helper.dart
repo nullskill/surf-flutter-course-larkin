@@ -41,6 +41,7 @@ mixin AddSightScreenHelper<AddSightScreen extends StatefulWidget>
   bool isPointerMoveOnImageCard = false;
   bool isPointerUpOnImageCard = false;
 
+  /// При тапе на карточке картинки
   void onPointerDownOnImageCard(imgKey) {
     setState(() {
       this.imgKey = imgKey;
@@ -50,6 +51,7 @@ mixin AddSightScreenHelper<AddSightScreen extends StatefulWidget>
     });
   }
 
+  /// При свайпе карточки картинки
   void onPointerMoveOnImageCard(imgKey) {
     setState(() {
       this.imgKey = imgKey;
@@ -59,6 +61,7 @@ mixin AddSightScreenHelper<AddSightScreen extends StatefulWidget>
     });
   }
 
+  /// При окончании свайпа карточки картинки
   void onPointerUpOnImageCard(imgKey) {
     setState(() {
       this.imgKey = imgKey;
@@ -68,6 +71,8 @@ mixin AddSightScreenHelper<AddSightScreen extends StatefulWidget>
     });
   }
 
+  /// Возвращает тень для карточки картинки,
+  /// в зависимости от состояния свайпа
   List<BoxShadow> getBoxShadow(imgKey) {
     if (this.imgKey != imgKey) return [];
 
