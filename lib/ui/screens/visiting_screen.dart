@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:places/mocks.dart';
 
 import 'package:places/ui/res/border_radiuses.dart';
+import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/res/assets.dart';
@@ -151,10 +153,16 @@ class _VisitingScreenList extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   for (var sight in sights) ...[
-                    SightCard(
+                    Dismissible(
                       key: ValueKey(sight.name),
-                      sight: sight,
-                      onRemoveCard: () => onRemoveCard(hasVisited, sight),
+                      direction: DismissDirection.endToStart,
+                      onDismissed: (_) => onRemoveCard(hasVisited, sight),
+                      background: _BackgroundCard(),
+                      child: SightCard(
+                        key: ValueKey(sight.name),
+                        sight: sight,
+                        onRemoveCard: () => onRemoveCard(hasVisited, sight),
+                      ),
                     ),
                     SizedBox(
                       height: 16.0,
@@ -164,5 +172,49 @@ class _VisitingScreenList extends StatelessWidget {
               ),
             ),
           );
+  }
+}
+
+class _BackgroundCard extends StatelessWidget {
+  const _BackgroundCard({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AspectRatio(
+      aspectRatio: 3 / 2,
+      child: ClipRRect(
+        borderRadius: allBorderRadius16,
+        child: Container(
+          color: Theme.of(context).errorColor,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    AppIcons.bucket,
+                    color: whiteColor,
+                  ),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  Text(
+                    "Удалить",
+                    style: textMedium12.copyWith(
+                      color: whiteColor,
+                      height: lineHeight1_3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

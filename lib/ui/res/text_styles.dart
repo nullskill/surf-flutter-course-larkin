@@ -20,6 +20,7 @@ TextStyle _text = const TextStyle(
 
 //Medium
     textMedium = _text.copyWith(fontWeight: FontWeight.w500),
+    textMedium12 = textMedium.copyWith(fontSize: 12.0),
     textMedium16 = textMedium.copyWith(fontSize: 16.0),
     textMedium18 = textMedium.copyWith(fontSize: 18.0),
 
