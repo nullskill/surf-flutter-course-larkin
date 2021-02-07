@@ -168,28 +168,27 @@ class _ImageCards extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: 24.0,
-          left: 16.0,
-          right: 8.0,
-        ),
-        child: Row(
-          children: [
-            _AddImageCard(
-              onAddImageCard: onAddImageCard,
+      clipBehavior: Clip.none,
+      padding: const EdgeInsets.only(
+        top: 24.0,
+        left: 16.0,
+        right: 8.0,
+      ),
+      child: Row(
+        children: [
+          _AddImageCard(
+            onAddImageCard: onAddImageCard,
+          ),
+          for (var imgUrl in imgUrls)
+            _ImageCard(
+              imgUrl: imgUrl,
+              onDeleteImageCard: onDeleteImageCard,
+              onPointerDownOnImageCard: onPointerDownOnImageCard,
+              onPointerMoveOnImageCard: onPointerMoveOnImageCard,
+              onPointerUpOnImageCard: onPointerUpOnImageCard,
+              getBoxShadow: getBoxShadow,
             ),
-            for (var imgUrl in imgUrls)
-              _ImageCard(
-                imgUrl: imgUrl,
-                onDeleteImageCard: onDeleteImageCard,
-                onPointerDownOnImageCard: onPointerDownOnImageCard,
-                onPointerMoveOnImageCard: onPointerMoveOnImageCard,
-                onPointerUpOnImageCard: onPointerUpOnImageCard,
-                getBoxShadow: getBoxShadow,
-              ),
-          ],
-        ),
+        ],
       ),
     );
   }
