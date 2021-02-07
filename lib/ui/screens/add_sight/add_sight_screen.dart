@@ -339,28 +339,24 @@ class _AddImageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      // ignore: prefer-trailing-comma
-      padding: const EdgeInsets.fromLTRB(0, 8.0, 0, 16.0),
-      child: Container(
-        width: _cardSize,
-        height: _cardSize,
-        decoration: BoxDecoration(
-          color: Theme.of(context).canvasColor,
-          borderRadius: allBorderRadius12,
-          border: Border.fromBorderSide(
-            Theme.of(context).inputDecorationTheme.focusedBorder.borderSide,
-          ),
+    return Container(
+      width: _cardSize,
+      height: _cardSize,
+      decoration: BoxDecoration(
+        color: Theme.of(context).canvasColor,
+        borderRadius: allBorderRadius12,
+        border: Border.fromBorderSide(
+          Theme.of(context).inputDecorationTheme.focusedBorder.borderSide,
         ),
-        child: Align(
-          alignment: Alignment.topRight,
-          child: Center(
-            child: SvgPicture.asset(
-              AppIcons.plus,
-              width: 48.0,
-              height: 48.0,
-              color: Theme.of(context).buttonColor,
-            ),
+      ),
+      child: Align(
+        alignment: Alignment.topRight,
+        child: Center(
+          child: SvgPicture.asset(
+            AppIcons.plus,
+            width: 48.0,
+            height: 48.0,
+            color: Theme.of(context).buttonColor,
           ),
         ),
       ),
