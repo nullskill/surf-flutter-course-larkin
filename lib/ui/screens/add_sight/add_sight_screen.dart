@@ -468,9 +468,7 @@ class _AddSightTextField extends StatelessWidget {
             textCapitalization: TextCapitalization.sentences,
             textInputAction:
                 isLastField ? TextInputAction.done : TextInputAction.next,
-            onEditingComplete: () {
-              moveFocus();
-            },
+            onEditingComplete: moveFocus,
             cursorColor: Theme.of(context).primaryColor,
             cursorHeight: 24.0,
             cursorWidth: 1,
@@ -480,6 +478,9 @@ class _AddSightTextField extends StatelessWidget {
             ),
             decoration: InputDecoration(
               hintText: hintText,
+              enabledBorder: controller.text.isEmpty
+                  ? Theme.of(context).inputDecorationTheme.border
+                  : Theme.of(context).inputDecorationTheme.enabledBorder,
               suffixIcon: !hasClearButton
                   ? null
                   : Padding(

@@ -45,6 +45,10 @@ final lightTheme = ThemeData(
 
   //TextField InputDecorationTheme
   inputDecorationTheme: _BaseProps.inputDecorationTheme.copyWith(
+    border: OutlineInputBorder(
+      borderRadius: allBorderRadius8,
+      borderSide: const BorderSide(color: inactiveColor),
+    ),
     enabledBorder: OutlineInputBorder(
       borderRadius: allBorderRadius8,
       borderSide: const BorderSide(color: LightMode.inputBorderColor),
@@ -127,6 +131,10 @@ final darkTheme = ThemeData(
 
   //TextField InputDecorationTheme
   inputDecorationTheme: _BaseProps.inputDecorationTheme.copyWith(
+    border: OutlineInputBorder(
+      borderRadius: allBorderRadius8,
+      borderSide: const BorderSide(color: inactiveColor),
+    ),
     enabledBorder: OutlineInputBorder(
       borderRadius: allBorderRadius8,
       borderSide: const BorderSide(color: DarkMode.inputBorderColor),
