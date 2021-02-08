@@ -11,6 +11,7 @@ import 'package:places/ui/res/assets.dart';
 
 import 'package:places/ui/widgets/sight_card.dart';
 import 'package:places/ui/widgets/message_box.dart';
+import 'package:places/ui/widgets/app_dismissible.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 
 /// Экран избранных/посещенных интересных мест
@@ -153,9 +154,9 @@ class _VisitingScreenList extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   for (var sight in sights) ...[
-                    Dismissible(
+                    AppDismissible(
                       key: ValueKey(sight.name),
-                      direction: DismissDirection.endToStart,
+                      direction: AppDismissDirection.endToStart,
                       onDismissed: (_) => onRemoveCard(hasVisited, sight),
                       background: _BackgroundCard(),
                       child: SightCard(
