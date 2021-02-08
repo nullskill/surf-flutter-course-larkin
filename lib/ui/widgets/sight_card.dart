@@ -30,7 +30,7 @@ class SightCard extends StatelessWidget {
   // ignore: long-method
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 3 / 2,
+      aspectRatio: sight.runtimeType == Sight ? 3 / 2 : 2,
       child: ClipRRect(
         borderRadius: allBorderRadius16,
         child: Container(
