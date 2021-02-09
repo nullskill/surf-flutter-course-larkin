@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:places/utils/theme_provider.dart';
 import 'package:places/ui/res/themes.dart';
 
-import 'package:places/ui/screens/visiting_screen.dart';
+import 'package:places/ui/screens/visiting/visiting_screen.dart';
 
 void main() {
   runApp(App());

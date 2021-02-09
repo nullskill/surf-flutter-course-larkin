@@ -76,6 +76,11 @@ final favoriteMocks = <FavoriteSight>[
     openHour: DateTime.tryParse("1970-01-01 09:00:00"),
   ),
   FavoriteSight.fromSight(
+    sight: mocks[1],
+    plannedDate: DateTime.now(),
+    openHour: DateTime.tryParse("1970-01-01 09:00:00"),
+  ),
+  FavoriteSight.fromSight(
     sight: mocks.last,
     plannedDate: DateTime.now(),
     openHour: DateTime.tryParse("1970-01-01 09:00:00"),

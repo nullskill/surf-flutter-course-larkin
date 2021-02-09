@@ -1,3 +1,8 @@
+/// Custom version of standard dismissible widget.
+/// The only reason for this is to keep border-radius clipped on child widget
+/// and avoid hacky methods of doing this.
+/// Lines commented: 585 - 591.
+
 // Copyright 2014 The Flutter Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
@@ -577,8 +582,8 @@ class _AppDismissibleState extends State<AppDismissible>
         if (!_moveAnimation.isDismissed)
           Positioned.fill(
             child: ClipRect(
-              // Comment out the clipper property.
-              // Need to keep border-radius clipped on Sight card.
+              // Comment out the clipper property
+              // to keep border-radius clipped on child widget.
               // No need to reclip.
               // clipper: _DismissibleClipper(
               //   axis: _directionIsXAxis ? Axis.horizontal : Axis.vertical,
