@@ -12,7 +12,6 @@ mixin VisitingScreenHelper<VisitingScreen extends StatefulWidget>
   List get getVisitedMocks => _visitedMocks;
 
   bool isDrag = false;
-  bool isLongPress = false;
 
   /// При удалении карточки из списка
   void onRemoveCard(bool hasVisited, var sight) {
@@ -21,21 +20,6 @@ mixin VisitingScreenHelper<VisitingScreen extends StatefulWidget>
         _visitedMocks.remove(sight);
       else
         _favoriteMocks.remove(sight);
-    });
-  }
-
-  /// При длительном нажатии на карточку
-  void onLongCardPress() {
-    print("onLongCardPress: $onLongCardPress");
-    setState(() {
-      isLongPress = true;
-    });
-  }
-
-  /// При окончании длительного нажатия на карточку
-  void onLongCardPressEnd() {
-    setState(() {
-      isLongPress = false;
     });
   }
 

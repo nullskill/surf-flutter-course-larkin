@@ -36,9 +36,6 @@ class _VisitingScreenState extends State<VisitingScreen>
             _VisitingScreenList(
               sights: getFavoriteMocks,
               isDrag: isDrag,
-              isLongPress: isLongPress,
-              onLongCardPress: onLongCardPress,
-              onLongCardPressEnd: onLongCardPressEnd,
               onDragCardStarted: onDragCardStarted,
               onDragCardEnd: onDragCardEnd,
               onRemoveCard: onRemoveCard,
@@ -47,10 +44,7 @@ class _VisitingScreenState extends State<VisitingScreen>
             _VisitingScreenList(
               sights: getVisitedMocks,
               isDrag: isDrag,
-              isLongPress: isLongPress,
               hasVisited: true,
-              onLongCardPress: onLongCardPress,
-              onLongCardPressEnd: onLongCardPressEnd,
               onDragCardStarted: onDragCardStarted,
               onDragCardEnd: onDragCardEnd,
               onRemoveCard: onRemoveCard,
@@ -135,9 +129,6 @@ class _VisitingScreenList extends StatelessWidget {
     @required this.sights,
     this.hasVisited = false,
     this.isDrag = false,
-    this.isLongPress = false,
-    @required this.onLongCardPress,
-    @required this.onLongCardPressEnd,
     @required this.onDragCardStarted,
     @required this.onDragCardEnd,
     @required this.onRemoveCard,
@@ -147,9 +138,6 @@ class _VisitingScreenList extends StatelessWidget {
   final List sights;
   final bool hasVisited;
   final bool isDrag;
-  final bool isLongPress;
-  final Function onLongCardPress;
-  final Function onLongCardPressEnd;
   final Function onDragCardStarted;
   final Function onDragCardEnd;
   final Function onRemoveCard;
@@ -177,16 +165,12 @@ class _VisitingScreenList extends StatelessWidget {
                     hasVisited: hasVisited,
                     onRemoveCard: onRemoveCard,
                     swapCards: swapCards,
-                    onLongCardPress: onLongCardPress,
-                    onLongCardPressEnd: onLongCardPressEnd,
                   ),
                   for (var sight in sights) ...[
                     _Draggable(
                       sight: sight,
                       hasVisited: hasVisited,
                       isDrag: isDrag,
-                      onLongCardPress: onLongCardPress,
-                      onLongCardPressEnd: onLongCardPressEnd,
                       onDragCardStarted: onDragCardStarted,
                       onDragCardEnd: onDragCardEnd,
                       onRemoveCard: onRemoveCard,
@@ -194,8 +178,6 @@ class _VisitingScreenList extends StatelessWidget {
                     _DragTarget(
                       index: sights.indexOf(sight),
                       hasVisited: hasVisited,
-                      onLongCardPress: onLongCardPress,
-                      onLongCardPressEnd: onLongCardPressEnd,
                       onRemoveCard: onRemoveCard,
                       swapCards: swapCards,
                     ),
@@ -215,16 +197,12 @@ class _DragTarget extends StatelessWidget {
     Key key,
     @required this.index,
     @required this.hasVisited,
-    @required this.onLongCardPress,
-    @required this.onLongCardPressEnd,
     @required this.onRemoveCard,
     @required this.swapCards,
   }) : super(key: key);
 
   final int index;
   final bool hasVisited;
-  final Function onLongCardPress;
-  final Function onLongCardPressEnd;
   final Function onRemoveCard;
   final Function swapCards;
 
@@ -249,8 +227,6 @@ class _DragTarget extends StatelessWidget {
         return _DismissibleCard(
           sight: candidateData.first,
           hasVisited: hasVisited,
-          onLongCardPress: onLongCardPress,
-          onLongCardPressEnd: onLongCardPressEnd,
           onRemoveCard: onRemoveCard,
         );
       },
@@ -264,8 +240,6 @@ class _Draggable extends StatelessWidget {
     @required this.sight,
     @required this.hasVisited,
     @required this.isDrag,
-    @required this.onLongCardPress,
-    @required this.onLongCardPressEnd,
     @required this.onDragCardStarted,
     @required this.onDragCardEnd,
     @required this.onRemoveCard,
@@ -274,8 +248,6 @@ class _Draggable extends StatelessWidget {
   final dynamic sight;
   final bool hasVisited;
   final bool isDrag;
-  final Function onLongCardPress;
-  final Function onLongCardPressEnd;
   final Function onDragCardStarted;
   final Function onDragCardEnd;
   final Function onRemoveCard;
@@ -302,8 +274,6 @@ class _Draggable extends StatelessWidget {
               sight: sight,
               hasVisited: hasVisited,
               onRemoveCard: onRemoveCard,
-              onLongCardPress: onLongCardPress,
-              onLongCardPressEnd: onLongCardPressEnd,
             ),
     );
   }
@@ -315,15 +285,11 @@ class _DismissibleCard extends StatelessWidget {
     @required this.sight,
     @required this.hasVisited,
     @required this.onRemoveCard,
-    @required this.onLongCardPress,
-    @required this.onLongCardPressEnd,
   }) : super(key: key);
 
   final dynamic sight;
   final bool hasVisited;
   final Function onRemoveCard;
-  final Function onLongCardPress;
-  final Function onLongCardPressEnd;
 
   @override
   Widget build(BuildContext context) {
@@ -332,16 +298,11 @@ class _DismissibleCard extends StatelessWidget {
       direction: AppDismissDirection.endToStart,
       onDismissed: (_) => onRemoveCard(hasVisited, sight),
       background: _BackgroundCard(),
-      // child:
-      // GestureDetector(
-      //   onLongPress: onLongCardPress,
-      //   onLongPressEnd: (_) => onLongCardPressEnd(),
       child: SightCard(
         key: ValueKey(sight.name),
         sight: sight,
         onRemoveCard: () => onRemoveCard(hasVisited, sight),
       ),
-      // ),
     );
   }
 }
