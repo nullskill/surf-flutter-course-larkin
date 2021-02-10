@@ -263,6 +263,10 @@ class _Draggable extends StatelessWidget {
         width: MediaQuery.of(context).size.width - 32.0,
         decoration: BoxDecoration(
           color: placeholderColor,
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: NetworkImage(sight.url),
+          ),
           borderRadius: allBorderRadius16,
         ),
       ),

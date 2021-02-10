@@ -7,11 +7,7 @@ import 'package:places/mocks.dart';
 enum Coordinates { lat, lng }
 
 /// Хранит список URL картинок места
-final _imgUrls = <String>[
-  "1",
-  "2",
-  "3",
-];
+final _imgUrls = <String>[];
 
 /// Вспомогательный миксин для экрана добавления нового места
 mixin AddSightScreenHelper<AddSightScreen extends StatefulWidget>
