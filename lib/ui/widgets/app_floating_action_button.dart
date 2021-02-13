@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:places/ui/res/app_color_scheme.dart';
 
 /// Виджет градиентной кнопки а-ля [FloatingActionButton.extended]

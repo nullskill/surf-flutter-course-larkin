@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 

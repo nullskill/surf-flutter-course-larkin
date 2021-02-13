@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:places/mocks.dart';
 
 /// Вспомогательный миксин для экрана избранных/посещенных интересных мест
@@ -9,6 +8,7 @@ mixin VisitingScreenHelper<VisitingScreen extends StatefulWidget>
   List _visitedMocks = visitedMocks;
 
   List get getFavoriteMocks => _favoriteMocks;
+
   List get getVisitedMocks => _visitedMocks;
 
   bool isDrag = false;

@@ -2,15 +2,7 @@
 /// The only reason for this is to keep border-radius clipped on child widget
 /// and avoid hacky methods of doing this.
 /// Lines commented: 585 - 591.
-
-// Copyright 2014 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
-// @dart = 2.8
-
 import 'package:flutter/gestures.dart';
-
 import 'package:flutter/src/widgets/automatic_keep_alive.dart';
 import 'package:flutter/src/widgets/basic.dart';
 import 'package:flutter/src/widgets/debug.dart';

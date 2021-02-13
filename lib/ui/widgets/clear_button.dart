@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_svg/flutter_svg.dart';
-
-import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/res/colors.dart';
 
 class ClearButton extends StatelessWidget {
   const ClearButton({

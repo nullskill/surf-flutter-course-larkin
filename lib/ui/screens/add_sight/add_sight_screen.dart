@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:places/domain/sight.dart';
-
+import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/border_radiuses.dart';
+import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/res/colors.dart';
-import 'package:places/ui/res/assets.dart';
-
 import 'package:places/ui/screens/add_sight/add_sight_screen_helper.dart';
 import 'package:places/ui/screens/select_category_screen.dart';
-
 import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/ui/widgets/clear_button.dart';
-import 'package:places/ui/widgets/settings_item.dart';
 import 'package:places/ui/widgets/link.dart';
+import 'package:places/ui/widgets/settings_item.dart';
 import 'package:places/ui/widgets/subtitle.dart';
 
 /// Экран добавления нового места.
@@ -302,8 +297,8 @@ class _AddSightBody extends StatelessWidget {
   }) : super(key: key);
 
   final List<String> imgUrls;
-  final Map<String, TextEditingController> controllers;
-  final Map<String, FocusNode> focusNodes;
+  final Map<Field, TextEditingController> controllers;
+  final Map<Field, FocusNode> focusNodes;
   final FocusNode currentFocusNode;
   final Category selectedCategory;
   final Function setSelectedCategory;
@@ -321,10 +316,6 @@ class _AddSightBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // _ImageCards(
-          //   imgUrls: imgUrls,
-          //   onDeleteImageCard: onDeleteImageCard,
-          // ),
           Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 16.0,
@@ -357,9 +348,9 @@ class _AddSightBody extends StatelessWidget {
                 ),
                 _AddSightTextField(
                   title: addSightNameTitle,
-                  hasClearButton: hasClearButton("name"),
-                  controller: controllers["name"],
-                  focusNode: focusNodes["name"],
+                  hasClearButton: hasClearButton(Field.name),
+                  controller: controllers[Field.name],
+                  focusNode: focusNodes[Field.name],
                   moveFocus: moveFocus,
                 ),
                 Row(
@@ -368,9 +359,9 @@ class _AddSightBody extends StatelessWidget {
                     Expanded(
                       child: _AddSightTextField(
                         title: addSightLatitudeTitle,
-                        hasClearButton: hasClearButton("latitude"),
-                        controller: controllers["latitude"],
-                        focusNode: focusNodes["latitude"],
+                        hasClearButton: hasClearButton(Field.latitude),
+                        controller: controllers[Field.latitude],
+                        focusNode: focusNodes[Field.latitude],
                         moveFocus: moveFocus,
                         keyboardType: TextInputType.numberWithOptions(
                           signed: true,
@@ -379,7 +370,7 @@ class _AddSightBody extends StatelessWidget {
                         validator: (String value) =>
                             AddSightScreenHelper.validateCoordinate(
                           value,
-                          Coordinates.lat,
+                          Coordinate.lat,
                         ),
                       ),
                     ),
@@ -389,9 +380,9 @@ class _AddSightBody extends StatelessWidget {
                     Expanded(
                       child: _AddSightTextField(
                         title: addSightLongitudeTitle,
-                        hasClearButton: hasClearButton("longitude"),
-                        controller: controllers["longitude"],
-                        focusNode: focusNodes["longitude"],
+                        hasClearButton: hasClearButton(Field.longitude),
+                        controller: controllers[Field.longitude],
+                        focusNode: focusNodes[Field.longitude],
                         moveFocus: moveFocus,
                         keyboardType: TextInputType.numberWithOptions(
                           signed: true,
@@ -400,7 +391,7 @@ class _AddSightBody extends StatelessWidget {
                         validator: (String value) =>
                             AddSightScreenHelper.validateCoordinate(
                           value,
-                          Coordinates.lng,
+                          Coordinate.lng,
                         ),
                       ),
                     ),
@@ -417,9 +408,9 @@ class _AddSightBody extends StatelessWidget {
                   hintText: addSightDescriptionHintText,
                   maxLines: 4,
                   isLastField: true,
-                  hasClearButton: hasClearButton("description"),
-                  controller: controllers["description"],
-                  focusNode: focusNodes["description"],
+                  hasClearButton: hasClearButton(Field.description),
+                  controller: controllers[Field.description],
+                  focusNode: focusNodes[Field.description],
                   moveFocus: moveFocus,
                 ),
               ],

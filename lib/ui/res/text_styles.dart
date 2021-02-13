@@ -1,5 +1,4 @@
 import 'package:flutter/painting.dart';
-
 import 'package:places/ui/res/colors.dart';
 
 /// Стили текстов

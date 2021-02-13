@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
-
+import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/res/assets.dart';
-
-import 'package:places/ui/widgets/app_back_button.dart';
 import 'package:places/ui/widgets/action_button.dart';
+import 'package:places/ui/widgets/app_back_button.dart';
 import 'package:places/ui/widgets/settings_item.dart';
 
 /// Экран выбора категории.

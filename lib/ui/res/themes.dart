@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/border_radiuses.dart';
+import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
 
 /// Основные темы приложения:

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
-
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
+import 'package:places/ui/res/strings/strings.dart';
 
-/// Перечисление типов координат
-enum Coordinates { lat, lng }
+/// Перечисление координат
+enum Coordinate { lat, lng }
+
+/// Перечисление полей
+// ignore: prefer-trailing-comma
+enum Field { name, latitude, longitude, description }
 
 /// Хранит список URL картинок места
 final _imgUrls = <String>[];
@@ -12,18 +16,18 @@ final _imgUrls = <String>[];
 /// Вспомогательный миксин для экрана добавления нового места
 mixin AddSightScreenHelper<AddSightScreen extends StatefulWidget>
     on State<AddSightScreen> {
-  final controllers = <String, TextEditingController>{
-    "name": TextEditingController(),
-    "latitude": TextEditingController(),
-    "longitude": TextEditingController(),
-    "description": TextEditingController(),
+  final controllers = <Field, TextEditingController>{
+    Field.name: TextEditingController(),
+    Field.latitude: TextEditingController(),
+    Field.longitude: TextEditingController(),
+    Field.description: TextEditingController(),
   };
 
-  final focusNodes = <String, FocusNode>{
-    "name": FocusNode(),
-    "latitude": FocusNode(),
-    "longitude": FocusNode(),
-    "description": FocusNode(),
+  final focusNodes = <Field, FocusNode>{
+    Field.name: FocusNode(),
+    Field.latitude: FocusNode(),
+    Field.longitude: FocusNode(),
+    Field.description: FocusNode(),
   };
 
   FocusNode currentFocusNode;
@@ -112,15 +116,16 @@ mixin AddSightScreenHelper<AddSightScreen extends StatefulWidget>
   }
 
   /// Валидация введенной координаты
-  static String validateCoordinate(String value, Coordinates coordinate) {
-    const wrong = "Неправильный ввод";
+  static String validateCoordinate(String value, Coordinate coordinate) {
     final lat = RegExp(r"^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$");
     final lng = RegExp(r"^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$");
 
     if (value.isEmpty) return null;
-    if (double.tryParse(value) == null) return wrong;
-    if (coordinate == Coordinates.lat && !lat.hasMatch(value)) return wrong;
-    if (coordinate == Coordinates.lng && !lng.hasMatch(value)) return wrong;
+    if (double.tryParse(value) == null) return addSightWrongEntry;
+    if (coordinate == Coordinate.lat && !lat.hasMatch(value))
+      return addSightWrongEntry;
+    if (coordinate == Coordinate.lng && !lng.hasMatch(value))
+      return addSightWrongEntry;
 
     return null;
   }
@@ -132,7 +137,7 @@ mixin AddSightScreenHelper<AddSightScreen extends StatefulWidget>
     for (var entry in focusNodes.entries)
       entry.value.addListener(() => focusNodeListener(entry.key));
     for (var entry in controllers.entries)
-      entry.value.addListener(() => controllerListener(entry.key));
+      entry.value.addListener(() => controllerListener());
   }
 
   @override
@@ -144,14 +149,14 @@ mixin AddSightScreenHelper<AddSightScreen extends StatefulWidget>
   }
 
   /// Listener для FocusNode
-  void focusNodeListener(String focusNodeName) {
+  void focusNodeListener(Field field) {
     setState(() {
-      currentFocusNode = focusNodes[focusNodeName];
+      currentFocusNode = focusNodes[field];
     });
   }
 
   /// Listener для TextEditingController
-  void controllerListener(String controllerName) {
+  void controllerListener() {
     bool _allDone = true;
 
     for (var controller in controllers.values)
@@ -167,12 +172,12 @@ mixin AddSightScreenHelper<AddSightScreen extends StatefulWidget>
 
   /// Перемещает фокус на следующий TextFormField
   void moveFocus() {
-    if (focusNodes["name"].hasFocus) {
-      focusNodes["latitude"].requestFocus();
-    } else if (focusNodes["latitude"].hasFocus) {
-      focusNodes["longitude"].requestFocus();
-    } else if (focusNodes["longitude"].hasFocus) {
-      focusNodes["description"].requestFocus();
+    if (focusNodes[Field.name].hasFocus) {
+      focusNodes[Field.latitude].requestFocus();
+    } else if (focusNodes[Field.latitude].hasFocus) {
+      focusNodes[Field.longitude].requestFocus();
+    } else if (focusNodes[Field.longitude].hasFocus) {
+      focusNodes[Field.description].requestFocus();
     } else {
       FocusScope.of(context).unfocus();
     }
@@ -183,19 +188,19 @@ mixin AddSightScreenHelper<AddSightScreen extends StatefulWidget>
     setState(() {
       this.selectedCategory = selectedCategory;
     });
-    if (selectedCategory != null) focusNodes["name"].requestFocus();
+    if (selectedCategory != null) focusNodes[Field.name].requestFocus();
   }
 
   /// При нажатии на ActionButton
   void onActionButtonPressed() {
     mocks.add(
       Sight(
-        name: controllers["name"].text,
-        lat: double.tryParse(controllers["latitude"].text),
-        lng: double.tryParse(controllers["longitude"].text),
+        name: controllers[Field.name].text,
+        lat: double.tryParse(controllers[Field.latitude].text),
+        lng: double.tryParse(controllers[Field.longitude].text),
         url:
             "https://vogazeta.ru/uploads/full_size_1575545015-c59f0314cb936df655a6a19ca760f02c.jpg",
-        details: controllers["description"].text,
+        details: controllers[Field.description].text,
         type: selectedCategory.type,
       ),
     );

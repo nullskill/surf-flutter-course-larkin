@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:places/domain/sight.dart';
-
+import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/res/assets.dart';
-
 import 'package:places/ui/screens/visiting/visiting_screen_helper.dart';
-
-import 'package:places/ui/widgets/sight_card.dart';
-import 'package:places/ui/widgets/message_box.dart';
-import 'package:places/ui/widgets/app_dismissible.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
+import 'package:places/ui/widgets/app_dismissible.dart';
+import 'package:places/ui/widgets/message_box.dart';
+import 'package:places/ui/widgets/sight_card.dart';
 
 /// Экран избранных/посещенных интересных мест
 class VisitingScreen extends StatefulWidget {
