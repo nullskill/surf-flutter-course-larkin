@@ -161,15 +161,16 @@ class _ImageCards extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      clipBehavior: Clip.none,
-      padding: const EdgeInsets.only(
-        top: 24.0,
-        left: 16.0,
-        right: 8.0,
-      ),
-      child: Row(
+    return SizedBox(
+      height: 96.0,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        clipBehavior: Clip.none,
+        padding: const EdgeInsets.only(
+          top: 24.0,
+          left: 16.0,
+          right: 8.0,
+        ),
         children: [
           _AddImageCard(
             onAddImageCard: onAddImageCard,

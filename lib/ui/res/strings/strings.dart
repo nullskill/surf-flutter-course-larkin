@@ -1,6 +1,8 @@
 /// Строковые константы
+//App
+const String appTitle = "Places",
 //SightListScreen
-const String sightListAppBarTitle = "Список интересных мест",
+    sightListAppBarTitle = "Список интересных мест",
     sightListFabLabel = "Новое место",
 
 //SightCard
