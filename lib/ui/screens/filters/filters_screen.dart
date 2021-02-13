@@ -161,30 +161,26 @@ class _FiltersBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 24.0,
-        ),
-        child: Column(
-          children: [
-            Subtitle(
-              subtitle: filtersCategoriesTitle,
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                8.0,
-                24.0,
-                8.0,
-                56,
-              ),
-              child: _Categories(),
-            ),
-            AppRangeSlider(currentRangeValues: _currentRangeValues),
-          ],
-        ),
+    return ListView(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16.0,
+        vertical: 24.0,
       ),
+      children: [
+        Subtitle(
+          subtitle: filtersCategoriesTitle,
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+            8.0,
+            24.0,
+            8.0,
+            56,
+          ),
+          child: _Categories(),
+        ),
+        AppRangeSlider(currentRangeValues: _currentRangeValues),
+      ],
     );
   }
 }
@@ -196,10 +192,9 @@ class _Categories extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 12,
-      runSpacing: 40,
-      alignment: WrapAlignment.spaceEvenly,
+    return GridView.count(
+      crossAxisCount: 3,
+      shrinkWrap: true,
       children: [
         for (var category in FiltersScreen.of(context).getCategories)
           _Category(
