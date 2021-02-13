@@ -150,40 +150,35 @@ class _VisitingScreenList extends StatelessWidget {
                 ? visitingVisitedEmptyListText
                 : visitingWishToVisitEmptyListText,
           )
-        : SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _DragTarget(
-                    index: 0,
-                    hasVisited: hasVisited,
-                    onRemoveCard: onRemoveCard,
-                    swapCards: swapCards,
-                  ),
-                  for (var sight in sights) ...[
-                    _Draggable(
-                      sight: sight,
-                      hasVisited: hasVisited,
-                      isDrag: isDrag,
-                      onDragCardStarted: onDragCardStarted,
-                      onDragCardEnd: onDragCardEnd,
-                      onRemoveCard: onRemoveCard,
-                    ),
-                    _DragTarget(
-                      index: sights.indexOf(sight),
-                      hasVisited: hasVisited,
-                      onRemoveCard: onRemoveCard,
-                      swapCards: swapCards,
-                    ),
-                    // SizedBox(
-                    //   height: 16.0,
-                    // ),
-                  ],
-                ],
+        : ListView(
+            padding: const EdgeInsets.all(16.0),
+            children: [
+              _DragTarget(
+                index: 0,
+                hasVisited: hasVisited,
+                onRemoveCard: onRemoveCard,
+                swapCards: swapCards,
               ),
-            ),
+              for (var sight in sights) ...[
+                _Draggable(
+                  sight: sight,
+                  hasVisited: hasVisited,
+                  isDrag: isDrag,
+                  onDragCardStarted: onDragCardStarted,
+                  onDragCardEnd: onDragCardEnd,
+                  onRemoveCard: onRemoveCard,
+                ),
+                _DragTarget(
+                  index: sights.indexOf(sight),
+                  hasVisited: hasVisited,
+                  onRemoveCard: onRemoveCard,
+                  swapCards: swapCards,
+                ),
+                // SizedBox(
+                //   height: 16.0,
+                // ),
+              ],
+            ],
           );
   }
 }
