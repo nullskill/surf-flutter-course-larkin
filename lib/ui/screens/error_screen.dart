@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-
-import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/assets.dart';
-
+import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/widgets/message_box.dart';
 
 /// Экран для отображения ошибки.

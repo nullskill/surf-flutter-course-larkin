@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-
+import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/res/colors.dart';
-
+import 'package:places/ui/screens/filters/filters_screen.dart';
 import 'package:places/ui/widgets/app_range_slider/app_range_slider_helper.dart';
-import 'package:places/ui/screens/filters_screen/filters_screen.dart';
 
 /// Виджет для отображения слайдера с выбором диапазона "от и до"
 class AppRangeSlider extends StatelessWidget {

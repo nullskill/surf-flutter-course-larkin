@@ -1,23 +1,18 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_svg/flutter_svg.dart';
-
-import 'package:places/mocks.dart';
 import 'package:places/domain/sight.dart';
-
+import 'package:places/mocks.dart';
+import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/res/colors.dart';
-import 'package:places/ui/res/assets.dart';
-
-import 'package:places/ui/widgets/sight_card.dart';
-import 'package:places/ui/widgets/app_search_bar.dart';
+import 'package:places/ui/screens/add_sight/add_sight_screen.dart';
+import 'package:places/ui/screens/filters/filters_screen.dart';
+import 'package:places/ui/screens/sight_search/sight_search_screen.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_floating_action_button.dart';
-
-import 'package:places/ui/screens/add_sight_screen.dart';
-import 'package:places/ui/screens/filters_screen/filters_screen.dart';
-import 'package:places/ui/screens/sight_search_screen/sight_search_screen.dart';
+import 'package:places/ui/widgets/app_search_bar.dart';
+import 'package:places/ui/widgets/sight_card.dart';
 
 /// Экран отображения списка карточек интересных мест.
 class SightListScreen extends StatefulWidget {

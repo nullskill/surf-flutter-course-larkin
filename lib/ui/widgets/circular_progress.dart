@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:math';
+
+import 'package:flutter/material.dart';
 
 /// Виджет для отображения кругового лоадера с градиентом
 class CircularProgress extends StatefulWidget {

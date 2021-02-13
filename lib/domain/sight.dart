@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-
 import 'package:places/ui/res/assets.dart';
 
 /// Перечисление возможных типов мест
@@ -21,10 +20,15 @@ class Sight {
   SightType _type;
 
   get name => _name;
+
   get lat => _lat;
+
   get lng => _lng;
+
   get url => _url;
+
   get details => _details;
+
   get type => _type;
 
   Sight({
@@ -50,6 +54,7 @@ class FavoriteSight extends Sight {
   DateTime _openHour;
 
   get plannedDate => _plannedDate;
+
   get openHour => _openHour;
 
   FavoriteSight({
@@ -95,6 +100,7 @@ class VisitedSight extends Sight {
   DateTime _openHour;
 
   get visitedDate => _visitedDate;
+
   get openHour => _openHour;
 
   VisitedSight({
@@ -142,8 +148,11 @@ class Category {
   bool _selected;
 
   get name => _name;
+
   get iconName => _iconName;
+
   get type => _type;
+
   // ignore: unnecessary_getters_setters
   get selected => _selected;
 

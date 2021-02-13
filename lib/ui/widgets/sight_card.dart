@@ -1,18 +1,14 @@
-import 'package:flutter/material.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
-
+import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/border_radiuses.dart';
+import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/res/colors.dart';
-import 'package:places/ui/res/assets.dart';
-
 import 'package:places/ui/screens/sight_details_screen.dart';
 
 /// Виджет карточки интересного места.
@@ -30,7 +26,7 @@ class SightCard extends StatelessWidget {
   // ignore: long-method
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: 3 / 2,
+      aspectRatio: sight.runtimeType == Sight ? 3 / 2 : 2,
       child: ClipRRect(
         borderRadius: allBorderRadius16,
         child: Container(

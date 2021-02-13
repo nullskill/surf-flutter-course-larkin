@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_svg/flutter_svg.dart';
-
-import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/res/border_radiuses.dart';
 
 /// Виджет AppActionButton предоставляет кнопку возврата на предыдущий экран
 class AppBackButton extends StatelessWidget {

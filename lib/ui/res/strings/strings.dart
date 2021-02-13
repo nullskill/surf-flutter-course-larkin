@@ -61,6 +61,7 @@ const String sightListAppBarTitle = "Список интересных мест"
     addSightLongitudeTitle = "Долгота",
     addSightSelectOnMapLabel = "Указать на карте",
     addSightDescriptionHintText = "введите текст",
+    addSightWrongEntry = "Неправильный ввод",
 
 //SelectCategoryScreen
     selectCategoryActionButtonLabel = "Сохранить",

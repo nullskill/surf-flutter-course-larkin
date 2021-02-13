@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
-
+import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/border_radiuses.dart';
+import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/res/colors.dart';
-import 'package:places/ui/res/assets.dart';
-
-import 'package:places/ui/screens/sight_search_screen/sight_search_screen_helper.dart';
 import 'package:places/ui/screens/sight_details_screen.dart';
-
-import 'package:places/ui/widgets/app_search_bar.dart';
+import 'package:places/ui/screens/sight_search/sight_search_screen_helper.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
+import 'package:places/ui/widgets/app_search_bar.dart';
+import 'package:places/ui/widgets/circular_progress.dart';
 import 'package:places/ui/widgets/link.dart';
 import 'package:places/ui/widgets/message_box.dart';
 import 'package:places/ui/widgets/settings_item.dart';
 import 'package:places/ui/widgets/subtitle.dart';
-import 'package:places/ui/widgets/circular_progress.dart';
 
 /// Экран поиска интересного места.
 class SightSearchScreen extends StatefulWidget {
@@ -230,12 +225,8 @@ class _SearchHistoryList extends StatelessWidget {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(
-              16.0,
-              24.0,
-              16.0,
-              4.0,
-            ),
+            // ignore: prefer-trailing-comma
+            padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 4.0),
             child: Subtitle(
               subtitle: sightSearchHistoryTitle,
             ),
