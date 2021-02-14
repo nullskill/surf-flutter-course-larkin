@@ -4,6 +4,7 @@ import 'package:places/domain/sight.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
+import 'package:places/ui/res/scroll_physics.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screens/add_sight/add_sight_logic.dart';
@@ -164,6 +165,7 @@ class _ImageCards extends StatelessWidget {
     return SizedBox(
       height: 96.0,
       child: ListView(
+        physics: physics,
         scrollDirection: Axis.horizontal,
         clipBehavior: Clip.none,
         padding: const EdgeInsets.only(
