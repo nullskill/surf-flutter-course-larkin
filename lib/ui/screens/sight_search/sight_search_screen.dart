@@ -8,7 +8,7 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screens/sight_details_screen.dart';
-import 'package:places/ui/screens/sight_search/sight_search_screen_helper.dart';
+import 'package:places/ui/screens/sight_search/sight_search_logic.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_search_bar.dart';
 import 'package:places/ui/widgets/circular_progress.dart';
@@ -24,7 +24,7 @@ class SightSearchScreen extends StatefulWidget {
 }
 
 class _SightSearchScreenState extends State<SightSearchScreen>
-    with SightSearchScreenHelper {
+    with SightSearchScreenLogic {
   @override
   // ignore: long-method
   Widget build(BuildContext context) {

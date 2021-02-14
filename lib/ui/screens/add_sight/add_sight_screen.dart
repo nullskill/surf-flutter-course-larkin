@@ -6,7 +6,7 @@ import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/screens/add_sight/add_sight_screen_helper.dart';
+import 'package:places/ui/screens/add_sight/add_sight_logic.dart';
 import 'package:places/ui/screens/select_category_screen.dart';
 import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/ui/widgets/clear_button.dart';
@@ -21,7 +21,7 @@ class AddSightScreen extends StatefulWidget {
 }
 
 class _AddSightScreenState extends State<AddSightScreen>
-    with AddSightScreenHelper {
+    with AddSightScreenLogic {
   @override
   // ignore: long-method
   Widget build(BuildContext context) {
@@ -369,7 +369,7 @@ class _AddSightBody extends StatelessWidget {
                           decimal: true,
                         ),
                         validator: (String value) =>
-                            AddSightScreenHelper.validateCoordinate(
+                            AddSightScreenLogic.validateCoordinate(
                           value,
                           Coordinate.lat,
                         ),
@@ -390,7 +390,7 @@ class _AddSightBody extends StatelessWidget {
                           decimal: true,
                         ),
                         validator: (String value) =>
-                            AddSightScreenHelper.validateCoordinate(
+                            AddSightScreenLogic.validateCoordinate(
                           value,
                           Coordinate.lng,
                         ),

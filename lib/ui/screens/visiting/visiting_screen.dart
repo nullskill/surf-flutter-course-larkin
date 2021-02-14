@@ -6,7 +6,7 @@ import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/screens/visiting/visiting_screen_helper.dart';
+import 'package:places/ui/screens/visiting/visiting_logic.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_dismissible.dart';
 import 'package:places/ui/widgets/message_box.dart';
@@ -19,7 +19,7 @@ class VisitingScreen extends StatefulWidget {
 }
 
 class _VisitingScreenState extends State<VisitingScreen>
-    with VisitingScreenHelper {
+    with VisitingScreenLogic {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

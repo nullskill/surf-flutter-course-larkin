@@ -9,7 +9,7 @@ import 'package:places/mocks.dart';
 final _history = <String>[];
 
 /// Вспомогательный миксин для экрана поиска
-mixin SightSearchScreenHelper<SightSearchScreen extends StatefulWidget>
+mixin SightSearchScreenLogic<SightSearchScreen extends StatefulWidget>
     on State<SightSearchScreen> {
   static const searchDelay = 200;
   static const debounceDelay = 3000;
@@ -24,14 +24,13 @@ mixin SightSearchScreenHelper<SightSearchScreen extends StatefulWidget>
   bool isSearching = false;
   bool hasError = false;
   bool hasClearButton = false;
+  int requestCounter = 0;
 
   List<String> get history => _history.reversed
       .toList()
       .sublist(0, min(maxHistoryLength, _history.length));
 
   bool get isHistoryEmpty => _history.isEmpty;
-
-  int requestCounter = 0;
 
   @override
   void initState() {
@@ -121,7 +120,7 @@ mixin SightSearchScreenHelper<SightSearchScreen extends StatefulWidget>
 
     debounce = Timer(
       const Duration(
-        milliseconds: SightSearchScreenHelper.debounceDelay,
+        milliseconds: SightSearchScreenLogic.debounceDelay,
       ),
       () {
         streamSub?.cancel();
