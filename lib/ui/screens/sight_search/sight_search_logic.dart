@@ -8,7 +8,7 @@ import 'package:places/mocks.dart';
 /// Хранит историю поиска
 final _history = <String>[];
 
-/// Вспомогательный миксин для экрана поиска
+/// Миксин для логики экрана поиска
 mixin SightSearchScreenLogic<SightSearchScreen extends StatefulWidget>
     on State<SightSearchScreen> {
   static const searchDelay = 200;
