@@ -37,6 +37,7 @@ class MessageBox extends StatelessWidget {
               color: inactiveColor,
               height: lineHeight1_3,
             ),
+            textAlign: TextAlign.center,
           ),
           SizedBox(
             height: 8,
