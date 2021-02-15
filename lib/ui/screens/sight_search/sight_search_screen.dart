@@ -8,7 +8,7 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screens/sight_details_screen.dart';
-import 'package:places/ui/screens/sight_search/sight_search_screen_helper.dart';
+import 'package:places/ui/screens/sight_search/sight_search_logic.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_search_bar.dart';
 import 'package:places/ui/widgets/circular_progress.dart';
@@ -24,7 +24,7 @@ class SightSearchScreen extends StatefulWidget {
 }
 
 class _SightSearchScreenState extends State<SightSearchScreen>
-    with SightSearchScreenHelper {
+    with SightSearchScreenLogic {
   @override
   // ignore: long-method
   Widget build(BuildContext context) {
@@ -221,40 +221,38 @@ class _SearchHistoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Padding(
-            // ignore: prefer-trailing-comma
-            padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 4.0),
-            child: Subtitle(
-              subtitle: sightSearchHistoryTitle,
-            ),
+    return Column(
+      children: [
+        Padding(
+          // ignore: prefer-trailing-comma
+          padding: const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 4.0),
+          child: Subtitle(
+            subtitle: sightSearchHistoryTitle,
           ),
-          Padding(
+        ),
+        Expanded(
+          child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              children: [
-                for (var item in history)
-                  SettingsItem(
-                    title: item,
-                    isGreyedOut: true,
-                    isLast: isLastInHistory(item),
-                    onTap: () => onTapOnHistory(item),
-                    trailing: GestureDetector(
-                      onTap: () => onDeleteFromHistory(item),
-                      child: SvgPicture.asset(
-                        AppIcons.delete,
-                        color: inactiveColor,
-                      ),
+            children: [
+              for (var item in history)
+                SettingsItem(
+                  title: item,
+                  isGreyedOut: true,
+                  isLast: isLastInHistory(item),
+                  onTap: () => onTapOnHistory(item),
+                  trailing: GestureDetector(
+                    onTap: () => onDeleteFromHistory(item),
+                    child: SvgPicture.asset(
+                      AppIcons.delete,
+                      color: inactiveColor,
                     ),
                   ),
-                _ClearHistoryLink(onTap: onClearHistory),
-              ],
-            ),
+                ),
+              _ClearHistoryLink(onTap: onClearHistory),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

@@ -55,13 +55,8 @@ class _SightListScreenState extends State<SightListScreen> {
           });
         },
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: _CardColumn(
-            sights: _sights,
-          ),
-        ),
+      body: _CardColumn(
+        sights: _sights,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: AppFloatingActionButton(
@@ -103,15 +98,17 @@ class _CardColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        for (var sight in sights) ...[
-          SightCard(sight: sight),
-          SizedBox(
-            height: 16.0,
-          ),
-        ],
-      ],
+    return ListView.separated(
+      itemCount: sights.length,
+      itemBuilder: (context, index) {
+        return SightCard(sight: sights[index]);
+      },
+      separatorBuilder: (context, index) {
+        return SizedBox(
+          height: 16.0,
+        );
+      },
+      padding: const EdgeInsets.all(16.0),
     );
   }
 }

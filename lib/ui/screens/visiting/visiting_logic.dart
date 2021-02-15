@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:places/mocks.dart';
 
-/// Вспомогательный миксин для экрана избранных/посещенных интересных мест
-mixin VisitingScreenHelper<VisitingScreen extends StatefulWidget>
+/// Миксин для логики экрана избранных/посещенных интересных мест
+mixin VisitingScreenLogic<VisitingScreen extends StatefulWidget>
     on State<VisitingScreen> {
   List _favoriteMocks = favoriteMocks;
   List _visitedMocks = visitedMocks;
+  bool isDrag = false;
 
   List get getFavoriteMocks => _favoriteMocks;
 
   List get getVisitedMocks => _visitedMocks;
-
-  bool isDrag = false;
 
   /// При удалении карточки из списка
   void onRemoveCard(bool hasVisited, var sight) {

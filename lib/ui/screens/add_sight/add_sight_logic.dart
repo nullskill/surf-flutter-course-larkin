@@ -13,8 +13,8 @@ enum Field { name, latitude, longitude, description }
 /// Хранит список URL картинок места
 final _imgUrls = <String>[];
 
-/// Вспомогательный миксин для экрана добавления нового места
-mixin AddSightScreenHelper<AddSightScreen extends StatefulWidget>
+/// Миксин для логики экрана добавления нового места
+mixin AddSightScreenLogic<AddSightScreen extends StatefulWidget>
     on State<AddSightScreen> {
   final controllers = <Field, TextEditingController>{
     Field.name: TextEditingController(),

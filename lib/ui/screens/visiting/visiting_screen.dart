@@ -6,7 +6,7 @@ import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/screens/visiting/visiting_screen_helper.dart';
+import 'package:places/ui/screens/visiting/visiting_logic.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_dismissible.dart';
 import 'package:places/ui/widgets/message_box.dart';
@@ -19,7 +19,7 @@ class VisitingScreen extends StatefulWidget {
 }
 
 class _VisitingScreenState extends State<VisitingScreen>
-    with VisitingScreenHelper {
+    with VisitingScreenLogic {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -150,40 +150,35 @@ class _VisitingScreenList extends StatelessWidget {
                 ? visitingVisitedEmptyListText
                 : visitingWishToVisitEmptyListText,
           )
-        : SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _DragTarget(
-                    index: 0,
-                    hasVisited: hasVisited,
-                    onRemoveCard: onRemoveCard,
-                    swapCards: swapCards,
-                  ),
-                  for (var sight in sights) ...[
-                    _Draggable(
-                      sight: sight,
-                      hasVisited: hasVisited,
-                      isDrag: isDrag,
-                      onDragCardStarted: onDragCardStarted,
-                      onDragCardEnd: onDragCardEnd,
-                      onRemoveCard: onRemoveCard,
-                    ),
-                    _DragTarget(
-                      index: sights.indexOf(sight),
-                      hasVisited: hasVisited,
-                      onRemoveCard: onRemoveCard,
-                      swapCards: swapCards,
-                    ),
-                    // SizedBox(
-                    //   height: 16.0,
-                    // ),
-                  ],
-                ],
+        : ListView(
+            padding: const EdgeInsets.all(16.0),
+            children: [
+              _DragTarget(
+                index: 0,
+                hasVisited: hasVisited,
+                onRemoveCard: onRemoveCard,
+                swapCards: swapCards,
               ),
-            ),
+              for (var sight in sights) ...[
+                _Draggable(
+                  sight: sight,
+                  hasVisited: hasVisited,
+                  isDrag: isDrag,
+                  onDragCardStarted: onDragCardStarted,
+                  onDragCardEnd: onDragCardEnd,
+                  onRemoveCard: onRemoveCard,
+                ),
+                _DragTarget(
+                  index: sights.indexOf(sight),
+                  hasVisited: hasVisited,
+                  onRemoveCard: onRemoveCard,
+                  swapCards: swapCards,
+                ),
+                // SizedBox(
+                //   height: 16.0,
+                // ),
+              ],
+            ],
           );
   }
 }
