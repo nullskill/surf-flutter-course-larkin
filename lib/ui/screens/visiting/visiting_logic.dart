@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:places/mocks.dart';
 
-/// Вспомогательный миксин для экрана избранных/посещенных интересных мест
+/// Миксин для логики экрана избранных/посещенных интересных мест
 mixin VisitingScreenLogic<VisitingScreen extends StatefulWidget>
     on State<VisitingScreen> {
   List _favoriteMocks = favoriteMocks;
