@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/ui/res/assets.dart';
+import 'package:places/domain/tutorial_frame.dart';
+import 'package:places/domain/tutorial_frames.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
@@ -10,24 +11,16 @@ class OnboardingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _OnboardingAppBar(),
-      body: PageView(
-        children: [
-          _Frame(
-            title: "Добро пожаловать\nв Путеводитель",
-            iconName: AppIcons.frame1,
-            message: "Ищи новые локации и сохраняй\nсамые любимые.",
-          ),
-          _Frame(
-            title: "Добро пожаловать\nв Путеводитель",
-            iconName: AppIcons.frame1,
-            message: "Ищи новые локации и сохраняй\nсамые любимые.",
-          ),
-          _Frame(
-            title: "Добро пожаловать\nв Путеводитель",
-            iconName: AppIcons.frame1,
-            message: "Ищи новые локации и сохраняй\nсамые любимые.",
-          ),
-        ],
+      body: PageView.builder(
+        itemCount: tutorialFrames.length,
+        itemBuilder: (BuildContext context, int index) {
+          TutorialFrame frame = tutorialFrames[index];
+          return _Frame(
+            iconName: frame.iconName,
+            title: frame.title,
+            message: frame.message,
+          );
+        },
       ),
     );
   }
