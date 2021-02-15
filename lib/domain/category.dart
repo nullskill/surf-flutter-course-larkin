@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:places/domain/sight_type.dart';
-import 'package:places/domain/types_mapping.dart';
+import 'package:places/domain/sight_types.dart';
 import 'package:places/ui/res/assets.dart';
 
 /// Класс категории интересных мест
@@ -39,10 +39,10 @@ class Category {
   }) {
     this._type = type;
     this._selected = false;
-    this._name = typesMapping[type]?.first ?? "Особое место";
-    this._iconName = typesMapping[type]?.last ?? AppIcons.particular_place;
-    this._name = typesMapping[type]?.first ?? "Особое место";
-    this._iconName = typesMapping[type]?.last ?? AppIcons.particular_place;
+    this._name = sightTypes[type]?.first ?? "Особое место";
+    this._iconName = sightTypes[type]?.last ?? AppIcons.particular_place;
+    this._name = sightTypes[type]?.first ?? "Особое место";
+    this._iconName = sightTypes[type]?.last ?? AppIcons.particular_place;
   }
 
   /// Меняет признак выбранности категории
