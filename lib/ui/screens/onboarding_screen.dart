@@ -6,21 +6,53 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 
-class OnboardingScreen extends StatelessWidget {
+class OnboardingScreen extends StatefulWidget {
   @override
+  _OnboardingScreenState createState() => _OnboardingScreenState();
+}
+
+class _OnboardingScreenState extends State<OnboardingScreen> {
+  int currentPage = 0;
+
+  @override
+  // ignore: long-method
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _OnboardingAppBar(),
-      body: PageView.builder(
-        itemCount: tutorialFrames.length,
-        itemBuilder: (BuildContext context, int index) {
-          TutorialFrame frame = tutorialFrames[index];
-          return _Frame(
-            iconName: frame.iconName,
-            title: frame.title,
-            message: frame.message,
-          );
-        },
+      body: Column(
+        children: [
+          Expanded(
+            child: PageView.builder(
+              onPageChanged: (int value) {
+                setState(() {
+                  currentPage = value;
+                });
+              },
+              itemCount: tutorialFrames.length,
+              itemBuilder: (BuildContext context, int index) {
+                TutorialFrame frame = tutorialFrames[index];
+                return _Frame(
+                  iconName: frame.iconName,
+                  title: frame.title,
+                  message: frame.message,
+                  length: tutorialFrames.length,
+                  index: index,
+                );
+              },
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List.generate(
+              tutorialFrames.length,
+              (index) =>
+                  _FrameIndicator(currentPage: currentPage, index: index),
+            ),
+          ),
+          SizedBox(
+            height: 88,
+          ),
+        ],
       ),
     );
   }
@@ -73,11 +105,15 @@ class _Frame extends StatelessWidget {
     @required this.title,
     @required this.iconName,
     @required this.message,
+    @required this.index,
+    @required this.length,
   }) : super(key: key);
 
   final String title, iconName, message;
+  final int index, length;
 
   @override
+  // ignore: long-method
   Widget build(BuildContext context) {
     return Center(
       child: Column(
@@ -104,7 +140,7 @@ class _Frame extends StatelessWidget {
             height: 8,
           ),
           SizedBox(
-            width: 253.5,
+            width: 244,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -119,7 +155,36 @@ class _Frame extends StatelessWidget {
               ],
             ),
           ),
+          SizedBox(
+            height: 117,
+          ),
         ],
+      ),
+    );
+  }
+}
+
+class _FrameIndicator extends StatelessWidget {
+  const _FrameIndicator({
+    Key key,
+    @required this.currentPage,
+    @required this.index,
+  }) : super(key: key);
+
+  final int currentPage, index;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 500),
+      margin: EdgeInsets.only(right: 5),
+      height: 6,
+      width: currentPage == index ? 20 : 6,
+      decoration: BoxDecoration(
+        color: currentPage == index
+            ? Theme.of(context).buttonColor
+            : inactiveColor,
+        borderRadius: BorderRadius.circular(3),
       ),
     );
   }
