@@ -41,6 +41,8 @@ class Category {
     this._selected = false;
     this._name = typesMapping[type]?.first ?? "Особое место";
     this._iconName = typesMapping[type]?.last ?? AppIcons.particular_place;
+    this._name = typesMapping[type]?.first ?? "Особое место";
+    this._iconName = typesMapping[type]?.last ?? AppIcons.particular_place;
   }
 
   /// Меняет признак выбранности категории
