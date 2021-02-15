@@ -4,7 +4,6 @@ import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/colors.dart';
-import 'package:places/ui/res/scroll_physics.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screens/add_sight/add_sight_screen.dart';
@@ -100,7 +99,6 @@ class _CardColumn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
-      physics: physics,
       itemCount: sights.length,
       itemBuilder: (context, index) {
         return SightCard(sight: sights[index]);
