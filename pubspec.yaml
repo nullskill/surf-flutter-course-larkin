@@ -40,6 +40,7 @@ flutter:
     - res/icons/other/
     - res/icons/catalog/
     - res/icons/empty_pages/
+    - res/icons/tutorial/
 
   fonts:
     - family: Roboto

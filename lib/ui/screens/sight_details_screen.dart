@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/res/app_color_scheme.dart';
 import 'package:places/ui/res/assets.dart';
+import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
@@ -52,34 +53,71 @@ class _SightDetailsAppBar extends StatelessWidget
   }
 }
 
-class _Gallery extends StatelessWidget {
+class _Gallery extends StatefulWidget {
   const _Gallery({
     Key key,
     @required this.imgUrl,
   }) : super(key: key);
 
+  static const imageCount = 5;
   final String imgUrl;
 
   @override
+  _GalleryState createState() => _GalleryState();
+}
+
+class _GalleryState extends State<_Gallery> {
+  int currentIndex = 1;
+
+  @override
+  // ignore: long-method
   Widget build(BuildContext context) {
-    return Image.network(
-      imgUrl,
-      fit: BoxFit.cover,
-      loadingBuilder: (
-        BuildContext context,
-        Widget child,
-        ImageChunkEvent loadingProgress,
-      ) {
-        if (loadingProgress == null) return child;
-        return Center(
-          child: CircularProgressIndicator(
-            value: loadingProgress.expectedTotalBytes != null
-                ? loadingProgress.cumulativeBytesLoaded /
-                    loadingProgress.expectedTotalBytes
-                : null,
+    return Stack(
+      children: [
+        PageView.builder(
+          onPageChanged: (index) {
+            setState(() {
+              currentIndex = index + 1;
+            });
+          },
+          itemCount: _Gallery.imageCount,
+          itemBuilder: (BuildContext context, int index) {
+            return Image.network(
+              widget.imgUrl,
+              fit: BoxFit.cover,
+              loadingBuilder: (
+                BuildContext context,
+                Widget child,
+                ImageChunkEvent loadingProgress,
+              ) {
+                if (loadingProgress == null) return child;
+                return Center(
+                  child: CircularProgressIndicator(
+                    value: loadingProgress.expectedTotalBytes != null
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes
+                        : null,
+                  ),
+                );
+              },
+            );
+          },
+        ),
+        Positioned(
+          left: 0,
+          bottom: 0,
+          child: Container(
+            height: 8.0,
+            width: MediaQuery.of(context).size.width /
+                _Gallery.imageCount *
+                currentIndex,
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              borderRadius: rightBorderRadius8,
+            ),
           ),
-        );
-      },
+        ),
+      ],
     );
   }
 }

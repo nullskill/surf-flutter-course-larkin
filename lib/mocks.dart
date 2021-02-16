@@ -1,4 +1,9 @@
+import 'package:places/domain/category.dart';
+import 'package:places/domain/favorite_sight.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/domain/visited_sight.dart';
+
+import 'domain/sight_type.dart';
 
 /// Список интересных мест
 final mocks = <Sight>[

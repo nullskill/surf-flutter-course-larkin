@@ -10,7 +10,13 @@ class AppIcons {
       _menuPath = "$_baseResPath/menu",
       _otherPath = "$_baseResPath/other",
       _catalogPath = "$_baseResPath/catalog",
-      _emptyPagesPath = "$_baseResPath/empty_pages";
+      _emptyPagesPath = "$_baseResPath/empty_pages",
+      _tutorialPath = "$_baseResPath/tutorial";
+
+  /// Tutorial
+  static const frame1 = '$_tutorialPath/frame1.svg',
+      frame2 = '$_tutorialPath/frame2.svg',
+      frame3 = '$_tutorialPath/frame3.svg';
 
   /// Catalog
   static const cafe = '$_catalogPath/cafe.svg',

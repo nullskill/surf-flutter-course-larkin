@@ -12,6 +12,9 @@ const String appTitle = "Places",
 //AppSearchBar
     searchBarHintText = "Поиск",
 
+//OnboardingScreen
+    onboardingSkipButtonLabel = "Пропустить",
+
 //ErrorScreen
     errorTitle = "Ошибка",
     errorMessage = "Что то пошло не так...\nПопробуйте позже.",
