@@ -39,10 +39,8 @@ class Category {
   }) {
     this._type = type;
     this._selected = false;
-    this._name = sightTypes[type]?.first ?? "Особое место";
-    this._iconName = sightTypes[type]?.last ?? AppIcons.particular_place;
-    this._name = sightTypes[type]?.first ?? "Особое место";
-    this._iconName = sightTypes[type]?.last ?? AppIcons.particular_place;
+    this._name = sightTypes[type]?.name ?? "Особое место";
+    this._iconName = sightTypes[type]?.iconName ?? AppIcons.particular_place;
   }
 
   /// Меняет признак выбранности категории

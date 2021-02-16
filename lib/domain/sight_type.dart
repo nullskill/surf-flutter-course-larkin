@@ -7,3 +7,11 @@ enum SightType {
   museum,
   cafe,
 }
+
+/// Класс метаданных типа места
+class SightTypeMetadata {
+  String name;
+  String iconName;
+
+  SightTypeMetadata({this.name, this.iconName});
+}
