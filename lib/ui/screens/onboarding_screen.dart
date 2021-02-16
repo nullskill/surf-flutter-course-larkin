@@ -155,9 +155,6 @@ class _Frame extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(
-            height: 117,
-          ),
         ],
       ),
     );
@@ -167,16 +164,16 @@ class _Frame extends StatelessWidget {
 class _FrameIndicator extends StatelessWidget {
   const _FrameIndicator({
     Key key,
-    @required this.currentPage,
     @required this.index,
+    @required this.currentPage,
   }) : super(key: key);
 
-  final int currentPage, index;
+  final int index, currentPage;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: Duration(milliseconds: 500),
+      duration: Duration(milliseconds: 250),
       margin: EdgeInsets.only(right: 5),
       height: 6,
       width: currentPage == index ? 20 : 6,
