@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-import 'package:places/domain/favorite_site.dart';
+import 'package:places/domain/favorite_sight.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/domain/visited_sight.dart';
 import 'package:places/mocks.dart';

@@ -1,5 +1,5 @@
 import 'package:places/domain/category.dart';
-import 'package:places/domain/favorite_site.dart';
+import 'package:places/domain/favorite_sight.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/domain/visited_sight.dart';
 
