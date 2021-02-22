@@ -5,76 +5,10 @@ import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/widgets/app_back_button.dart';
 
-/// Виджет AppSearchBar предоставляет AppBar вместе с полем для поиска
-class AppSearchBar extends StatelessWidget implements PreferredSizeWidget {
-  final Size preferredSize = Size.fromHeight(116);
-  final String title;
-  final bool readOnly;
-  final bool autofocus;
-  final bool hasBackButton;
-  final bool hasClearButton;
-  final Function onTap;
-  final Function onEditingComplete;
-  final Function onFilter;
-  final FocusNode searchFocusNode;
-  final TextEditingController searchController;
-
-  AppSearchBar({
-    Key key,
-    @required this.title,
-    this.readOnly,
-    this.autofocus,
-    this.hasBackButton = false,
-    this.hasClearButton = false,
-    this.onTap,
-    this.onEditingComplete,
-    this.onFilter,
-    this.searchFocusNode,
-    this.searchController,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      leading: hasBackButton ? AppBackButton() : null,
-      flexibleSpace: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(
-              top: MediaQuery.of(context).padding.top + 16.0,
-              bottom: 16.0,
-            ),
-            child: Text(
-              title,
-              style: textMedium18.copyWith(
-                color: Theme.of(context).primaryColor,
-                height: lineHeight1_3,
-              ),
-            ),
-          ),
-          _SearchBar(
-            readOnly: readOnly,
-            autofocus: autofocus,
-            onTap: onTap,
-            onEditingComplete: onEditingComplete,
-            onFilter: onFilter,
-            hasClearButton: hasClearButton,
-            searchFocusNode: searchFocusNode,
-            searchController: searchController,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SearchBar extends StatelessWidget {
-  const _SearchBar({
+/// Виджет SearchBar предоставляет поле для поиска
+class SearchBar extends StatelessWidget {
+  const SearchBar({
     Key key,
     this.readOnly,
     this.autofocus,

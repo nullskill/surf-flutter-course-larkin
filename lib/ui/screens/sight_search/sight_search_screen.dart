@@ -9,11 +9,12 @@ import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screens/sight_details_screen.dart';
 import 'package:places/ui/screens/sight_search/sight_search_logic.dart';
+import 'package:places/ui/widgets/app_back_button.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
-import 'package:places/ui/widgets/app_search_bar.dart';
 import 'package:places/ui/widgets/circular_progress.dart';
 import 'package:places/ui/widgets/link.dart';
 import 'package:places/ui/widgets/message_box.dart';
+import 'package:places/ui/widgets/search_bar.dart';
 import 'package:places/ui/widgets/settings_item.dart';
 import 'package:places/ui/widgets/subtitle.dart';
 
@@ -26,13 +27,9 @@ class SightSearchScreen extends StatefulWidget {
 class _SightSearchScreenState extends State<SightSearchScreen>
     with SightSearchScreenLogic {
   @override
-  // ignore: long-method
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppSearchBar(
-        title: sightListAppBarTitle,
-        autofocus: true,
-        hasBackButton: true,
+      appBar: _AppBar(
         hasClearButton: hasClearButton,
         searchController: searchController,
         searchFocusNode: searchFocusNode,
@@ -74,8 +71,49 @@ class _SightSearchScreenState extends State<SightSearchScreen>
           }
         },
       ),
-      bottomNavigationBar: AppBottomNavigationBar(
-        currentIndex: 0,
+      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
+    );
+  }
+}
+
+class _AppBar extends StatelessWidget implements PreferredSizeWidget {
+  final bool hasClearButton;
+  final TextEditingController searchController;
+  final FocusNode searchFocusNode;
+  final Function onEditingComplete;
+
+  const _AppBar({
+    Key key,
+    @required this.hasClearButton,
+    @required this.searchController,
+    @required this.searchFocusNode,
+    @required this.onEditingComplete,
+  }) : super(key: key);
+
+  @override
+  Size get preferredSize => Size.fromHeight(108.0);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      leading: AppBackButton(),
+      centerTitle: true,
+      title: Text(
+        sightListAppBarTitle,
+        style: textMedium18.copyWith(
+          color: Theme.of(context).primaryColor,
+          height: lineHeight1_3,
+        ),
+      ),
+      bottom: PreferredSize(
+        preferredSize: Size.fromHeight(52.0),
+        child: SearchBar(
+          autofocus: true,
+          hasClearButton: hasClearButton,
+          searchController: searchController,
+          searchFocusNode: searchFocusNode,
+          onEditingComplete: onEditingComplete,
+        ),
       ),
     );
   }

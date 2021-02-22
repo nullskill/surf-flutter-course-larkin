@@ -3,6 +3,7 @@
 const String appTitle = "Places",
 //SightListScreen
     sightListAppBarTitle = "Список интересных мест",
+    sightListAppBarWrappedTitle = "Список\nинтересных мест",
     sightListFabLabel = "Новое место",
 
 //SightCard
