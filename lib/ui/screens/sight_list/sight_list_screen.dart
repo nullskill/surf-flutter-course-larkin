@@ -115,6 +115,7 @@ class _Header extends StatelessWidget {
                   child: Text(
                     listTitle,
                     style: textMedium18.copyWith(
+                      color: Theme.of(context).primaryColor,
                       fontSize: Tween<double>(
                         begin: 18.0,
                         end: 32.0,
@@ -128,9 +129,7 @@ class _Header extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(
-                height: 16.0,
-              ),
+              SizedBox(height: 16.0),
               SizedBox(
                 height: Tween<double>(begin: 0, end: 52).evaluate(animation),
                 child: SearchBar(
@@ -156,14 +155,14 @@ class _Header extends StatelessWidget {
 
   FontWeight _getFontWeight(animation) {
     final listTitleWeight =
-        Tween<double>(begin: 4.0, end: 6.0).evaluate(animation).toInt();
+        Tween<double>(begin: 1.0, end: 3.0).evaluate(animation).toInt();
 
     switch (listTitleWeight) {
-      case 4:
+      case 1:
         return FontWeight.w500;
-      case 5:
+      case 2:
         return FontWeight.w600;
-      case 6:
+      case 3:
       default:
         return FontWeight.w700;
     }
