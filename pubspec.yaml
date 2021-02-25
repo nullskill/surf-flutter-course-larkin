@@ -41,6 +41,7 @@ flutter:
     - res/icons/catalog/
     - res/icons/empty_pages/
     - res/icons/tutorial/
+    - res/icons/logo/
 
   fonts:
     - family: Roboto

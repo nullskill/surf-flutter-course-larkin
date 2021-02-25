@@ -37,6 +37,7 @@ class _SightListScreenState extends State<SightListScreen>
               pinned: true,
               stretch: true,
               elevation: 0,
+              automaticallyImplyLeading: false,
               flexibleSpace: _Header(
                 maxHeight: maxHeight,
                 minHeight: minHeight,
