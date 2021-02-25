@@ -22,25 +22,29 @@ class SightDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _SightDetailsAppBar(sight: sight),
-      body: _SightDetailsBody(sight: sight),
+      body: CustomScrollView(
+        slivers: [
+          _SightDetailsAppBar(sight: sight),
+          _SightDetailsBody(sight: sight),
+        ],
+      ),
     );
   }
 }
 
-class _SightDetailsAppBar extends StatelessWidget
-    implements PreferredSizeWidget {
+class _SightDetailsAppBar extends StatelessWidget {
   _SightDetailsAppBar({
     Key key,
     @required this.sight,
   }) : super(key: key);
 
   final sight;
-  final Size preferredSize = Size.fromHeight(360.0);
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
+    return SliverAppBar(
+      stretch: true,
+      elevation: 0,
       leading: AppBackButton(),
       flexibleSpace: Container(
         height: double.infinity,
@@ -48,6 +52,7 @@ class _SightDetailsAppBar extends StatelessWidget
           imgUrl: sight.url,
         ),
       ),
+      expandedHeight: 360.0,
       backgroundColor: placeholderColor,
     );
   }
@@ -132,47 +137,43 @@ class _SightDetailsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
-              vertical: 24.0,
+    return SliverFillRemaining(
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16.0,
+          vertical: 24.0,
+        ),
+        child: ListView(
+          physics: NeverScrollableScrollPhysics(),
+          children: [
+            _CardLabel(sight: sight),
+            SizedBox(
+              height: 24.0,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _CardLabel(sight: sight),
-                SizedBox(
-                  height: 24.0,
-                ),
-                Text(
-                  sight.details,
-                  style: textRegular14.copyWith(
-                    height: lineHeight1_3,
-                    color: Theme.of(context).colorScheme.appTitleColor,
-                  ),
-                ),
-                SizedBox(
-                  height: 24.0,
-                ),
-                ActionButton(
-                  iconName: AppIcons.go,
-                  label: sightDetailsActionButtonLabel,
-                  onPressed: () {
-                    print("ActionButton pressed");
-                  },
-                ),
-                SizedBox(
-                  height: 24.0,
-                ),
-                _CardMenu(),
-              ],
+            Text(
+              sight.details,
+              style: textRegular14.copyWith(
+                height: lineHeight1_3,
+                color: Theme.of(context).colorScheme.appTitleColor,
+              ),
             ),
-          ),
-        ],
+            SizedBox(
+              height: 24.0,
+            ),
+            ActionButton(
+              iconName: AppIcons.go,
+              label: sightDetailsActionButtonLabel,
+              onPressed: () {
+                print("ActionButton pressed");
+              },
+            ),
+            SizedBox(
+              height: 24.0,
+            ),
+            _CardMenu(),
+          ],
+        ),
       ),
     );
   }
@@ -236,10 +237,8 @@ class _CardMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          width: double.infinity,
-          height: 1.0,
-          color: inactiveColor,
+        Divider(
+          height: .8,
         ),
         SizedBox(
           height: 8,
