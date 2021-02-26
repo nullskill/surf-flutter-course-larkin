@@ -8,15 +8,19 @@ mixin SplashScreenLogic<SplashScreen extends StatefulWidget>
 
   @override
   void initState() {
-    _navigateToNext();
-
     super.initState();
+
+    _isInitialized = _initializeApp();
+    _navigateToNext();
+  }
+
+  Future<bool> _initializeApp() {
+    return Future(() => true);
   }
 
   void _navigateToNext() async {
-    _isInitialized = await Future.delayed(
+    await Future.delayed(
       Duration(seconds: 2),
-      () => _initializeApp(),
     );
 
     if (await _isInitialized) {
@@ -26,9 +30,5 @@ mixin SplashScreenLogic<SplashScreen extends StatefulWidget>
         ),
       );
     }
-  }
-
-  Future<bool> _initializeApp() {
-    return Future(() => true);
   }
 }
