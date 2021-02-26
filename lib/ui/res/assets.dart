@@ -11,11 +11,7 @@ class AppIcons {
       _otherPath = "$_baseResPath/other",
       _catalogPath = "$_baseResPath/catalog",
       _emptyPagesPath = "$_baseResPath/empty_pages",
-      _tutorialPath = "$_baseResPath/tutorial",
-      _logoPath = "$_baseResPath/logo";
-
-  /// Logo
-  static const logo = '$_logoPath/logo.svg';
+      _tutorialPath = "$_baseResPath/tutorial";
 
   /// Tutorial
   static const frame1 = '$_tutorialPath/frame1.svg',

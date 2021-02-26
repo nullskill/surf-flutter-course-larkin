@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -112,19 +110,6 @@ class _CardTop extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           _CardImage(imgUrl: sight.url),
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  LightMode.primaryColor.withOpacity(.3),
-                  secondaryColor.withOpacity(.08),
-                ],
-                stops: [0.0, 1.0],
-              ),
-            ),
-          ),
           Positioned(
             top: 16,
             left: 16,
