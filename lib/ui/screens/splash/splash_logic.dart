@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:places/ui/screens/sight_list/sight_list_screen.dart';
+import 'package:places/ui/res/app_routes.dart';
+import 'package:places/utils/app_init.dart';
 
 /// Миксин для логики сплеш-экрана
 mixin SplashScreenLogic<SplashScreen extends StatefulWidget>
     on State<SplashScreen> {
+  AppInitialization _appInit;
   Future<bool> _isInitialized;
 
   @override
@@ -14,7 +16,8 @@ mixin SplashScreenLogic<SplashScreen extends StatefulWidget>
     _navigateToNext();
   }
 
-  Future<bool> _initializeApp() {
+  Future<bool> _initializeApp() async {
+    _appInit = await AppInitialization();
     return Future(() => true);
   }
 
@@ -22,12 +25,10 @@ mixin SplashScreenLogic<SplashScreen extends StatefulWidget>
     await Future.delayed(
       Duration(seconds: 2),
     );
-
     if (await _isInitialized) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => SightListScreen(),
-        ),
+      Navigator.of(context).pushNamedAndRemoveUntil(
+        _appInit.firstRun ? AppRoutes.onboarding : AppRoutes.start,
+        (_) => false,
       );
     }
   }
