@@ -16,7 +16,7 @@ dependencies:
   # Widget that automatically resizes text to fit perfectly within its bounds.
   auto_size_text: ^2.1.0
   # SVG image
-  flutter_svg: 0.18.1
+  flutter_svg: ^0.19.3
   # Package provides internationalization and localization facilities
   intl: ^0.16.1
   # State provider

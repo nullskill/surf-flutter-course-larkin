@@ -4,14 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AppInitialization {
   final String key = "first_run";
   SharedPreferences _prefs;
-  bool _firstRun;
+  bool _isFirstRun;
 
-  bool get firstRun => _firstRun;
-
-  void get tutorialFinished {
-    _firstRun = false;
-    _saveToPrefs();
-  }
+  bool get isFirstRun => _isFirstRun;
 
   static final AppInitialization _singleton = AppInitialization._internal();
 
@@ -20,21 +15,26 @@ class AppInitialization {
   }
 
   AppInitialization._internal() {
-    _firstRun = true;
+    _isFirstRun = true;
     _loadFromPrefs();
   }
 
-  _loadFromPrefs() async {
-    await _initPrefs();
-    _firstRun = _prefs.getBool(key) ?? true;
+  void tutorialFinished() {
+    _isFirstRun = false;
+    _saveToPrefs();
   }
 
-  _saveToPrefs() async {
+  void _loadFromPrefs() async {
     await _initPrefs();
-    _prefs.setBool(key, _firstRun);
+    _isFirstRun = _prefs.getBool(key) ?? true;
   }
 
-  _initPrefs() async {
+  void _saveToPrefs() async {
+    await _initPrefs();
+    _prefs.setBool(key, _isFirstRun);
+  }
+
+  void _initPrefs() async {
     if (_prefs == null) _prefs = await SharedPreferences.getInstance();
   }
 }

@@ -27,7 +27,7 @@ mixin SplashScreenLogic<SplashScreen extends StatefulWidget>
     );
     if (await _isInitialized) {
       Navigator.of(context).pushNamedAndRemoveUntil(
-        _appInit.firstRun ? AppRoutes.onboarding : AppRoutes.start,
+        _appInit.isFirstRun ? AppRoutes.onboarding : AppRoutes.start,
         (_) => false,
       );
     }
