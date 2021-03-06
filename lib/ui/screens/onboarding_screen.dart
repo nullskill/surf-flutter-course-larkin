@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/tutorial_frame.dart';
 import 'package:places/domain/tutorial_frames.dart';
+import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
+import 'package:places/ui/widgets/action_button.dart';
+import 'package:places/utils/app_init.dart';
 
+/// Экран, обучающий работе с приложением
 class OnboardingScreen extends StatefulWidget {
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
@@ -17,17 +21,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   // ignore: long-method
   Widget build(BuildContext context) {
+    final isLastFrame = currentPage == tutorialFrames.length - 1;
+
     return Scaffold(
-      appBar: _OnboardingAppBar(),
+      appBar: _OnboardingAppBar(isLastFrame: isLastFrame),
       body: Column(
         children: [
           Expanded(
             child: PageView.builder(
-              onPageChanged: (int value) {
-                setState(() {
-                  currentPage = value;
-                });
-              },
+              onPageChanged: (value) => _onPageChanged(value),
               itemCount: tutorialFrames.length,
               itemBuilder: (BuildContext context, int index) {
                 TutorialFrame frame = tutorialFrames[index];
@@ -50,27 +52,41 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             ),
           ),
           SizedBox(
-            height: 88,
+            height: 24,
           ),
         ],
       ),
+      bottomNavigationBar: _BottomNavigationBar(isLastFrame: isLastFrame),
     );
+  }
+
+  void _onPageChanged(int value) {
+    setState(() {
+      currentPage = value;
+    });
   }
 }
 
 class _OnboardingAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final Size preferredSize = Size.fromHeight(56.0);
+  final bool isLastFrame;
+
   _OnboardingAppBar({
     Key key,
+    @required this.isLastFrame,
   }) : super(key: key);
-
-  final Size preferredSize = Size.fromHeight(56.0);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
       actions: [
         Center(
-          child: _SkipButton(),
+          child: AnimatedOpacity(
+            opacity: isLastFrame ? 0.0 : 1.0,
+            duration: Duration(milliseconds: 250),
+            child: _SkipButton(isLastFrame: isLastFrame),
+          ),
         ),
       ],
     );
@@ -78,16 +94,17 @@ class _OnboardingAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class _SkipButton extends StatelessWidget {
+  final bool isLastFrame;
+
   const _SkipButton({
     Key key,
+    @required this.isLastFrame,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      onPressed: () {
-        // TODO: Добавить обработчик нажатия
-      },
+      onPressed: isLastFrame ? null : () => _startApp(context),
       child: Text(
         onboardingSkipButtonLabel,
         style: textMedium16.copyWith(
@@ -100,6 +117,9 @@ class _SkipButton extends StatelessWidget {
 }
 
 class _Frame extends StatelessWidget {
+  final String title, iconName, message;
+  final int index, length;
+
   const _Frame({
     Key key,
     @required this.title,
@@ -108,9 +128,6 @@ class _Frame extends StatelessWidget {
     @required this.index,
     @required this.length,
   }) : super(key: key);
-
-  final String title, iconName, message;
-  final int index, length;
 
   @override
   // ignore: long-method
@@ -162,18 +179,18 @@ class _Frame extends StatelessWidget {
 }
 
 class _FrameIndicator extends StatelessWidget {
+  final int index, currentPage;
+
   const _FrameIndicator({
     Key key,
     @required this.index,
     @required this.currentPage,
   }) : super(key: key);
 
-  final int index, currentPage;
-
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: Duration(milliseconds: 250),
+      duration: Duration(milliseconds: 200),
       margin: EdgeInsets.only(right: 5),
       height: 6,
       width: currentPage == index ? 20 : 6,
@@ -185,4 +202,42 @@ class _FrameIndicator extends StatelessWidget {
       ),
     );
   }
+}
+
+class _BottomNavigationBar extends StatelessWidget {
+  final bool isLastFrame;
+
+  const _BottomNavigationBar({
+    Key key,
+    this.isLastFrame,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(
+        16.0,
+        8.0,
+        16.0,
+        MediaQuery.of(context).padding.bottom + 8.0,
+      ),
+      child: AnimatedOpacity(
+        opacity: isLastFrame ? 1.0 : 0.0,
+        duration: Duration(milliseconds: 250),
+        child: ActionButton(
+          label: startActionButtonLabel,
+          onPressed: !isLastFrame ? null : () => _startApp(context),
+          // isDisabled: false,
+        ),
+      ),
+    );
+  }
+}
+
+void _startApp(context) {
+  AppInitialization().tutorialFinished;
+  Navigator.of(context).pushNamedAndRemoveUntil(
+    AppRoutes.start,
+    (_) => false,
+  );
 }

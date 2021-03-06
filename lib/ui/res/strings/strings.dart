@@ -1,6 +1,9 @@
 /// Строковые константы
 //App
 const String appTitle = "Places",
+//OnboardingScreen
+    startActionButtonLabel = "на старт",
+
 //SightListScreen
     sightListAppBarTitle = "Список интересных мест",
     sightListAppBarWrappedTitle = "Список\nинтересных мест",

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
@@ -59,28 +60,29 @@ class _SettingsBody extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
         child: Column(
           children: [
-            SettingsItem(
-              title: settingsThemeSettingTitle,
-              paddingValue: 10,
-              trailing: Consumer<ThemeNotifier>(
-                builder: (
+            Consumer<ThemeNotifier>(
+              builder: (
                   context,
                   notifier,
                   child,
-                ) =>
-                    CupertinoSwitch(
+                  ) => SettingsItem(
+                title: settingsThemeSettingTitle,
+                paddingValue: 10,
+                onTap: () => _onChanged(notifier),
+                trailing: CupertinoSwitch(
                   value: notifier.darkTheme,
-                  onChanged: (newValue) {
-                    notifier.toggleTheme();
-                  },
+                  onChanged: (_) => _onChanged(notifier),
                 ),
               ),
             ),
             SettingsItem(
               title: settingsWatchTutorialTitle,
+              onTap: () {
+                Navigator.of(context).pushNamed(AppRoutes.onboarding);
+              },
               trailing: GestureDetector(
                 onTap: () {
-                  print("Show tutorial pressed");
+                  print("Show tutorial info pressed");
                 },
                 child: SvgPicture.asset(
                   AppIcons.info,
@@ -94,5 +96,9 @@ class _SettingsBody extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _onChanged(ThemeNotifier notifier) {
+    notifier.toggleTheme();
   }
 }
