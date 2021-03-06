@@ -1,8 +1,8 @@
+import 'package:places/utils/consts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Класс для инициализации приложения
 class AppInitialization {
-  final String key = "first_run";
   SharedPreferences _prefs;
   bool _isFirstRun;
 
@@ -26,12 +26,12 @@ class AppInitialization {
 
   void _loadFromPrefs() async {
     await _initPrefs();
-    _isFirstRun = _prefs.getBool(key) ?? true;
+    _isFirstRun = _prefs.getBool(firstRunKey) ?? true;
   }
 
   void _saveToPrefs() async {
     await _initPrefs();
-    _prefs.setBool(key, _isFirstRun);
+    _prefs.setBool(firstRunKey, _isFirstRun);
   }
 
   void _initPrefs() async {

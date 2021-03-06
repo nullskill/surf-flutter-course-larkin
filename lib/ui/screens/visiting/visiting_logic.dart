@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:places/domain/favorite_sight.dart';
+import 'package:places/domain/visited_sight.dart';
 import 'package:places/mocks.dart';
 
 /// Миксин для логики экрана избранных/посещенных интересных мест
 mixin VisitingScreenLogic<VisitingScreen extends StatefulWidget>
     on State<VisitingScreen> {
-  List _favoriteMocks = favoriteMocks;
-  List _visitedMocks = visitedMocks;
+  List<FavoriteSight> _favoriteMocks = favoriteMocks;
+  List<VisitedSight> _visitedMocks = visitedMocks;
   bool isDrag = false;
 
   List get getFavoriteMocks => _favoriteMocks;

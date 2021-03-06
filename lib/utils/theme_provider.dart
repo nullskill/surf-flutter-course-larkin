@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
+import 'package:places/utils/consts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Класс провайдера выбранной темы
 class ThemeNotifier extends ChangeNotifier {
-  final String key = "theme";
   SharedPreferences _prefs;
   bool _darkTheme;
 
@@ -22,13 +22,13 @@ class ThemeNotifier extends ChangeNotifier {
 
   void _loadFromPrefs() async {
     await _initPrefs();
-    _darkTheme = _prefs.getBool(key) ?? true;
+    _darkTheme = _prefs.getBool(themeKey) ?? true;
     notifyListeners();
   }
 
   void _saveToPrefs() async {
     await _initPrefs();
-    _prefs.setBool(key, _darkTheme);
+    _prefs.setBool(themeKey, _darkTheme);
   }
 
   void _initPrefs() async {
