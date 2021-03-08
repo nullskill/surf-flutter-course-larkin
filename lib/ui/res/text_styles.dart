@@ -3,13 +3,13 @@ import 'package:places/ui/res/colors.dart';
 
 /// Стили текстов
 TextStyle _text = const TextStyle(
-      fontStyle: FontStyle.normal,
-      fontFamily: "Roboto",
-      color: secondaryColor,
-    ),
+  fontStyle: FontStyle.normal,
+  fontFamily: 'Roboto',
+  color: secondaryColor,
+);
 
 //Light
-    textLight = _text.copyWith(fontWeight: FontWeight.w300),
+final textLight = _text.copyWith(fontWeight: FontWeight.w300),
 
 //Regular
     textRegular = _text.copyWith(fontWeight: FontWeight.w400),

@@ -72,7 +72,7 @@ final lightTheme = ThemeData(
   ),
 
   //Button
-  buttonTheme: ButtonThemeData(
+  buttonTheme: const ButtonThemeData(
     buttonColor: LightMode.greenColor,
     disabledColor: backgroundColor,
   ),
@@ -158,7 +158,7 @@ final darkTheme = ThemeData(
   ),
 
   //Button
-  buttonTheme: ButtonThemeData(
+  buttonTheme: const ButtonThemeData(
     buttonColor: DarkMode.greenColor,
     disabledColor: DarkMode.darkColor,
   ),
@@ -203,7 +203,7 @@ class _BaseProps {
   //TextField InputDecorationTheme
   static const inputDecorationTheme = InputDecorationTheme(
     isDense: true,
-    contentPadding: const EdgeInsets.symmetric(
+    contentPadding: EdgeInsets.symmetric(
       vertical: 12,
       horizontal: 16,
     ),
@@ -229,10 +229,11 @@ class _SliderTrackShape extends RoundedRectRangeSliderTrackShape {
   static const _leftPadding = 8;
   static const _rightPadding = 16;
 
+  @override
   Rect getPreferredRect({
     @required RenderBox parentBox,
-    Offset offset = Offset.zero,
     @required SliderThemeData sliderTheme,
+    Offset offset = Offset.zero,
     bool isEnabled = false,
     bool isDiscrete = false,
   }) {

@@ -5,15 +5,15 @@ import 'package:places/ui/res/colors.dart';
 
 class ClearButton extends StatelessWidget {
   const ClearButton({
-    Key key,
     @required this.onTap,
     this.isBig = false,
     this.isDeletion = false,
+    Key key,
   }) : super(key: key);
 
   final bool isBig;
   final bool isDeletion;
-  final Function onTap;
+  final void Function() onTap;
 
   @override
   Widget build(BuildContext context) {

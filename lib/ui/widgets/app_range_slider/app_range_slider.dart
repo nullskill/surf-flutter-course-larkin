@@ -7,9 +7,10 @@ import 'package:places/ui/widgets/app_range_slider/app_range_slider_helper.dart'
 
 /// Виджет для отображения слайдера с выбором диапазона "от и до"
 class AppRangeSlider extends StatelessWidget {
-  const AppRangeSlider({this.currentRangeValues});
+  const AppRangeSlider({@required this.currentRangeValues, Key key})
+      : super(key: key);
 
-  final currentRangeValues;
+  final RangeValues currentRangeValues;
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +35,7 @@ class AppRangeSlider extends StatelessWidget {
             ),
           ],
         ),
-        SizedBox(
-          height: 24.0,
-        ),
+        const SizedBox(height: 24.0),
         RangeSlider(
           divisions: AppRangeSliderHelper.divisions,
           min: AppRangeSliderHelper.minValue,

@@ -11,10 +11,10 @@ import 'package:places/ui/widgets/settings_item.dart';
 
 /// Экран выбора категории.
 class SelectCategoryScreen extends StatefulWidget {
-  final Category selectedCategory;
-
   const SelectCategoryScreen({Key key, this.selectedCategory})
       : super(key: key);
+
+  final Category selectedCategory;
 
   @override
   _SelectCategoryScreenState createState() => _SelectCategoryScreenState();
@@ -33,7 +33,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _SelectCategoryAppBar(),
+      appBar: const _SelectCategoryAppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -51,9 +51,7 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
                     });
                   },
                   trailing: selectedCategory != category
-                      ? SizedBox(
-                          height: 24.0,
-                        )
+                      ? const SizedBox(height: 24.0)
                       : SvgPicture.asset(
                           AppIcons.tick,
                           width: 24.0,
@@ -85,16 +83,17 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
 
 class _SelectCategoryAppBar extends StatelessWidget
     implements PreferredSizeWidget {
-  _SelectCategoryAppBar({
+  const _SelectCategoryAppBar({
     Key key,
   }) : super(key: key);
 
-  final Size preferredSize = Size.fromHeight(56.0);
+  @override
+  Size get preferredSize => const Size.fromHeight(56.0);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: AppBackButton(),
+      leading: const AppBackButton(),
       title: Text(
         selectCategoryAppBarTitle,
         style: textMedium18.copyWith(

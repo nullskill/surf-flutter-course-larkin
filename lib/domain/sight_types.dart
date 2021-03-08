@@ -13,7 +13,7 @@ final sightTypes = <SightType, SightTypeMetadata>{
   ),
   SightType.particular_place: SightTypeMetadata(
     name: "Особое место",
-    iconName: AppIcons.particular_place,
+    iconName: AppIcons.particularPlace,
   ),
   SightType.park: SightTypeMetadata(
     name: "Парк",

@@ -7,17 +7,16 @@ import 'package:places/ui/res/colors.dart';
 /// Виджет AppBottomNavigationBar предназначен для всего приложения
 class AppBottomNavigationBar extends StatelessWidget {
   const AppBottomNavigationBar({
-    Key key,
     @required this.currentIndex,
+    Key key,
   }) : super(key: key);
 
   final int currentIndex;
 
   @override
-  // ignore: long-method
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         boxShadow: [
           BoxShadow(
             color: inactiveColor,
@@ -36,7 +35,7 @@ class AppBottomNavigationBar extends StatelessWidget {
               color:
                   Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
             ),
-            label: "",
+            label: '',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
@@ -44,7 +43,7 @@ class AppBottomNavigationBar extends StatelessWidget {
               color:
                   Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
             ),
-            label: "",
+            label: '',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
@@ -52,7 +51,7 @@ class AppBottomNavigationBar extends StatelessWidget {
               color:
                   Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
             ),
-            label: "",
+            label: '',
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
@@ -60,14 +59,14 @@ class AppBottomNavigationBar extends StatelessWidget {
               color:
                   Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
             ),
-            label: "",
+            label: '',
           ),
         ],
       ),
     );
   }
 
-  void _switchBottomTab(context, index) {
+  void _switchBottomTab(BuildContext context, int index) {
     final currentRoute = ModalRoute.of(context).settings.name;
 
     switch (index) {

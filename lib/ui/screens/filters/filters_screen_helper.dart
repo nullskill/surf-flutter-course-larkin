@@ -12,7 +12,7 @@ class FiltersScreenHelper {
   FiltersScreenHelper._();
 
   static Point centerPoint = Point(
-    name: "Москва, Красная площадь",
+    name: 'Москва, Красная площадь',
     lat: 55.754093,
     lng: 37.620407,
   );

@@ -1,7 +1,7 @@
 import 'package:flutter/painting.dart';
 
 /// Радиусы границ
-BorderRadius rightBorderRadius8 = BorderRadius.only(
+BorderRadius rightBorderRadius8 = const BorderRadius.only(
       topRight: Radius.circular(8),
       bottomRight: Radius.circular(8),
     ),

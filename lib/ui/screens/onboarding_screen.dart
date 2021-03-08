@@ -10,6 +10,7 @@ import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/utils/app_init.dart';
 
 /// Экран, обучающий работе с приложением
+// ignore: use_key_in_widget_constructors
 class OnboardingScreen extends StatefulWidget {
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
@@ -29,10 +30,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         children: [
           Expanded(
             child: PageView.builder(
-              onPageChanged: (value) => _onPageChanged(value),
+              onPageChanged: _onPageChanged,
               itemCount: tutorialFrames.length,
-              itemBuilder: (BuildContext context, int index) {
-                TutorialFrame frame = tutorialFrames[index];
+              itemBuilder: (context, index) {
+                final TutorialFrame frame = tutorialFrames[index];
                 return _Frame(
                   iconName: frame.iconName,
                   title: frame.title,
@@ -51,9 +52,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   _FrameIndicator(currentPage: currentPage, index: index),
             ),
           ),
-          SizedBox(
-            height: 24,
-          ),
+          const SizedBox(height: 24),
         ],
       ),
       bottomNavigationBar: _BottomNavigationBar(isLastFrame: isLastFrame),
@@ -68,13 +67,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 }
 
 class _OnboardingAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final Size preferredSize = Size.fromHeight(56.0);
+  const _OnboardingAppBar({
+    @required this.isLastFrame,
+    Key key,
+  }) : super(key: key);
+
   final bool isLastFrame;
 
-  _OnboardingAppBar({
-    Key key,
-    @required this.isLastFrame,
-  }) : super(key: key);
+  @override
+  Size get preferredSize => const Size.fromHeight(56.0);
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +85,7 @@ class _OnboardingAppBar extends StatelessWidget implements PreferredSizeWidget {
         Center(
           child: AnimatedOpacity(
             opacity: isLastFrame ? 0.0 : 1.0,
-            duration: Duration(milliseconds: 250),
+            duration: const Duration(milliseconds: 250),
             child: _SkipButton(isLastFrame: isLastFrame),
           ),
         ),
@@ -94,16 +95,16 @@ class _OnboardingAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class _SkipButton extends StatelessWidget {
-  final bool isLastFrame;
-
   const _SkipButton({
-    Key key,
     @required this.isLastFrame,
+    Key key,
   }) : super(key: key);
+
+  final bool isLastFrame;
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
+    return TextButton(
       onPressed: isLastFrame ? null : () => _startApp(context),
       child: Text(
         onboardingSkipButtonLabel,
@@ -117,17 +118,17 @@ class _SkipButton extends StatelessWidget {
 }
 
 class _Frame extends StatelessWidget {
-  final String title, iconName, message;
-  final int index, length;
-
   const _Frame({
-    Key key,
     @required this.title,
     @required this.iconName,
     @required this.message,
     @required this.index,
     @required this.length,
+    Key key,
   }) : super(key: key);
+
+  final String title, iconName, message;
+  final int index, length;
 
   @override
   // ignore: long-method
@@ -142,9 +143,7 @@ class _Frame extends StatelessWidget {
             height: 104.0,
             color: Theme.of(context).primaryColor,
           ),
-          SizedBox(
-            height: 40.0,
-          ),
+          const SizedBox(height: 40.0),
           Text(
             title,
             style: textBold24.copyWith(
@@ -153,13 +152,10 @@ class _Frame extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(
-            height: 8,
-          ),
+          const SizedBox(height: 8),
           SizedBox(
             width: 244,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   message,
@@ -179,19 +175,19 @@ class _Frame extends StatelessWidget {
 }
 
 class _FrameIndicator extends StatelessWidget {
-  final int index, currentPage;
-
   const _FrameIndicator({
-    Key key,
     @required this.index,
     @required this.currentPage,
+    Key key,
   }) : super(key: key);
+
+  final int index, currentPage;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: Duration(milliseconds: 200),
-      margin: EdgeInsets.only(right: 5),
+      duration: const Duration(milliseconds: 200),
+      margin: const EdgeInsets.only(right: 5),
       height: 6,
       width: currentPage == index ? 20 : 6,
       decoration: BoxDecoration(
@@ -205,12 +201,12 @@ class _FrameIndicator extends StatelessWidget {
 }
 
 class _BottomNavigationBar extends StatelessWidget {
-  final bool isLastFrame;
-
   const _BottomNavigationBar({
     Key key,
     this.isLastFrame,
   }) : super(key: key);
+
+  final bool isLastFrame;
 
   @override
   Widget build(BuildContext context) {
@@ -223,7 +219,7 @@ class _BottomNavigationBar extends StatelessWidget {
       ),
       child: AnimatedOpacity(
         opacity: isLastFrame ? 1.0 : 0.0,
-        duration: Duration(milliseconds: 250),
+        duration: const Duration(milliseconds: 250),
         child: ActionButton(
           label: startActionButtonLabel,
           onPressed: !isLastFrame ? null : () => _startApp(context),
@@ -234,8 +230,8 @@ class _BottomNavigationBar extends StatelessWidget {
   }
 }
 
-void _startApp(context) {
-  AppInitialization().tutorialFinished;
+void _startApp(BuildContext context) {
+  AppInitialization().tutorialFinished();
   Navigator.of(context).pushNamedAndRemoveUntil(
     AppRoutes.start,
     (_) => false,

@@ -5,13 +5,13 @@ import 'package:places/ui/res/text_styles.dart';
 /// Виджет элемента настройки
 class SettingsItem extends StatelessWidget {
   const SettingsItem({
-    Key key,
     @required this.title,
     @required this.trailing,
     this.paddingValue = 14.0,
     this.isGreyedOut = false,
     this.isLast = false,
     this.onTap,
+    Key key,
   }) : super(key: key);
 
   final String title;
@@ -19,7 +19,7 @@ class SettingsItem extends StatelessWidget {
   final double paddingValue;
   final bool isGreyedOut;
   final bool isLast;
-  final Function onTap;
+  final void Function() onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class SettingsItem extends StatelessWidget {
               ],
             ),
           ),
-          isLast ? SizedBox() : Divider(height: .8),
+          isLast ? const SizedBox() : const Divider(height: .8),
         ],
       ),
     );

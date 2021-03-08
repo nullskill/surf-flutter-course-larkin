@@ -1,32 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/domain/favorite_sight.dart';
+import 'package:places/domain/sight.dart';
+import 'package:places/domain/visited_sight.dart';
+import 'package:places/mocks.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/screens/visiting/visiting_logic.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_dismissible.dart';
 import 'package:places/ui/widgets/message_box.dart';
 import 'package:places/ui/widgets/sight_card.dart';
 
 /// Экран избранных/посещенных интересных мест
+// ignore: use_key_in_widget_constructors
 class VisitingScreen extends StatefulWidget {
   @override
   _VisitingScreenState createState() => _VisitingScreenState();
 }
 
-class _VisitingScreenState extends State<VisitingScreen>
-    with VisitingScreenLogic {
+class _VisitingScreenState extends State<VisitingScreen> {
+  final List<FavoriteSight> _favoriteMocks = favoriteMocks;
+  final List<VisitedSight> _visitedMocks = visitedMocks;
+  bool isDrag = false;
+
+  List get getFavoriteMocks => _favoriteMocks;
+
+  List get getVisitedMocks => _visitedMocks;
+
+  /// При удалении карточки из списка
+  void onRemoveCard<T extends Sight>(T sight, {bool hasVisited}) {
+    setState(() {
+      if (hasVisited) {
+        _visitedMocks.remove(sight);
+      } else {
+        _favoriteMocks.remove(sight);
+      }
+    });
+  }
+
+  /// При начале перетаскивания карточки
+  void onDragCardStarted() {
+    setState(() {
+      isDrag = true;
+    });
+  }
+
+  /// При окончании перетаскивания карточки
+  void onDragCardEnd() {
+    setState(() {
+      isDrag = false;
+    });
+  }
+
+  /// Меняет индекс карточки [sight] в списке на [index]
+  void swapCards<T extends Sight>(
+    T sight, {
+    bool hasVisited,
+    int index,
+  }) {
+    setState(() {
+      if (hasVisited) {
+        _visitedMocks
+          ..remove(sight)
+          ..insert(index, (sight as VisitedSight));
+      } else {
+        _favoriteMocks
+          ..remove(sight)
+          ..insert(index, (sight as FavoriteSight));
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
-      initialIndex: 0,
       child: Scaffold(
-        appBar: _VisitingScreenAppBar(),
+        appBar: const _VisitingScreenAppBar(),
         body: TabBarView(
           children: [
             _VisitingScreenList(
@@ -48,7 +101,7 @@ class _VisitingScreenState extends State<VisitingScreen>
             ),
           ],
         ),
-        bottomNavigationBar: AppBottomNavigationBar(
+        bottomNavigationBar: const AppBottomNavigationBar(
           currentIndex: 2,
         ),
       ),
@@ -58,11 +111,12 @@ class _VisitingScreenState extends State<VisitingScreen>
 
 class _VisitingScreenAppBar extends StatelessWidget
     implements PreferredSizeWidget {
-  _VisitingScreenAppBar({
+  const _VisitingScreenAppBar({
     Key key,
   }) : super(key: key);
 
-  final Size preferredSize = Size.fromHeight(108.0);
+  @override
+  Size get preferredSize => const Size.fromHeight(108.0);
 
   @override
   Widget build(BuildContext context) {
@@ -75,22 +129,23 @@ class _VisitingScreenAppBar extends StatelessWidget
           height: lineHeight1_3,
         ),
       ),
-      bottom: _AppBarBottom(),
+      bottom: const _AppBarBottom(),
     );
   }
 }
 
 class _AppBarBottom extends StatelessWidget implements PreferredSizeWidget {
-  _AppBarBottom({
+  const _AppBarBottom({
     Key key,
   }) : super(key: key);
 
-  final Size preferredSize = Size.fromHeight(52.0);
+  @override
+  Size get preferredSize => const Size.fromHeight(52.0);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(
+      margin: const EdgeInsets.symmetric(
         horizontal: 16.0,
         vertical: 6.0,
       ),
@@ -104,14 +159,10 @@ class _AppBarBottom extends StatelessWidget implements PreferredSizeWidget {
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
         ),
-        child: TabBar(
+        child: const TabBar(
           tabs: [
-            Tab(
-              text: visitingWishToVisitTabText,
-            ),
-            Tab(
-              text: visitingVisitedTabText,
-            ),
+            Tab(text: visitingWishToVisitTabText),
+            Tab(text: visitingVisitedTabText),
           ],
         ),
       ),
@@ -119,16 +170,16 @@ class _AppBarBottom extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-class _VisitingScreenList extends StatelessWidget {
+class _VisitingScreenList<T extends Sight> extends StatelessWidget {
   const _VisitingScreenList({
-    Key key,
     @required this.sights,
-    this.hasVisited = false,
-    this.isDrag = false,
     @required this.onDragCardStarted,
     @required this.onDragCardEnd,
     @required this.onRemoveCard,
     @required this.swapCards,
+    this.hasVisited = false,
+    this.isDrag = false,
+    Key key,
   }) : super(key: key);
 
   final List sights;
@@ -160,8 +211,8 @@ class _VisitingScreenList extends StatelessWidget {
                 swapCards: swapCards,
               ),
               for (var sight in sights) ...[
-                _Draggable(
-                  sight: sight,
+                _Draggable<T>(
+                  sight: sight as T,
                   hasVisited: hasVisited,
                   isDrag: isDrag,
                   onDragCardStarted: onDragCardStarted,
@@ -185,11 +236,11 @@ class _VisitingScreenList extends StatelessWidget {
 
 class _DragTarget extends StatelessWidget {
   const _DragTarget({
-    Key key,
     @required this.index,
     @required this.hasVisited,
     @required this.onRemoveCard,
     @required this.swapCards,
+    Key key,
   }) : super(key: key);
 
   final int index;
@@ -205,15 +256,16 @@ class _DragTarget extends StatelessWidget {
         swapCards(hasVisited, data, index);
       },
       builder: (
-        BuildContext context,
-        List<dynamic> candidateData,
-        List<dynamic> rejectedData,
+        context,
+        candidateData,
+        rejectedData,
       ) {
-        if (candidateData.isEmpty)
-          return SizedBox(
+        if (candidateData.isEmpty) {
+          return const SizedBox(
             height: 16,
             width: double.infinity,
           );
+        }
 
         return _DismissibleCard(
           sight: candidateData.first,
@@ -225,18 +277,18 @@ class _DragTarget extends StatelessWidget {
   }
 }
 
-class _Draggable extends StatelessWidget {
+class _Draggable<T extends Sight> extends StatelessWidget {
   const _Draggable({
-    Key key,
     @required this.sight,
     @required this.hasVisited,
     @required this.isDrag,
     @required this.onDragCardStarted,
     @required this.onDragCardEnd,
     @required this.onRemoveCard,
+    Key key,
   }) : super(key: key);
 
-  final dynamic sight;
+  final T sight;
   final bool hasVisited;
   final bool isDrag;
   final Function onDragCardStarted;
@@ -245,10 +297,10 @@ class _Draggable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LongPressDraggable<FavoriteSight>(
+    return LongPressDraggable<T>(
       data: sight,
       axis: Axis.vertical,
-      childWhenDragging: SizedBox.shrink(),
+      childWhenDragging: const SizedBox.shrink(),
       feedback: Container(
         height: 100,
         width: MediaQuery.of(context).size.width - 32.0,
@@ -264,7 +316,7 @@ class _Draggable extends StatelessWidget {
       onDragStarted: () => onDragCardStarted,
       onDragEnd: (_) => onDragCardEnd,
       child: isDrag
-          ? SizedBox.shrink()
+          ? const SizedBox.shrink()
           : _DismissibleCard(
               sight: sight,
               hasVisited: hasVisited,
@@ -274,27 +326,27 @@ class _Draggable extends StatelessWidget {
   }
 }
 
-class _DismissibleCard extends StatelessWidget {
+class _DismissibleCard<T extends Sight> extends StatelessWidget {
   const _DismissibleCard({
-    Key key,
     @required this.sight,
     @required this.hasVisited,
     @required this.onRemoveCard,
+    Key key,
   }) : super(key: key);
 
-  final dynamic sight;
+  final T sight;
   final bool hasVisited;
   final Function onRemoveCard;
 
   @override
   Widget build(BuildContext context) {
     return AppDismissible(
-      key: ValueKey(sight.name),
+      key: ValueKey<String>(sight.name),
       direction: AppDismissDirection.endToStart,
       onDismissed: (_) => onRemoveCard(hasVisited, sight),
-      background: _BackgroundCard(),
+      background: const _BackgroundCard(),
       child: SightCard(
-        key: ValueKey(sight.name),
+        key: ValueKey<String>(sight.name),
         sight: sight,
         onRemoveCard: () => onRemoveCard(hasVisited, sight),
       ),
@@ -324,11 +376,9 @@ class _BackgroundCard extends StatelessWidget {
                   AppIcons.bucket,
                   color: whiteColor,
                 ),
-                SizedBox(
-                  height: 10.0,
-                ),
+                const SizedBox(height: 10.0),
                 Text(
-                  "Удалить",
+                  'Удалить',
                   style: textMedium12.copyWith(
                     color: whiteColor,
                     height: lineHeight1_3,

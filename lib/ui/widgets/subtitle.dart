@@ -5,8 +5,8 @@ import 'package:places/ui/res/text_styles.dart';
 /// Виджет для вывода подзаголовка экрана
 class Subtitle extends StatelessWidget {
   const Subtitle({
-    Key key,
     @required this.subtitle,
+    Key key,
   }) : super(key: key);
 
   final String subtitle;

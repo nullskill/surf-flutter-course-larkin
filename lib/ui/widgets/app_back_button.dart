@@ -13,27 +13,26 @@ class AppBackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-        left: 16,
-        right: 8,
-        top: 12,
-        bottom: 12,
+        left: 16.0,
+        right: 8.0,
+        top: 12.0,
+        bottom: 12.0,
       ),
-      child: FlatButton(
-        height: 32,
-        minWidth: 32,
-        padding: EdgeInsets.zero,
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        color: Theme.of(context).canvasColor,
-        shape: RoundedRectangleBorder(
-          borderRadius: allBorderRadius10,
+      child: TextButton(
+        style: TextButton.styleFrom(
+          minimumSize: const Size(32.0, 32.0),
+          padding: EdgeInsets.zero,
+          primary: Theme.of(context).canvasColor,
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          shape: BeveledRectangleBorder(borderRadius: allBorderRadius10),
         ),
         onPressed: () {
           Navigator.pop(context);
         },
         child: SvgPicture.asset(
           AppIcons.arrow,
-          width: 24,
-          height: 24,
+          width: 24.0,
+          height: 24.0,
           color: Theme.of(context).primaryColor,
         ),
       ),

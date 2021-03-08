@@ -13,9 +13,13 @@ import 'package:provider/provider.dart';
 
 /// Экран настроек
 class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({
+    Key key,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       appBar: _SettingsAppBar(),
       body: _SettingsBody(),
       bottomNavigationBar: AppBottomNavigationBar(
@@ -26,16 +30,17 @@ class SettingsScreen extends StatelessWidget {
 }
 
 class _SettingsAppBar extends StatelessWidget implements PreferredSizeWidget {
-  _SettingsAppBar({
+  const _SettingsAppBar({
     Key key,
   }) : super(key: key);
 
-  final Size preferredSize = Size.fromHeight(56.0);
+  @override
+  Size get preferredSize => const Size.fromHeight(56.0);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: AppBackButton(),
+      leading: const AppBackButton(),
       title: Text(
         settingsAppBarTitle,
         style: textMedium18.copyWith(
@@ -62,10 +67,11 @@ class _SettingsBody extends StatelessWidget {
           children: [
             Consumer<ThemeNotifier>(
               builder: (
-                  context,
-                  notifier,
-                  child,
-                  ) => SettingsItem(
+                context,
+                notifier,
+                child,
+              ) =>
+                  SettingsItem(
                 title: settingsThemeSettingTitle,
                 paddingValue: 10,
                 onTap: () => _onChanged(notifier),
@@ -82,7 +88,8 @@ class _SettingsBody extends StatelessWidget {
               },
               trailing: GestureDetector(
                 onTap: () {
-                  print("Show tutorial info pressed");
+                  // ignore: avoid_print
+                  print('Show tutorial info pressed');
                 },
                 child: SvgPicture.asset(
                   AppIcons.info,

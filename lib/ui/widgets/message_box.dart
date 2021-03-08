@@ -6,11 +6,11 @@ import 'package:places/ui/res/text_styles.dart';
 /// Виджет для показа сообщения пользователю
 class MessageBox extends StatelessWidget {
   const MessageBox({
-    Key key,
     @required this.title,
     @required this.iconName,
     @required this.message,
     this.link,
+    Key key,
   }) : super(key: key);
 
   final String title, iconName, message;
@@ -28,9 +28,7 @@ class MessageBox extends StatelessWidget {
             height: 64.0,
             color: inactiveColor,
           ),
-          SizedBox(
-            height: 24.0,
-          ),
+          const SizedBox(height: 24.0),
           Text(
             title,
             style: textMedium18.copyWith(
@@ -39,13 +37,10 @@ class MessageBox extends StatelessWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(
-            height: 8,
-          ),
+          const SizedBox(height: 8),
           SizedBox(
             width: 253.5,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   message,

@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 
 /// Виджет для отображения кругового лоадера с градиентом
 class CircularProgress extends StatefulWidget {
-  CircularProgress({
+  const CircularProgress({
     @required this.size,
     @required this.secondaryColor,
     @required this.primaryColor,
     this.strokeWidth = 6.0,
     this.lapDuration = 1000,
-  });
+    Key key,
+  }) : super(key: key);
 
   final double size;
   final Color secondaryColor;
@@ -19,7 +20,7 @@ class CircularProgress extends StatefulWidget {
   final int lapDuration;
 
   @override
-  _CircularProgress createState() => new _CircularProgress();
+  _CircularProgress createState() => _CircularProgress();
 }
 
 class _CircularProgress extends State<CircularProgress>
@@ -30,7 +31,7 @@ class _CircularProgress extends State<CircularProgress>
   void initState() {
     super.initState();
 
-    controller = new AnimationController(
+    controller = AnimationController(
       vsync: this,
       duration: Duration(
         milliseconds: widget.lapDuration,
@@ -65,18 +66,18 @@ class _CircularProgress extends State<CircularProgress>
 
 /// Вспомогательный класс для виджета [CircularProgress]
 class CirclePaint extends CustomPainter {
+  CirclePaint({
+    this.secondaryColor = Colors.grey,
+    this.primaryColor = Colors.blue,
+    this.strokeWidth = 15,
+  });
+
   static const zero = 0.0, two = 2, degree270 = 270.0, degree360 = 360.0;
   final Color secondaryColor;
   final Color primaryColor;
   final double strokeWidth;
 
   double _degreeToRad(double degree) => degree * pi / 180;
-
-  CirclePaint({
-    this.secondaryColor = Colors.grey,
-    this.primaryColor = Colors.blue,
-    this.strokeWidth = 15,
-  });
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -86,12 +87,13 @@ class CirclePaint extends CustomPainter {
     final double startAngle = _degreeToRad(degree270) + scapToDegree;
     final double sweepAngle = _degreeToRad(degree360) - (two * scapToDegree);
 
-    Paint paint = Paint()
+    final Paint paint = Paint()
       ..color = primaryColor
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
       ..strokeWidth = strokeWidth;
 
+    // ignore: cascade_invocations
     paint.shader = SweepGradient(
       colors: [secondaryColor, primaryColor],
       tileMode: TileMode.repeated,
@@ -105,7 +107,7 @@ class CirclePaint extends CustomPainter {
     );
 
     canvas.drawArc(
-      Offset(zero, zero) & Size(size.width, size.width),
+      const Offset(zero, zero) & Size(size.width, size.width),
       startAngle,
       sweepAngle,
       false,

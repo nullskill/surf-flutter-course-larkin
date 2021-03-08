@@ -13,16 +13,16 @@ class AppRangeSliderHelper {
       maxValue = 10000.0,
       initialMinValue = 100.0,
       initialMaxValue = 5000.0,
-      _m = "м",
-      _km = "км";
+      _m = 'м',
+      _km = 'км';
 
   /// Возвращает текстовое представление выбранного диапазона
   static String getRangeDescription(RangeValues values) {
-    double start = values.start;
-    double end = values.end;
+    final double start = values.start;
+    final double end = values.end;
 
-    return "от ${_getStringValue(start)} ${_getUnits(start)} до "
-        "${_getStringValue(end)} ${_getUnits(end)}";
+    return 'от ${_getStringValue(start)} ${_getUnits(start)} до '
+        '${_getStringValue(end)} ${_getUnits(end)}';
   }
 
   static String _getStringValue(double a) => _lessThanKilometer(a)

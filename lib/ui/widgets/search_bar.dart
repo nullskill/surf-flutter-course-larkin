@@ -23,9 +23,9 @@ class SearchBar extends StatelessWidget {
   final bool readOnly;
   final bool autofocus;
   final bool hasClearButton;
-  final Function onTap;
-  final Function onEditingComplete;
-  final Function onFilter;
+  final void Function() onTap;
+  final void Function() onEditingComplete;
+  final void Function() onFilter;
   final FocusNode searchFocusNode;
   final TextEditingController searchController;
 
@@ -84,7 +84,7 @@ class SearchBar extends StatelessWidget {
                   color: inactiveColor,
                   height: lineHeight1_5,
                 ),
-                prefixIconConstraints: BoxConstraints(
+                prefixIconConstraints: const BoxConstraints(
                   maxHeight: 40.0,
                 ),
                 prefixIcon: Padding(
@@ -121,28 +121,28 @@ class SearchBar extends StatelessWidget {
 
 class _SuffixIcon extends StatelessWidget {
   const _SuffixIcon({
-    Key key,
-    this.readOnly,
     @required this.hasClearButton,
+    this.readOnly,
     this.onFilter,
     this.onClear,
+    Key key,
   }) : super(key: key);
 
   final bool readOnly;
   final bool hasClearButton;
-  final Function onFilter;
-  final Function onClear;
+  final void Function() onFilter;
+  final void Function() onClear;
 
   @override
   Widget build(BuildContext context) {
     return readOnly ?? false
-        ? FlatButton(
-            height: 24.0,
-            minWidth: 24.0,
-            padding: EdgeInsets.zero,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            shape: RoundedRectangleBorder(
-              borderRadius: allBorderRadius8,
+        ? TextButton(
+            style: TextButton.styleFrom(
+              minimumSize: const Size(24.0, 24.0),
+              padding: EdgeInsets.zero,
+              primary: Theme.of(context).canvasColor,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              shape: BeveledRectangleBorder(borderRadius: allBorderRadius8),
             ),
             onPressed: onFilter,
             child: SvgPicture.asset(
@@ -152,12 +152,12 @@ class _SuffixIcon extends StatelessWidget {
           )
         : hasClearButton
             ? GestureDetector(
-                onTap: onClear ?? null,
+                onTap: onClear,
                 child: SvgPicture.asset(
                   AppIcons.clear,
                   color: Theme.of(context).primaryColor,
                 ),
               )
-            : SizedBox();
+            : const SizedBox.shrink();
   }
 }

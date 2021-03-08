@@ -4,15 +4,15 @@ import 'package:places/ui/res/app_color_scheme.dart';
 /// Виджет градиентной кнопки а-ля [FloatingActionButton.extended]
 class AppFloatingActionButton extends StatelessWidget {
   const AppFloatingActionButton({
-    Key key,
-    this.icon,
     @required this.label,
     @required this.onPressed,
+    this.icon,
+    Key key,
   }) : super(key: key);
 
   final Widget icon;
   final Widget label;
-  final Function onPressed;
+  final void Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
