@@ -140,9 +140,9 @@ class _SuffixIcon extends StatelessWidget {
             style: TextButton.styleFrom(
               minimumSize: const Size(24.0, 24.0),
               padding: EdgeInsets.zero,
-              primary: Theme.of(context).canvasColor,
+              backgroundColor: transparentColor,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              shape: BeveledRectangleBorder(borderRadius: allBorderRadius8),
+              shape: RoundedRectangleBorder(borderRadius: allBorderRadius8),
             ),
             onPressed: onFilter,
             child: SvgPicture.asset(

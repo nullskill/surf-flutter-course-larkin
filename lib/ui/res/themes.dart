@@ -18,6 +18,7 @@ final lightTheme = ThemeData(
   shadowColor: blackColor,
   accentColor: LightMode.greenColor,
   errorColor: LightMode.redColor,
+  splashColor: LightMode.greenColor.withAlpha(50),
   //Text (disabled)
   disabledColor: inactiveColor,
 
@@ -77,6 +78,31 @@ final lightTheme = ThemeData(
     disabledColor: backgroundColor,
   ),
 
+  //ElevatedButton
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ButtonStyle(
+      elevation: MaterialStateProperty.all(0.0),
+      shadowColor: MaterialStateProperty.all(transparentColor),
+      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+        (states) {
+          if (states.contains(MaterialState.disabled)) {
+            return backgroundColor;
+          }
+          return LightMode.greenColor;
+        },
+      ),
+    ),
+  ),
+
+  //TextButton
+  textButtonTheme: TextButtonThemeData(
+    style: ButtonStyle(
+      overlayColor: MaterialStateProperty.resolveWith<Color>(
+        (states) => LightMode.greenColor.withAlpha(50),
+      ),
+    ),
+  ),
+
   //FAB
   floatingActionButtonTheme: _BaseProps.floatingActionButtonTheme.copyWith(
     backgroundColor: LightMode.greenColor,
@@ -104,6 +130,7 @@ final darkTheme = ThemeData(
   shadowColor: whiteColor,
   accentColor: DarkMode.greenColor,
   errorColor: DarkMode.redColor,
+  splashColor: DarkMode.greenColor.withOpacity(.35),
   //Text (disabled)
   disabledColor: inactiveColor,
 
@@ -161,6 +188,31 @@ final darkTheme = ThemeData(
   buttonTheme: const ButtonThemeData(
     buttonColor: DarkMode.greenColor,
     disabledColor: DarkMode.darkColor,
+  ),
+
+  //ElevatedButton
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ButtonStyle(
+      elevation: MaterialStateProperty.all(0.0),
+      shadowColor: MaterialStateProperty.all(transparentColor),
+      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+        (states) {
+          if (states.contains(MaterialState.disabled)) {
+            return DarkMode.darkColor;
+          }
+          return DarkMode.greenColor;
+        },
+      ),
+    ),
+  ),
+
+  //TextButton
+  textButtonTheme: TextButtonThemeData(
+    style: ButtonStyle(
+      overlayColor: MaterialStateProperty.resolveWith<Color>(
+        (states) => DarkMode.greenColor.withAlpha(50),
+      ),
+    ),
   ),
 
   //FAB

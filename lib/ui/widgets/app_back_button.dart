@@ -22,9 +22,9 @@ class AppBackButton extends StatelessWidget {
         style: TextButton.styleFrom(
           minimumSize: const Size(32.0, 32.0),
           padding: EdgeInsets.zero,
-          primary: Theme.of(context).canvasColor,
+          backgroundColor: Theme.of(context).canvasColor,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          shape: BeveledRectangleBorder(borderRadius: allBorderRadius10),
+          shape: RoundedRectangleBorder(borderRadius: allBorderRadius10),
         ),
         onPressed: () {
           Navigator.pop(context);
