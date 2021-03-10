@@ -22,6 +22,7 @@ class SightDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: transparentColor,
       body: CustomScrollView(
         slivers: [
           _SightDetailsAppBar(sight: sight),

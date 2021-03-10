@@ -15,6 +15,7 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screens/sight_details_screen.dart';
+import 'package:places/ui/widgets/app_modal_bottom_sheet.dart';
 
 /// Виджет карточки интересного места.
 class SightCard extends StatelessWidget {
@@ -48,15 +49,10 @@ class SightCard extends StatelessWidget {
                 child: Material(
                   type: MaterialType.transparency,
                   child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<SightDetailsScreen>(
-                          builder: (context) =>
-                              SightDetailsScreen(sight: sight),
-                        ),
-                      );
-                    },
+                    onTap: () => showAppModalBottomSheet<SightDetailsScreen>(
+                      context: context,
+                      builder: (context) => SightDetailsScreen(sight: sight),
+                    ),
                   ),
                 ),
               ),
@@ -83,7 +79,9 @@ class SightCard extends StatelessWidget {
                         iconName: sight.runtimeType == FavoriteSight
                             ? AppIcons.calendar
                             : AppIcons.share,
-                        onTap: () {},
+                        onTap: () {
+                          // TODO: Add callback body
+                        },
                       ),
                     )
                   : const SizedBox.shrink(),
