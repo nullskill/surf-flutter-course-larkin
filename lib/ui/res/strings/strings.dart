@@ -1,6 +1,9 @@
 /// Строковые константы
 //App
 const String appTitle = 'Places',
+//General
+    cancelButtonLabel = 'Отмена',
+
 //OnboardingScreen
     startActionButtonLabel = 'на старт',
 
@@ -61,7 +64,6 @@ const String appTitle = 'Places',
 //AddSightScreen
     addSightActionButtonLabel = 'Создать',
     addSightAppBarTitle = 'Новое место',
-    addSightCancelButtonLabel = 'Отмена',
     addSightCategoryTitle = 'Категория',
     addSightNoCategoryTitle = 'Не выбрано',
     addSightNameTitle = 'Название',
@@ -71,6 +73,9 @@ const String appTitle = 'Places',
     addSightSelectOnMapLabel = 'Указать на карте',
     addSightDescriptionHintText = 'введите текст',
     addSightWrongEntry = 'Неправильный ввод',
+    addSightCamera = 'Камера',
+    addSightPicture = 'Фотография',
+    addSightFile = 'Файл',
 
 //SelectCategoryScreen
     selectCategoryActionButtonLabel = 'Сохранить',

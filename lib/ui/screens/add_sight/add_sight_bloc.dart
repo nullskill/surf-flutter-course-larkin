@@ -7,6 +7,7 @@ import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/screens/select_category_screen.dart';
+import 'package:places/ui/widgets/select_picture_dialog.dart';
 import 'package:places/utils/consts.dart';
 
 /// Перечисление координат
@@ -315,6 +316,31 @@ class AddSightScreenBloc implements Bloc {
         event: AddSightScreenImgEvent.addImgEvent,
         data: newImgUrl,
       ),
+    );
+  }
+
+  /// При добавлении карточки картинки (временная заглушка)
+  Future<void> onAddImageCardDummy(BuildContext context) async {
+    // TODO: В дальнейшем, после прохождения 16.1 сделать реализацию
+    const barrierLabel = 'barrierLabel';
+    await showGeneralDialog(
+      barrierLabel: barrierLabel,
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionDuration: const Duration(milliseconds: 250),
+      context: context,
+      pageBuilder: (context, anim1, anim2) {
+        return SelectPictureDialog();
+      },
+      transitionBuilder: (context, anim1, anim2, child) {
+        return SlideTransition(
+          position: Tween(
+            begin: const Offset(0, 1),
+            end: const Offset(0, 0),
+          ).animate(anim1),
+          child: child,
+        );
+      },
     );
   }
 

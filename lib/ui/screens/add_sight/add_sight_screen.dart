@@ -68,7 +68,7 @@ class _AddSightAppBar extends StatelessWidget {
             Navigator.pop(context);
           },
           child: Text(
-            addSightCancelButtonLabel,
+            cancelButtonLabel,
             softWrap: false,
             style: textMedium16.copyWith(
               color: secondaryColor2,
@@ -131,7 +131,8 @@ class _ImageCards extends StatelessWidget {
         ),
         children: [
           _AddImageCard(
-            onAddImageCard: bloc.onAddImageCard,
+            // TODO: В дальнейшем, после прохождения 16.1 сделать реализацию
+            onAddImageCard: () => bloc.onAddImageCardDummy(context),
           ),
           for (final imgUrl in imgUrls)
             _ImageCard(

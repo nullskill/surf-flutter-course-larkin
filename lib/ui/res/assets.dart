@@ -58,7 +58,7 @@ class AppIcons {
       clear = '$_otherPath/clear.svg',
       close = '$_otherPath/close.svg',
       delete = '$_otherPath/delete.svg',
-      fail = '$_otherPath/fail.svg',
+      file = '$_otherPath/file.svg',
       filter = '$_otherPath/filter.svg',
       geolocation = '$_otherPath/geolocation.svg',
       go = '$_otherPath/go.svg',
