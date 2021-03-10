@@ -7,7 +7,6 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screens/add_sight/add_sight_bloc.dart';
-import 'package:places/ui/screens/select_category_screen.dart';
 import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/ui/widgets/clear_button.dart';
 import 'package:places/ui/widgets/link.dart';
@@ -15,8 +14,9 @@ import 'package:places/ui/widgets/settings_item.dart';
 import 'package:places/ui/widgets/subtitle.dart';
 
 /// Экран добавления нового места.
-// ignore: must_be_immutable, use_key_in_widget_constructors
 class AddSightScreen extends StatelessWidget {
+  AddSightScreen({Key key}) : super(key: key);
+
   final AddSightScreenBloc _bloc = AddSightScreenBloc();
 
   @override
@@ -90,8 +90,16 @@ class _AddSightAppBar extends StatelessWidget {
         preferredSize: const Size.fromHeight(96.0),
         child: Align(
           alignment: Alignment.bottomLeft,
-          child: _ImageCards(
-            bloc: bloc,
+          child: StreamBuilder<List<String>>(
+            initialData: bloc.imgUrls,
+            stream: bloc.outputImgStateStream,
+            builder: (context, snapshot) {
+              final imgUrls = snapshot.data;
+              return _ImageCards(
+                bloc: bloc,
+                imgUrls: imgUrls,
+              );
+            },
           ),
         ),
       ),
@@ -102,10 +110,12 @@ class _AddSightAppBar extends StatelessWidget {
 class _ImageCards extends StatelessWidget {
   const _ImageCards({
     @required this.bloc,
+    @required this.imgUrls,
     Key key,
   }) : super(key: key);
 
   final AddSightScreenBloc bloc;
+  final List<String> imgUrls;
 
   @override
   Widget build(BuildContext context) {
@@ -123,14 +133,10 @@ class _ImageCards extends StatelessWidget {
           _AddImageCard(
             onAddImageCard: bloc.onAddImageCard,
           ),
-          for (var imgUrl in bloc.imgUrls)
+          for (final imgUrl in imgUrls)
             _ImageCard(
               imgUrl: imgUrl,
-              onDeleteImageCard: bloc.onDeleteImageCard,
-              onPointerDownOnImageCard: bloc.onPointerDownOnImageCard,
-              onPointerMoveOnImageCard: bloc.onPointerMoveOnImageCard,
-              onPointerUpOnImageCard: bloc.onPointerUpOnImageCard,
-              getBoxShadow: bloc.getBoxShadow,
+              bloc: bloc,
             ),
         ],
       ),
@@ -181,51 +187,49 @@ class _AddImageCard extends StatelessWidget {
 class _ImageCard extends StatelessWidget {
   const _ImageCard({
     @required this.imgUrl,
-    @required this.onDeleteImageCard,
-    @required this.onPointerDownOnImageCard,
-    @required this.onPointerMoveOnImageCard,
-    @required this.onPointerUpOnImageCard,
-    @required this.getBoxShadow,
+    @required this.bloc,
     Key key,
   }) : super(key: key);
 
   static const _cardSize = 72.0;
   final String imgUrl;
-  final Function onDeleteImageCard;
-  final Function onPointerDownOnImageCard;
-  final Function onPointerMoveOnImageCard;
-  final Function onPointerUpOnImageCard;
-  final List<BoxShadow> Function(String) getBoxShadow;
+  final AddSightScreenBloc bloc;
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
       key: ValueKey(imgUrl),
       direction: DismissDirection.up,
-      onDismissed: (_) => onDeleteImageCard(imgUrl),
+      onDismissed: (_) => bloc.onDeleteImageCard(imgUrl),
       child: Listener(
-        onPointerDown: (_) => onPointerDownOnImageCard(imgUrl),
-        onPointerMove: (_) => onPointerMoveOnImageCard(imgUrl),
-        onPointerUp: (_) => onPointerUpOnImageCard(imgUrl),
-        child: Container(
-          width: _cardSize,
-          height: _cardSize,
-          margin: const EdgeInsets.only(left: 16.0),
-          decoration: BoxDecoration(
-            color: placeholderColor,
-            borderRadius: allBorderRadius12,
-            boxShadow: getBoxShadow(imgUrl),
-          ),
-          child: Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: ClearButton(
-                isDeletion: true,
-                onTap: () => onDeleteImageCard(imgUrl),
+        onPointerDown: (_) => bloc.onPointerDownOnImageCard(imgUrl),
+        onPointerMove: (_) => bloc.onPointerMoveOnImageCard(imgUrl),
+        onPointerUp: (_) => bloc.onPointerUpOnImageCard(imgUrl),
+        child: StreamBuilder<bool>(
+          // TODO: kind of a hack... needs to rethink about it later!
+          stream: bloc.outputImgShadowStateStream,
+          builder: (context, snapshot) {
+            return Container(
+              width: _cardSize,
+              height: _cardSize,
+              margin: const EdgeInsets.only(left: 16.0),
+              decoration: BoxDecoration(
+                color: placeholderColor,
+                borderRadius: allBorderRadius12,
+                boxShadow: bloc.getBoxShadow(imgUrl),
               ),
-            ),
-          ),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: ClearButton(
+                    isDeletion: true,
+                    onTap: () => bloc.onDeleteImageCard(imgUrl),
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -260,26 +264,23 @@ class _AddSightBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Subtitle(subtitle: addSightCategoryTitle),
-                SettingsItem(
-                  title: bloc.selectedCategory?.name ?? addSightNoCategoryTitle,
-                  isGreyedOut: bloc.selectedCategory == null,
-                  onTap: () async {
-                    final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute<Category>(
-                        builder: (context) => SelectCategoryScreen(
-                          selectedCategory: bloc.selectedCategory,
-                        ),
+                StreamBuilder<Category>(
+                  initialData: bloc.selectedCategory,
+                  stream: bloc.outputCategoryStateStream,
+                  builder: (context, snapshot) {
+                    final category = snapshot.data;
+                    return SettingsItem(
+                      title: category?.name ?? addSightNoCategoryTitle,
+                      isGreyedOut: bloc.selectedCategory == null,
+                      onTap: () => bloc.selectCategory(context),
+                      trailing: SvgPicture.asset(
+                        AppIcons.view,
+                        width: 24.0,
+                        height: 24.0,
+                        color: Theme.of(context).primaryColor,
                       ),
                     );
-                    if (result != null) bloc.setSelectedCategory(result);
                   },
-                  trailing: SvgPicture.asset(
-                    AppIcons.view,
-                    width: 24.0,
-                    height: 24.0,
-                    color: Theme.of(context).primaryColor,
-                  ),
                 ),
                 _AddSightTextField(
                   title: addSightNameTitle,

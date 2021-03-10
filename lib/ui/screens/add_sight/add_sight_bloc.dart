@@ -6,37 +6,84 @@ import 'package:places/domain/category.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/res/strings/strings.dart';
+import 'package:places/ui/screens/select_category_screen.dart';
 import 'package:places/utils/consts.dart';
 
 /// Перечисление координат
 enum Coordinate { lat, lng }
 
 /// Перечисление полей
-// ignore: prefer-trailing-comma
-enum Field { name, latitude, longitude, description }
+enum Field {
+  name,
+  latitude,
+  longitude,
+  description,
+}
 
-/// Перечисление ивентов блока
-enum AddSightScreenEvent { eventPointerAction }
+/// Перечисление ивентов картинок места
+enum AddSightScreenImgEvent {
+  addImgEvent,
+  deleteImgEvent,
+  pointerDownOnImgEvent,
+  pointerMoveOnImgEvent,
+  pointerUpOnImgEvent,
+}
+
+/// Перечисление ивентов категории
+enum AddSightScreenCategoryEvent { changeCategoryEvent }
 
 /// Хранит список URL картинок места
 final _imgUrls = <String>[];
 
-class ImageCardPointerEvent implements BlocEvent<AddSightScreenEvent, String> {
-  ImageCardPointerEvent({this.event, this.data});
+class _ImageCardEvent implements BlocEvent<AddSightScreenImgEvent, String> {
+  _ImageCardEvent({this.event, this.data});
 
   @override
   String data;
 
   @override
-  AddSightScreenEvent event;
+  AddSightScreenImgEvent event;
+}
+
+class _CategoryEvent
+    implements BlocEvent<AddSightScreenCategoryEvent, Category> {
+  _CategoryEvent({this.event, this.data});
+
+  @override
+  Category data;
+
+  @override
+  AddSightScreenCategoryEvent event;
 }
 
 /// Класс логики экрана добавления нового места
 class AddSightScreenBloc implements Bloc {
   AddSightScreenBloc() {
     init();
-    _inputEventController.stream.listen(_mapEventToState);
+    _inputImgEventController.stream.listen(_mapImgEventToState);
+    _inputCategoryEventController.stream.listen(_mapCategoryEventToState);
   }
+
+  final _inputImgEventController = StreamController<_ImageCardEvent>();
+  final _inputCategoryEventController = StreamController<_CategoryEvent>();
+  final _outputImgStateController = StreamController<List<String>>.broadcast();
+  final _outputImgShadowStateController = StreamController<bool>.broadcast();
+  final _outputCategoryStateController = StreamController<Category>.broadcast();
+
+  StreamSink<_ImageCardEvent> get inputImgEventSink =>
+      _inputImgEventController.sink;
+
+  StreamSink<_CategoryEvent> get inputCategoryEventSink =>
+      _inputCategoryEventController.sink;
+
+  Stream<List<String>> get outputImgStateStream =>
+      _outputImgStateController.stream;
+
+  Stream<bool> get outputImgShadowStateStream =>
+      _outputImgShadowStateController.stream;
+
+  Stream<Category> get outputCategoryStateStream =>
+      _outputCategoryStateController.stream;
 
   final controllers = <Field, TextEditingController>{
     Field.name: TextEditingController(),
@@ -59,26 +106,61 @@ class AddSightScreenBloc implements Bloc {
   List<String> get imgUrls => _imgUrls;
 
   String imgKey;
-  bool isPointerDownOnImageCard = false;
-  bool isPointerMoveOnImageCard = false;
-  bool isPointerUpOnImageCard = false;
+  bool isPointerDownOnImg = false;
+  bool isPointerMoveOnImg = false;
+  bool isPointerUpOnImg = false;
 
-  final _inputEventController = StreamController<ImageCardPointerEvent>();
-  final _outputImgUrlsStateController = StreamController<List<String>>();
-  final _outputBoxShadowStateController = StreamController<List<BoxShadow>>();
-
-  StreamSink<ImageCardPointerEvent> get inputEventSink =>
-      _inputEventController.sink;
-
-  Stream<List<String>> get outputImgUrlsStateStream =>
-      _outputImgUrlsStateController.stream;
-
-  void _mapEventToState<T extends BlocEvent<AddSightScreenEvent, Object>>(
+  void _mapImgEventToState<T extends BlocEvent<AddSightScreenImgEvent, String>>(
     T blocEvent,
   ) {
-    if (blocEvent.event == AddSightScreenEvent.eventPointerAction) {
-      // ignore: avoid_print
-      print('${blocEvent.event}: ${blocEvent.data}');
+    switch (blocEvent.event) {
+      case AddSightScreenImgEvent.addImgEvent:
+        _imgUrls.add(blocEvent.data);
+        _outputImgStateController.sink.add(_imgUrls);
+        break;
+      case AddSightScreenImgEvent.deleteImgEvent:
+        _imgUrls.removeAt(_imgUrls.indexOf(blocEvent.data));
+        _outputImgStateController.sink.add(_imgUrls);
+        break;
+      case AddSightScreenImgEvent.pointerDownOnImgEvent:
+        imgKey = blocEvent.data;
+        isPointerDownOnImg = true;
+        isPointerMoveOnImg = false;
+        isPointerUpOnImg = false;
+        _outputImgShadowStateController.sink.add(true);
+        break;
+      case AddSightScreenImgEvent.pointerMoveOnImgEvent:
+        imgKey = blocEvent.data;
+        isPointerDownOnImg = false;
+        isPointerMoveOnImg = true;
+        isPointerUpOnImg = false;
+        _outputImgShadowStateController.sink.add(true);
+        break;
+      case AddSightScreenImgEvent.pointerUpOnImgEvent:
+        imgKey = blocEvent.data;
+        isPointerDownOnImg = false;
+        isPointerMoveOnImg = false;
+        isPointerUpOnImg = true;
+        _outputImgShadowStateController.sink.add(true);
+        break;
+      default:
+        throw Exception('Wrong event type');
+        break;
+    }
+  }
+
+  void _mapCategoryEventToState<
+      T extends BlocEvent<AddSightScreenCategoryEvent, Category>>(
+    T blocEvent,
+  ) {
+    switch (blocEvent.event) {
+      case AddSightScreenCategoryEvent.changeCategoryEvent:
+        setSelectedCategory(blocEvent.data);
+        _outputCategoryStateController.sink.add(selectedCategory);
+        break;
+      default:
+        throw Exception('Wrong event type');
+        break;
     }
   }
 
@@ -102,9 +184,11 @@ class AddSightScreenBloc implements Bloc {
       controller.dispose();
     }
 
-    _inputEventController.close();
-    _outputImgUrlsStateController.close();
-    _outputBoxShadowStateController.close();
+    _inputImgEventController.close();
+    _inputCategoryEventController.close();
+    _outputImgStateController.close();
+    _outputImgShadowStateController.close();
+    _outputCategoryStateController.close();
   }
 
   /// Listener для FocusNode
@@ -139,6 +223,23 @@ class AddSightScreenBloc implements Bloc {
     }
   }
 
+  /// Открывает выбор категории
+  Future<void> selectCategory(BuildContext context) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute<Category>(
+        builder: (context) => SelectCategoryScreen(
+          selectedCategory: selectedCategory,
+        ),
+      ),
+    );
+    if (result != null) setSelectedCategory(result);
+    inputCategoryEventSink.add(
+      _CategoryEvent(
+          event: AddSightScreenCategoryEvent.changeCategoryEvent, data: result),
+    );
+  }
+
   /// Устанавливает выбранную категорию в качестве текущей
   void setSelectedCategory(Category selectedCategory) {
     this.selectedCategory = selectedCategory;
@@ -147,26 +248,32 @@ class AddSightScreenBloc implements Bloc {
 
   /// При тапе на карточке картинки
   void onPointerDownOnImageCard(String imgKey) {
-    this.imgKey = imgKey;
-    isPointerDownOnImageCard = true;
-    isPointerMoveOnImageCard = false;
-    isPointerUpOnImageCard = false;
+    inputImgEventSink.add(
+      _ImageCardEvent(
+        event: AddSightScreenImgEvent.pointerDownOnImgEvent,
+        data: imgKey,
+      ),
+    );
   }
 
   /// При свайпе карточки картинки
   void onPointerMoveOnImageCard(String imgKey) {
-    this.imgKey = imgKey;
-    isPointerDownOnImageCard = false;
-    isPointerMoveOnImageCard = true;
-    isPointerUpOnImageCard = false;
+    inputImgEventSink.add(
+      _ImageCardEvent(
+        event: AddSightScreenImgEvent.pointerMoveOnImgEvent,
+        data: imgKey,
+      ),
+    );
   }
 
   /// При окончании свайпа карточки картинки
   void onPointerUpOnImageCard(String imgKey) {
-    this.imgKey = imgKey;
-    isPointerDownOnImageCard = false;
-    isPointerMoveOnImageCard = false;
-    isPointerUpOnImageCard = true;
+    inputImgEventSink.add(
+      _ImageCardEvent(
+        event: AddSightScreenImgEvent.pointerUpOnImgEvent,
+        data: imgKey,
+      ),
+    );
   }
 
   /// Возвращает тень для карточки картинки,
@@ -174,7 +281,7 @@ class AddSightScreenBloc implements Bloc {
   List<BoxShadow> getBoxShadow(String imgKey) {
     if (this.imgKey != imgKey) return [];
 
-    if (isPointerMoveOnImageCard) {
+    if (isPointerMoveOnImg) {
       return const [
         BoxShadow(
           // ignore: prefer-trailing-comma
@@ -185,7 +292,7 @@ class AddSightScreenBloc implements Bloc {
       ];
     }
 
-    if (isPointerDownOnImageCard) {
+    if (isPointerDownOnImg) {
       return const [
         BoxShadow(
           // ignore: prefer-trailing-comma
@@ -201,18 +308,24 @@ class AddSightScreenBloc implements Bloc {
 
   /// При добавлении карточки картинки
   void onAddImageCard() {
-    _imgUrls.add((_imgUrls.length + 2).toString());
-    inputEventSink.add(
-      ImageCardPointerEvent(
-        event: AddSightScreenEvent.eventPointerAction,
-        data: '12',
+    final newImgUrl = (_imgUrls.length + 2).toString();
+
+    inputImgEventSink.add(
+      _ImageCardEvent(
+        event: AddSightScreenImgEvent.addImgEvent,
+        data: newImgUrl,
       ),
     );
   }
 
   /// При удалении карточки картинки
   void onDeleteImageCard(String imgUrl) {
-    _imgUrls.removeAt(_imgUrls.indexOf(imgUrl));
+    inputImgEventSink.add(
+      _ImageCardEvent(
+        event: AddSightScreenImgEvent.deleteImgEvent,
+        data: imgUrl,
+      ),
+    );
   }
 
   /// При нажатии на ActionButton

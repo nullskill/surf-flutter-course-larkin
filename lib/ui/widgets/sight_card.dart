@@ -52,7 +52,8 @@ class SightCard extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute<SightDetailsScreen>(
-                          builder: (_) => SightDetailsScreen(sight: sight),
+                          builder: (context) =>
+                              SightDetailsScreen(sight: sight),
                         ),
                       );
                     },

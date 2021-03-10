@@ -54,6 +54,7 @@ class AppIcons {
       calendarFull = '$_otherPath/calendar_full.svg',
       camera = '$_otherPath/camera.svg',
       card = '$_otherPath/card.svg',
+      cardClose = '$_otherPath/card_close.svg',
       clear = '$_otherPath/clear.svg',
       close = '$_otherPath/close.svg',
       delete = '$_otherPath/delete.svg',

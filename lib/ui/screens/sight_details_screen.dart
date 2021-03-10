@@ -9,7 +9,6 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/widgets/action_button.dart';
-import 'package:places/ui/widgets/app_back_button.dart';
 
 /// Экран отображения подробной информации о посещаемом месте.
 class SightDetailsScreen extends StatelessWidget {
@@ -46,12 +45,42 @@ class _SightDetailsAppBar extends StatelessWidget {
     return SliverAppBar(
       stretch: true,
       elevation: 0,
-      leading: const AppBackButton(),
-      flexibleSpace: SizedBox(
-        height: double.infinity,
-        child: _Gallery(
-          imgUrl: sight.url,
-        ),
+      automaticallyImplyLeading: false,
+      flexibleSpace: Stack(
+        children: [
+          SizedBox(
+            height: double.infinity,
+            child: _Gallery(
+              imgUrl: sight.url,
+            ),
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 12.0),
+              child: Container(
+                height: 4.0,
+                width: 40.0,
+                decoration: BoxDecoration(
+                  color: whiteColor,
+                  borderRadius: allBorderRadius8,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 16.0,
+            right: 16.0,
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: SvgPicture.asset(
+                AppIcons.cardClose,
+                width: 40.0,
+                height: 40.0,
+              ),
+            ),
+          ),
+        ],
       ),
       expandedHeight: 360.0,
       backgroundColor: placeholderColor,

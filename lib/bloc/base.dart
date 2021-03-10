@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 // ignore: one_member_abstracts
 abstract class Bloc {
