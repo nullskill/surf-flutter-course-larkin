@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
+import 'package:places/domain/base_visiting.dart';
 import 'package:places/domain/favorite_sight.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/domain/visited_sight.dart';
@@ -14,17 +15,18 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screens/sight_details_screen.dart';
+import 'package:places/ui/widgets/app_modal_bottom_sheet.dart';
 
 /// Виджет карточки интересного места.
 class SightCard extends StatelessWidget {
-  final Sight sight;
-  final Function onRemoveCard;
-
   const SightCard({
-    Key key,
     @required this.sight,
     this.onRemoveCard,
+    Key key,
   }) : super(key: key);
+
+  final Sight sight;
+  final void Function() onRemoveCard;
 
   @override
   // ignore: long-method
@@ -47,15 +49,10 @@ class SightCard extends StatelessWidget {
                 child: Material(
                   type: MaterialType.transparency,
                   child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              SightDetailsScreen(sight: sight),
-                        ),
-                      );
-                    },
+                    onTap: () => showAppModalBottomSheet<SightDetailsScreen>(
+                      context: context,
+                      builder: (context) => SightDetailsScreen(sight: sight),
+                    ),
                   ),
                 ),
               ),
@@ -82,10 +79,12 @@ class SightCard extends StatelessWidget {
                         iconName: sight.runtimeType == FavoriteSight
                             ? AppIcons.calendar
                             : AppIcons.share,
-                        onTap: () {},
+                        onTap: () {
+                          // TODO: Add callback body
+                        },
                       ),
                     )
-                  : SizedBox(),
+                  : const SizedBox.shrink(),
             ],
           ),
         ),
@@ -96,8 +95,8 @@ class SightCard extends StatelessWidget {
 
 class _CardTop extends StatelessWidget {
   const _CardTop({
-    Key key,
     @required this.sight,
+    Key key,
   }) : super(key: key);
 
   final Sight sight;
@@ -121,7 +120,7 @@ class _CardTop extends StatelessWidget {
                   LightMode.primaryColor.withOpacity(.3),
                   secondaryColor.withOpacity(.08),
                 ],
-                stops: [0.0, 1.0],
+                stops: const [0.0, 1.0],
               ),
             ),
           ),
@@ -141,8 +140,8 @@ class _CardTop extends StatelessWidget {
 
 class _CardImage extends StatelessWidget {
   const _CardImage({
-    Key key,
     @required this.imgUrl,
+    Key key,
   }) : super(key: key);
 
   final String imgUrl;
@@ -153,9 +152,9 @@ class _CardImage extends StatelessWidget {
       imgUrl,
       fit: BoxFit.cover,
       loadingBuilder: (
-        BuildContext context,
-        Widget child,
-        ImageChunkEvent loadingProgress,
+        context,
+        child,
+        loadingProgress,
       ) {
         if (loadingProgress == null) return child;
         return Center(
@@ -173,13 +172,13 @@ class _CardImage extends StatelessWidget {
 
 class _CardIcon extends StatelessWidget {
   const _CardIcon({
-    Key key,
     @required this.iconName,
     @required this.onTap,
+    Key key,
   }) : super(key: key);
 
   final String iconName;
-  final Function onTap;
+  final void Function() onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -197,8 +196,8 @@ class _CardIcon extends StatelessWidget {
 
 class _CardBottom extends StatelessWidget {
   const _CardBottom({
-    Key key,
     @required this.sight,
+    Key key,
   }) : super(key: key);
 
   final Sight sight;
@@ -223,13 +222,9 @@ class _CardBottom extends StatelessWidget {
                 color: Theme.of(context).primaryColor,
               ),
             ),
-            SizedBox(
-              height: 2.0,
-            ),
+            const SizedBox(height: 2.0),
             _getDescriptionText(sight, Theme.of(context).buttonColor),
-            SizedBox(
-              height: 2.0,
-            ),
+            const SizedBox(height: 2.0),
             _getOpenHoursText(sight),
           ],
         ),
@@ -238,11 +233,11 @@ class _CardBottom extends StatelessWidget {
   }
 }
 
-Widget _getDescriptionText(final sight, final Color descriptionColor) {
+Widget _getDescriptionText<T extends Sight>(T sight, Color descriptionColor) {
   switch (sight.runtimeType) {
     case FavoriteSight:
       return Text(
-        "$sightCardPlanned ${DateFormat.yMMMd().format(sight.plannedDate)}",
+        '$sightCardPlanned ${DateFormat.yMMMd().format((sight as FavoriteSight).plannedDate)}',
         style: textRegular14.copyWith(
           height: lineHeight1_3,
           color: descriptionColor,
@@ -251,7 +246,7 @@ Widget _getDescriptionText(final sight, final Color descriptionColor) {
       break;
     case VisitedSight:
       return Text(
-        "$sightCardVisited ${DateFormat.yMMMd().format(sight.visitedDate)}",
+        '$sightCardVisited ${DateFormat.yMMMd().format((sight as VisitedSight).visitedDate)}',
         style: textRegular14.copyWith(
           height: lineHeight1_3,
           color: secondaryColor2,
@@ -272,12 +267,13 @@ Widget _getDescriptionText(final sight, final Color descriptionColor) {
   }
 }
 
-Widget _getOpenHoursText(var sight) {
+Widget _getOpenHoursText<T extends Sight>(T sight) {
   switch (sight.runtimeType) {
     case FavoriteSight:
     case VisitedSight:
+      final vSight = sight as VisitingSight;
       return Text(
-        "$sightDetailsOpenHours ${DateFormat.Hm().format(sight.openHour)}",
+        '$sightDetailsOpenHours ${DateFormat.Hm().format(vSight.openHour)}',
         style: textRegular14.copyWith(
           height: lineHeight1_3,
           color: secondaryColor2,
@@ -285,6 +281,6 @@ Widget _getOpenHoursText(var sight) {
       );
       break;
     default:
-      return Text("");
+      return const Text('');
   }
 }

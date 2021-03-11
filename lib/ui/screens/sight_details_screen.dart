@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/domain/sight.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/res/app_color_scheme.dart';
 import 'package:places/ui/res/assets.dart';
@@ -8,20 +9,20 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/widgets/action_button.dart';
-import 'package:places/ui/widgets/app_back_button.dart';
 
 /// Экран отображения подробной информации о посещаемом месте.
 class SightDetailsScreen extends StatelessWidget {
-  final sight;
-
   const SightDetailsScreen({
-    Key key,
     @required this.sight,
+    Key key,
   }) : super(key: key);
+
+  final Sight sight;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: transparentColor,
       body: CustomScrollView(
         slivers: [
           _SightDetailsAppBar(sight: sight),
@@ -33,24 +34,54 @@ class SightDetailsScreen extends StatelessWidget {
 }
 
 class _SightDetailsAppBar extends StatelessWidget {
-  _SightDetailsAppBar({
-    Key key,
+  const _SightDetailsAppBar({
     @required this.sight,
+    Key key,
   }) : super(key: key);
 
-  final sight;
+  final Sight sight;
 
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
       stretch: true,
       elevation: 0,
-      leading: AppBackButton(),
-      flexibleSpace: Container(
-        height: double.infinity,
-        child: _Gallery(
-          imgUrl: sight.url,
-        ),
+      automaticallyImplyLeading: false,
+      flexibleSpace: Stack(
+        children: [
+          SizedBox(
+            height: double.infinity,
+            child: _Gallery(
+              imgUrl: sight.url,
+            ),
+          ),
+          Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 12.0),
+              child: Container(
+                height: 4.0,
+                width: 40.0,
+                decoration: BoxDecoration(
+                  color: whiteColor,
+                  borderRadius: allBorderRadius8,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 16.0,
+            right: 16.0,
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: SvgPicture.asset(
+                AppIcons.cardClose,
+                width: 40.0,
+                height: 40.0,
+              ),
+            ),
+          ),
+        ],
       ),
       expandedHeight: 360.0,
       backgroundColor: placeholderColor,
@@ -60,8 +91,8 @@ class _SightDetailsAppBar extends StatelessWidget {
 
 class _Gallery extends StatefulWidget {
   const _Gallery({
-    Key key,
     @required this.imgUrl,
+    Key key,
   }) : super(key: key);
 
   static const imageCount = 5;
@@ -86,14 +117,14 @@ class _GalleryState extends State<_Gallery> {
             });
           },
           itemCount: _Gallery.imageCount,
-          itemBuilder: (BuildContext context, int index) {
+          itemBuilder: (context, index) {
             return Image.network(
               widget.imgUrl,
               fit: BoxFit.cover,
               loadingBuilder: (
-                BuildContext context,
-                Widget child,
-                ImageChunkEvent loadingProgress,
+                context,
+                child,
+                loadingProgress,
               ) {
                 if (loadingProgress == null) return child;
                 return Center(
@@ -129,11 +160,11 @@ class _GalleryState extends State<_Gallery> {
 
 class _SightDetailsBody extends StatelessWidget {
   const _SightDetailsBody({
-    Key key,
     @required this.sight,
+    Key key,
   }) : super(key: key);
 
-  final sight;
+  final Sight sight;
 
   @override
   Widget build(BuildContext context) {
@@ -145,12 +176,10 @@ class _SightDetailsBody extends StatelessWidget {
           vertical: 24.0,
         ),
         child: ListView(
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           children: [
             _CardLabel(sight: sight),
-            SizedBox(
-              height: 24.0,
-            ),
+            const SizedBox(height: 24.0),
             Text(
               sight.details,
               style: textRegular14.copyWith(
@@ -158,20 +187,17 @@ class _SightDetailsBody extends StatelessWidget {
                 color: Theme.of(context).colorScheme.appTitleColor,
               ),
             ),
-            SizedBox(
-              height: 24.0,
-            ),
+            const SizedBox(height: 24.0),
             ActionButton(
               iconName: AppIcons.go,
               label: sightDetailsActionButtonLabel,
               onPressed: () {
-                print("ActionButton pressed");
+                // ignore: avoid_print
+                print('ActionButton pressed');
               },
             ),
-            SizedBox(
-              height: 24.0,
-            ),
-            _CardMenu(),
+            const SizedBox(height: 24.0),
+            const _CardMenu(),
           ],
         ),
       ),
@@ -181,11 +207,11 @@ class _SightDetailsBody extends StatelessWidget {
 
 class _CardLabel extends StatelessWidget {
   const _CardLabel({
-    Key key,
     @required this.sight,
+    Key key,
   }) : super(key: key);
 
-  final sight;
+  final Sight sight;
 
   @override
   Widget build(BuildContext context) {
@@ -199,9 +225,7 @@ class _CardLabel extends StatelessWidget {
             color: Theme.of(context).colorScheme.appTitleColor,
           ),
         ),
-        SizedBox(
-          height: 2,
-        ),
+        const SizedBox(height: 2),
         Row(
           children: [
             Text(
@@ -211,11 +235,9 @@ class _CardLabel extends StatelessWidget {
                 color: Theme.of(context).colorScheme.appSubtitleColor,
               ),
             ),
-            SizedBox(
-              width: 16,
-            ),
+            const SizedBox(width: 16),
             Text(
-              "$sightDetailsOpenHours 09:00",
+              '$sightDetailsOpenHours 09:00',
               style: textRegular14.copyWith(
                 height: lineHeight1_3,
                 color: secondaryColor2,
@@ -237,21 +259,16 @@ class _CardMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Divider(
-          height: .8,
-        ),
-        SizedBox(
-          height: 8,
-        ),
+        const Divider(height: .8),
+        const SizedBox(height: 8),
         Row(
-          children: [
+          children: const [
             _ExpandedButton(
               title: sightDetailsPlan,
               iconName: AppIcons.calendar,
             ),
             _ExpandedButton(
               title: sightDetailsAddToFavorites,
-              // iconName: AppIcons.heart,
               iconName: AppIcons.heart,
               selected: true,
             ),
@@ -263,27 +280,30 @@ class _CardMenu extends StatelessWidget {
 }
 
 class _ExpandedButton extends StatelessWidget {
-  final String title;
-  final String iconName;
-  final bool selected;
-
   const _ExpandedButton({
-    Key key,
     @required this.title,
     @required this.iconName,
     this.selected = false,
+    Key key,
   }) : super(key: key);
+
+  final String title;
+  final String iconName;
+  final bool selected;
 
   @override
   Widget build(BuildContext context) {
     final color =
         selected ? Theme.of(context).colorScheme.appTitleColor : inactiveColor;
     return Expanded(
-      child: FlatButton.icon(
-        height: 40.0,
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      child: TextButton.icon(
+        style: TextButton.styleFrom(
+          minimumSize: const Size(40.0, 40.0),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
         onPressed: () {
-          print("_ExpandedButton pressed");
+          // ignore: avoid_print
+          print('_ExpandedButton pressed');
         },
         icon: SvgPicture.asset(
           iconName,

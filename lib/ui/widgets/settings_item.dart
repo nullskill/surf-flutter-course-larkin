@@ -1,28 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:places/ui/res/app_color_scheme.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
 
 /// Виджет элемента настройки
 class SettingsItem extends StatelessWidget {
   const SettingsItem({
-    Key key,
     @required this.title,
-    @required this.trailing,
+    this.leading,
+    this.trailing,
     this.paddingValue = 14.0,
+    this.isDialog = false,
     this.isGreyedOut = false,
     this.isLast = false,
     this.onTap,
+    Key key,
   }) : super(key: key);
 
   final String title;
+  final Widget leading;
   final Widget trailing;
   final double paddingValue;
+  final bool isDialog;
   final bool isGreyedOut;
   final bool isLast;
-  final Function onTap;
+  final void Function() onTap;
 
   @override
   Widget build(BuildContext context) {
+    final Color textColor = isDialog
+        ? Theme.of(context).colorScheme.appDialogLabelColor
+        : isGreyedOut
+            ? secondaryColor2
+            : Theme.of(context).primaryColor;
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.translucent,
@@ -31,22 +41,25 @@ class SettingsItem extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(vertical: paddingValue),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  title,
-                  style: textRegular16.copyWith(
-                    color: isGreyedOut
-                        ? secondaryColor2
-                        : Theme.of(context).primaryColor,
-                    height: lineHeight1_25,
+                leading ?? const SizedBox.shrink(),
+                leading != null
+                    ? const SizedBox(width: 8.0)
+                    : const SizedBox.shrink(),
+                Expanded(
+                  child: Text(
+                    title,
+                    style: textRegular16.copyWith(
+                      color: textColor,
+                      height: lineHeight1_25,
+                    ),
                   ),
                 ),
-                trailing,
+                trailing ?? const SizedBox.shrink(),
               ],
             ),
           ),
-          isLast ? SizedBox() : Divider(height: .8),
+          isLast ? const SizedBox() : const Divider(height: .8),
         ],
       ),
     );

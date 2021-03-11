@@ -3,13 +3,13 @@ import 'package:places/ui/res/text_styles.dart';
 
 class Link extends StatelessWidget {
   const Link({
-    Key key,
     @required this.label,
     @required this.onTap,
+    Key key,
   }) : super(key: key);
 
   final String label;
-  final Function onTap;
+  final void Function() onTap;
 
   @override
   Widget build(BuildContext context) {

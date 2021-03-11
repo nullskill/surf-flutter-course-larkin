@@ -18,6 +18,7 @@ final lightTheme = ThemeData(
   shadowColor: blackColor,
   accentColor: LightMode.greenColor,
   errorColor: LightMode.redColor,
+  splashColor: LightMode.greenColor.withAlpha(50),
   //Text (disabled)
   disabledColor: inactiveColor,
 
@@ -72,9 +73,34 @@ final lightTheme = ThemeData(
   ),
 
   //Button
-  buttonTheme: ButtonThemeData(
+  buttonTheme: const ButtonThemeData(
     buttonColor: LightMode.greenColor,
     disabledColor: backgroundColor,
+  ),
+
+  //ElevatedButton
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ButtonStyle(
+      elevation: MaterialStateProperty.all(0.0),
+      shadowColor: MaterialStateProperty.all(transparentColor),
+      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+        (states) {
+          if (states.contains(MaterialState.disabled)) {
+            return backgroundColor;
+          }
+          return LightMode.greenColor;
+        },
+      ),
+    ),
+  ),
+
+  //TextButton
+  textButtonTheme: TextButtonThemeData(
+    style: ButtonStyle(
+      overlayColor: MaterialStateProperty.resolveWith<Color>(
+        (states) => LightMode.greenColor.withAlpha(50),
+      ),
+    ),
   ),
 
   //FAB
@@ -104,6 +130,7 @@ final darkTheme = ThemeData(
   shadowColor: whiteColor,
   accentColor: DarkMode.greenColor,
   errorColor: DarkMode.redColor,
+  splashColor: DarkMode.greenColor.withOpacity(.35),
   //Text (disabled)
   disabledColor: inactiveColor,
 
@@ -158,9 +185,34 @@ final darkTheme = ThemeData(
   ),
 
   //Button
-  buttonTheme: ButtonThemeData(
+  buttonTheme: const ButtonThemeData(
     buttonColor: DarkMode.greenColor,
     disabledColor: DarkMode.darkColor,
+  ),
+
+  //ElevatedButton
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ButtonStyle(
+      elevation: MaterialStateProperty.all(0.0),
+      shadowColor: MaterialStateProperty.all(transparentColor),
+      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+        (states) {
+          if (states.contains(MaterialState.disabled)) {
+            return DarkMode.darkColor;
+          }
+          return DarkMode.greenColor;
+        },
+      ),
+    ),
+  ),
+
+  //TextButton
+  textButtonTheme: TextButtonThemeData(
+    style: ButtonStyle(
+      overlayColor: MaterialStateProperty.resolveWith<Color>(
+        (states) => DarkMode.greenColor.withAlpha(50),
+      ),
+    ),
   ),
 
   //FAB
@@ -203,7 +255,7 @@ class _BaseProps {
   //TextField InputDecorationTheme
   static const inputDecorationTheme = InputDecorationTheme(
     isDense: true,
-    contentPadding: const EdgeInsets.symmetric(
+    contentPadding: EdgeInsets.symmetric(
       vertical: 12,
       horizontal: 16,
     ),
@@ -229,10 +281,11 @@ class _SliderTrackShape extends RoundedRectRangeSliderTrackShape {
   static const _leftPadding = 8;
   static const _rightPadding = 16;
 
+  @override
   Rect getPreferredRect({
     @required RenderBox parentBox,
-    Offset offset = Offset.zero,
     @required SliderThemeData sliderTheme,
+    Offset offset = Offset.zero,
     bool isEnabled = false,
     bool isDiscrete = false,
   }) {

@@ -190,46 +190,47 @@ class AppDismissible extends StatefulWidget {
   _AppDismissibleState createState() => _AppDismissibleState();
 }
 
-class _DismissibleClipper extends CustomClipper<Rect> {
-  _DismissibleClipper({
-    @required this.axis,
-    @required this.moveAnimation,
-  })  : assert(axis != null),
-        assert(moveAnimation != null),
-        super(reclip: moveAnimation);
-
-  final Axis axis;
-  final Animation<Offset> moveAnimation;
-
-  @override
-  Rect getClip(Size size) {
-    assert(axis != null);
-    switch (axis) {
-      case Axis.horizontal:
-        final double offset = moveAnimation.value.dx * size.width;
-        if (offset < 0)
-          return Rect.fromLTRB(
-              size.width + offset, 0.0, size.width, size.height);
-        return Rect.fromLTRB(0.0, 0.0, offset, size.height);
-      case Axis.vertical:
-        final double offset = moveAnimation.value.dy * size.height;
-        if (offset < 0)
-          return Rect.fromLTRB(
-              0.0, size.height + offset, size.width, size.height);
-        return Rect.fromLTRB(0.0, 0.0, size.width, offset);
-    }
-    return null;
-  }
-
-  @override
-  Rect getApproximateClipRect(Size size) => getClip(size);
-
-  @override
-  bool shouldReclip(_DismissibleClipper oldClipper) {
-    return oldClipper.axis != axis ||
-        oldClipper.moveAnimation.value != moveAnimation.value;
-  }
-}
+// Comment out - unused.
+// class _DismissibleClipper extends CustomClipper<Rect> {
+//   _DismissibleClipper({
+//     @required this.axis,
+//     @required this.moveAnimation,
+//   })  : assert(axis != null),
+//         assert(moveAnimation != null),
+//         super(reclip: moveAnimation);
+//
+//   final Axis axis;
+//   final Animation<Offset> moveAnimation;
+//
+//   @override
+//   Rect getClip(Size size) {
+//     assert(axis != null);
+//     switch (axis) {
+//       case Axis.horizontal:
+//         final double offset = moveAnimation.value.dx * size.width;
+//         if (offset < 0)
+//           return Rect.fromLTRB(
+//               size.width + offset, 0.0, size.width, size.height);
+//         return Rect.fromLTRB(0.0, 0.0, offset, size.height);
+//       case Axis.vertical:
+//         final double offset = moveAnimation.value.dy * size.height;
+//         if (offset < 0)
+//           return Rect.fromLTRB(
+//               0.0, size.height + offset, size.width, size.height);
+//         return Rect.fromLTRB(0.0, 0.0, size.width, offset);
+//     }
+//     return null;
+//   }
+//
+//   @override
+//   Rect getApproximateClipRect(Size size) => getClip(size);
+//
+//   @override
+//   bool shouldReclip(_DismissibleClipper oldClipper) {
+//     return oldClipper.axis != axis ||
+//         oldClipper.moveAnimation.value != moveAnimation.value;
+//   }
+// }
 
 enum _FlingGestureKind { none, forward, reverse }
 

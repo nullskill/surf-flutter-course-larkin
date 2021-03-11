@@ -11,6 +11,9 @@ extension AppColorScheme on ColorScheme {
   Color get appSecondarySubtitleColor =>
       getColorByBrightness(secondaryColor2, inactiveColor);
 
+  Color get appDialogLabelColor =>
+      getColorByBrightness(secondaryColor2, whiteColor);
+
   Color get appPrimaryGradientColor =>
       getColorByBrightness(LightMode.yellowColor, DarkMode.yellowColor);
 

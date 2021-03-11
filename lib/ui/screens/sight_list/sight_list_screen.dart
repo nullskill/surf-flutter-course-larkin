@@ -1,24 +1,101 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/bloc/bloc_provider.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/mocks.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/screens/sight_list/sight_list_logic.dart';
+import 'package:places/ui/screens/add_sight/add_sight_bloc.dart';
+import 'package:places/ui/screens/add_sight/add_sight_screen.dart';
+import 'package:places/ui/screens/filters/filters_screen.dart';
+import 'package:places/ui/screens/sight_search/sight_search_screen.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_floating_action_button.dart';
 import 'package:places/ui/widgets/search_bar.dart';
 import 'package:places/ui/widgets/sight_card.dart';
 
 /// Экран списка карточек интересных мест.
+// ignore: use_key_in_widget_constructors
 class SightListScreen extends StatefulWidget {
   @override
   _SightListScreenState createState() => _SightListScreenState();
 }
 
-class _SightListScreenState extends State<SightListScreen>
-    with SightListScreenLogic {
+class _SightListScreenState extends State<SightListScreen> {
+  final controller = ScrollController();
+  List<Sight> sights = mocks;
+  bool isEmpty = false;
+
+  // expanded height = 196 + status bar height
+  double get maxHeight => 196 + MediaQuery.of(context).padding.top;
+
+  // global constant kToolbarHeight from material + status bar height
+  double get minHeight => kToolbarHeight + MediaQuery.of(context).padding.top;
+
+  /// Проверяет смещение между maxHeight и minHeight
+  /// и создает microtask для анимации подскроливания
+  /// после завершения билда
+  void snapAppBar() {
+    final scrollDistance = maxHeight - minHeight;
+
+    if (controller.offset > 0 && controller.offset < scrollDistance) {
+      final double snapOffset =
+          controller.offset / scrollDistance > 0.5 ? scrollDistance : 0;
+
+      Future.microtask(
+        () => controller.animateTo(
+          snapOffset,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeIn,
+        ),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+
+    super.dispose();
+  }
+
+  /// При тапе на поле SearchBar переход на SightSearchScreen
+  void onTapSearchBar() {
+    Navigator.of(context).push(
+      MaterialPageRoute<SightSearchScreen>(
+        builder: (context) => SightSearchScreen(),
+      ),
+    );
+  }
+
+  /// При нажатии кнопки фильтров в поле SearchBar переход на FiltersScreen
+  Future<void> onFilterSearchBar() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<FiltersScreen>(
+        builder: (context) => FiltersScreen(),
+      ),
+    );
+    setState(() {
+      sights = getFilteredMocks();
+    });
+  }
+
+  /// При нажатии FAB кнопки "Новое место" переход на AddSightScreen
+  Future<void> onPressedFab() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute<BlocProvider>(
+        builder: (context) => BlocProvider(
+          bloc: AddSightScreenBloc(),
+          child: AddSightScreen(),
+        ),
+      ),
+    );
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final statusBarHeight = MediaQuery.of(context).padding.top;
@@ -30,7 +107,7 @@ class _SightListScreenState extends State<SightListScreen>
           return false;
         },
         child: CustomScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           controller: controller,
           slivers: [
             SliverAppBar(
@@ -63,26 +140,26 @@ class _SightListScreenState extends State<SightListScreen>
         ),
         onPressed: onPressedFab,
       ),
-      bottomNavigationBar: AppBottomNavigationBar(currentIndex: 0),
+      bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 0),
     );
   }
 }
 
 class _Header extends StatelessWidget {
-  final double maxHeight;
-  final double minHeight;
-  final double statusBarHeight;
-  final Function onTap;
-  final Function onFilter;
-
   const _Header({
-    Key key,
     this.maxHeight,
     this.minHeight,
     this.onFilter,
     this.onTap,
     this.statusBarHeight,
+    Key key,
   }) : super(key: key);
+
+  final double maxHeight;
+  final double minHeight;
+  final double statusBarHeight;
+  final void Function() onTap;
+  final void Function() onFilter;
 
   @override
   // ignore: long-method
@@ -99,9 +176,6 @@ class _Header extends StatelessWidget {
           color: Theme.of(context).canvasColor,
           padding: EdgeInsets.only(top: statusBarHeight + 16.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SizedBox(
                 height: Tween<double>(begin: 0, end: 24).evaluate(animation),
@@ -112,7 +186,7 @@ class _Header extends StatelessWidget {
                   end: Alignment.bottomLeft,
                 ).evaluate(animation),
                 child: Padding(
-                  padding: EdgeInsets.only(left: 16.0),
+                  padding: const EdgeInsets.only(left: 16.0),
                   child: Text(
                     listTitle,
                     style: textMedium18.copyWith(
@@ -130,7 +204,7 @@ class _Header extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               SizedBox(
                 height: Tween<double>(begin: 0, end: 52).evaluate(animation),
                 child: SearchBar(
@@ -154,7 +228,7 @@ class _Header extends StatelessWidget {
     return expandRatio;
   }
 
-  FontWeight _getFontWeight(animation) {
+  FontWeight _getFontWeight(Animation<double> animation) {
     final listTitleWeight =
         Tween<double>(begin: 1.0, end: 3.0).evaluate(animation).toInt();
 
@@ -172,8 +246,8 @@ class _Header extends StatelessWidget {
 
 class _CardColumn extends StatelessWidget {
   const _CardColumn({
-    Key key,
     @required this.sights,
+    Key key,
   }) : super(key: key);
 
   final List<Sight> sights;

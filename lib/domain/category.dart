@@ -5,51 +5,29 @@ import 'package:places/ui/res/assets.dart';
 
 /// Класс категории интересных мест
 class Category {
-  String _name;
-  String _iconName;
-  SightType _type;
-  bool _selected;
-
-  get name => _name;
-
-  get iconName => _iconName;
-
-  get type => _type;
-
-  // ignore: unnecessary_getters_setters
-  get selected => _selected;
-
-  // ignore: unnecessary_getters_setters
-  set selected(bool b) => _selected = b;
-
   Category({
-    @required String name,
-    @required String iconName,
-    @required SightType type,
-    bool selected = false,
-  }) {
-    this._name = name;
-    this._iconName = iconName;
-    this._type = type;
-    this._selected = selected;
-  }
+    @required this.name,
+    @required this.iconName,
+    @required this.type,
+    this.selected,
+  });
 
-  Category.fromType({
-    @required type,
-  }) {
-    this._type = type;
-    this._selected = false;
-    this._name = sightTypes[type]?.name ?? "Особое место";
-    this._iconName = sightTypes[type]?.iconName ?? AppIcons.particular_place;
-  }
+  Category.fromType(this.type)
+      : name = sightTypes[type]?.name ?? 'Особое место',
+        iconName = sightTypes[type]?.iconName ?? AppIcons.particularPlace;
+
+  String name;
+  String iconName;
+  SightType type;
+  bool selected;
 
   /// Меняет признак выбранности категории
   void toggle() {
-    _selected = !_selected;
+    selected = !selected;
   }
 
   /// Сбрасывает признак выбранности категории
   void reset() {
-    _selected = false;
+    selected = false;
   }
 }

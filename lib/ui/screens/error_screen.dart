@@ -5,9 +5,6 @@ import 'package:places/ui/widgets/message_box.dart';
 
 /// Экран для отображения ошибки.
 class ErrorScreen extends StatelessWidget {
-  final String title, iconName, message;
-  final Map<String, String> link;
-
   const ErrorScreen({
     Key key,
     this.title = errorTitle,
@@ -15,6 +12,9 @@ class ErrorScreen extends StatelessWidget {
     this.message = errorMessage,
     this.link,
   }) : super(key: key);
+
+  final String title, iconName, message;
+  final Map<String, String> link;
 
   @override
   Widget build(BuildContext context) {

@@ -6,13 +6,13 @@ class AppIcons {
   AppIcons._();
 
   /// Paths
-  static const _baseResPath = "res/icons",
-      _menuPath = "$_baseResPath/menu",
-      _otherPath = "$_baseResPath/other",
-      _catalogPath = "$_baseResPath/catalog",
-      _emptyPagesPath = "$_baseResPath/empty_pages",
-      _tutorialPath = "$_baseResPath/tutorial",
-      _logoPath = "$_baseResPath/logo";
+  static const _baseResPath = 'res/icons',
+      _menuPath = '$_baseResPath/menu',
+      _otherPath = '$_baseResPath/other',
+      _catalogPath = '$_baseResPath/catalog',
+      _emptyPagesPath = '$_baseResPath/empty_pages',
+      _tutorialPath = '$_baseResPath/tutorial',
+      _logoPath = '$_baseResPath/logo';
 
   /// Logo
   static const logo = '$_logoPath/logo.svg';
@@ -27,7 +27,7 @@ class AppIcons {
       hotel = '$_catalogPath/hotel.svg',
       museum = '$_catalogPath/museum.svg',
       park = '$_catalogPath/park.svg',
-      particular_place = '$_catalogPath/particular_place.svg',
+      particularPlace = '$_catalogPath/particular_place.svg',
       restaurant = '$_catalogPath/restaurant.svg';
 
   /// Empty pages
@@ -51,13 +51,14 @@ class AppIcons {
   static const arrow = '$_otherPath/arrow.svg',
       bucket = '$_otherPath/bucket.svg',
       calendar = '$_otherPath/calendar.svg',
-      calendar_full = '$_otherPath/calendar_full.svg',
+      calendarFull = '$_otherPath/calendar_full.svg',
       camera = '$_otherPath/camera.svg',
       card = '$_otherPath/card.svg',
+      cardClose = '$_otherPath/card_close.svg',
       clear = '$_otherPath/clear.svg',
       close = '$_otherPath/close.svg',
       delete = '$_otherPath/delete.svg',
-      fail = '$_otherPath/fail.svg',
+      file = '$_otherPath/file.svg',
       filter = '$_otherPath/filter.svg',
       geolocation = '$_otherPath/geolocation.svg',
       go = '$_otherPath/go.svg',
@@ -69,7 +70,7 @@ class AppIcons {
       share = '$_otherPath/share.svg',
       tick = '$_otherPath/tick.svg',
       view = '$_otherPath/view.svg',
-      way_arrows = '$_otherPath/way_arrows.svg',
-      way_arrows1 = '$_otherPath/way_arrows1.svg',
-      way_arrows2 = '$_otherPath/way_arrows2.svg';
+      wayArrows = '$_otherPath/way_arrows.svg',
+      wayArrows1 = '$_otherPath/way_arrows1.svg',
+      wayArrows2 = '$_otherPath/way_arrows2.svg';
 }

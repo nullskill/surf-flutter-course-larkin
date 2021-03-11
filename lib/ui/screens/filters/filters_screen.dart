@@ -15,6 +15,7 @@ import 'package:places/ui/widgets/app_range_slider/app_range_slider_helper.dart'
 import 'package:places/ui/widgets/subtitle.dart';
 
 /// Экран фильтров
+// ignore: use_key_in_widget_constructors
 class FiltersScreen extends StatefulWidget {
   @override
   _FiltersScreenState createState() => _FiltersScreenState();
@@ -29,12 +30,14 @@ class _FiltersScreenState extends State<FiltersScreen> {
   List<Category> _categories;
   RangeValues _currentRangeValues;
 
-  get getCategories => _categories;
+  List<Category> get getCategories => _categories;
 
   @override
   void initState() {
     super.initState();
-    for (var category in categories) category.reset();
+    for (final category in categories) {
+      category.reset();
+    }
     _categories = [...categories];
     _resetRangeValues();
   }
@@ -47,7 +50,9 @@ class _FiltersScreenState extends State<FiltersScreen> {
   }
 
   void resetAllSettings() => setState(() {
-        for (var category in _categories) category.selected = false;
+        for (final category in _categories) {
+          category.selected = false;
+        }
         _resetRangeValues();
         _filteredCardsNumber = 0;
       });
@@ -58,7 +63,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
       });
 
   void _resetRangeValues() {
-    _currentRangeValues = RangeValues(
+    _currentRangeValues = const RangeValues(
       AppRangeSliderHelper.initialMinValue,
       AppRangeSliderHelper.initialMaxValue,
     );
@@ -85,7 +90,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _FiltersAppBar(),
+      appBar: const _FiltersAppBar(),
       body: _FiltersBody(currentRangeValues: _currentRangeValues),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.fromLTRB(
@@ -95,11 +100,12 @@ class _FiltersScreenState extends State<FiltersScreen> {
           MediaQuery.of(context).padding.bottom + 8.0,
         ),
         child: ActionButton(
-          label: "$filtersActionButtonLabel ($_filteredCardsNumber)",
+          label: '$filtersActionButtonLabel ($_filteredCardsNumber)',
           isDisabled: _filteredCardsNumber == 0,
           onPressed: () {
-            filteredMocks.clear();
-            filteredMocks.addAll(_filteredCards);
+            filteredMocks
+              ..clear()
+              ..addAll(_filteredCards);
 
             Navigator.pop(context);
           },
@@ -110,17 +116,18 @@ class _FiltersScreenState extends State<FiltersScreen> {
 }
 
 class _FiltersAppBar extends StatelessWidget implements PreferredSizeWidget {
-  _FiltersAppBar({
+  const _FiltersAppBar({
     Key key,
   }) : super(key: key);
 
-  final Size preferredSize = Size.fromHeight(56.0);
+  @override
+  Size get preferredSize => const Size.fromHeight(56.0);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: AppBackButton(),
-      actions: [
+      leading: const AppBackButton(),
+      actions: const [
         Center(
           child: _ClearButton(),
         ),
@@ -136,7 +143,7 @@ class _ClearButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
+    return TextButton(
       onPressed: () {
         FiltersScreen.of(context).resetAllSettings();
       },
@@ -153,8 +160,8 @@ class _ClearButton extends StatelessWidget {
 
 class _FiltersBody extends StatelessWidget {
   const _FiltersBody({
-    Key key,
     @required RangeValues currentRangeValues,
+    Key key,
   })  : _currentRangeValues = currentRangeValues,
         super(key: key);
 
@@ -168,11 +175,11 @@ class _FiltersBody extends StatelessWidget {
         vertical: 24.0,
       ),
       children: [
-        Subtitle(
+        const Subtitle(
           subtitle: filtersCategoriesTitle,
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
+        const Padding(
+          padding: EdgeInsets.fromLTRB(
             8.0,
             24.0,
             8.0,
@@ -208,8 +215,8 @@ class _Categories extends StatelessWidget {
 
 class _Category extends StatelessWidget {
   const _Category({
-    Key key,
     @required this.category,
+    Key key,
   }) : super(key: key);
 
   final Category category;
@@ -217,7 +224,6 @@ class _Category extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Stack(
           children: [
@@ -225,6 +231,9 @@ class _Category extends StatelessWidget {
               type: MaterialType.transparency,
               child: InkWell(
                 borderRadius: BorderRadius.circular(32.0),
+                onTap: () {
+                  FiltersScreen.of(context).toggleCategory(category);
+                },
                 child: CircleAvatar(
                   radius: 32.0,
                   backgroundColor:
@@ -236,18 +245,12 @@ class _Category extends StatelessWidget {
                     color: Theme.of(context).buttonColor,
                   ),
                 ),
-                onTap: () {
-                  FiltersScreen.of(context).toggleCategory(category);
-                },
               ),
             ),
-            category.selected ? _CategoryTick() : SizedBox(),
+            category.selected ? const _CategoryTick() : const SizedBox.shrink(),
           ],
         ),
-        SizedBox(
-          width: 96.0,
-          height: 12,
-        ),
+        const SizedBox(width: 96.0, height: 12),
         _CategoryLabel(label: category.name),
       ],
     );
@@ -282,8 +285,8 @@ class _CategoryTick extends StatelessWidget {
 
 class _CategoryLabel extends StatelessWidget {
   const _CategoryLabel({
-    Key key,
     @required this.label,
+    Key key,
   }) : super(key: key);
 
   final String label;

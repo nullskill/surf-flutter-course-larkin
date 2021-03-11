@@ -4,15 +4,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 /// Класс провайдера выбранной темы
 class ThemeNotifier extends ChangeNotifier {
-  SharedPreferences _prefs;
-  bool _darkTheme;
-
-  bool get darkTheme => _darkTheme;
-
   ThemeNotifier() {
     _darkTheme = true;
     _loadFromPrefs();
   }
+
+  SharedPreferences _prefs;
+  bool _darkTheme;
+
+  bool get darkTheme => _darkTheme;
 
   void toggleTheme() {
     _darkTheme = !_darkTheme;
@@ -20,18 +20,18 @@ class ThemeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void _loadFromPrefs() async {
+  Future<void> _loadFromPrefs() async {
     await _initPrefs();
     _darkTheme = _prefs.getBool(themeKey) ?? true;
     notifyListeners();
   }
 
-  void _saveToPrefs() async {
+  Future<void> _saveToPrefs() async {
     await _initPrefs();
-    _prefs.setBool(themeKey, _darkTheme);
+    await _prefs.setBool(themeKey, _darkTheme);
   }
 
-  void _initPrefs() async {
-    if (_prefs == null) _prefs = await SharedPreferences.getInstance();
+  Future<void> _initPrefs() async {
+    _prefs ??= await SharedPreferences.getInstance();
   }
 }

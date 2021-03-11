@@ -6,8 +6,7 @@ import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/screens/add_sight/add_sight_logic.dart';
-import 'package:places/ui/screens/select_category_screen.dart';
+import 'package:places/ui/screens/add_sight/add_sight_bloc.dart';
 import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/ui/widgets/clear_button.dart';
 import 'package:places/ui/widgets/link.dart';
@@ -15,38 +14,19 @@ import 'package:places/ui/widgets/settings_item.dart';
 import 'package:places/ui/widgets/subtitle.dart';
 
 /// Экран добавления нового места.
-class AddSightScreen extends StatefulWidget {
-  @override
-  _AddSightScreenState createState() => _AddSightScreenState();
-}
+class AddSightScreen extends StatelessWidget {
+  AddSightScreen({Key key}) : super(key: key);
 
-class _AddSightScreenState extends State<AddSightScreen>
-    with AddSightScreenLogic {
+  final AddSightScreenBloc _bloc = AddSightScreenBloc();
+
   @override
   // ignore: long-method
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          _AddSightAppBar(
-            imgUrls: imgUrls,
-            onDeleteImageCard: onDeleteImageCard,
-            onPointerDownOnImageCard: onPointerDownOnImageCard,
-            onPointerMoveOnImageCard: onPointerMoveOnImageCard,
-            onPointerUpOnImageCard: onPointerUpOnImageCard,
-            getBoxShadow: getBoxShadow,
-            onAddImageCard: onAddImageCard,
-          ),
-          _AddSightBody(
-            imgUrls: imgUrls,
-            controllers: controllers,
-            focusNodes: focusNodes,
-            currentFocusNode: currentFocusNode,
-            selectedCategory: selectedCategory,
-            setSelectedCategory: setSelectedCategory,
-            moveFocus: moveFocus,
-            onDeleteImageCard: onDeleteImageCard,
-          ),
+          _AddSightAppBar(bloc: _bloc),
+          _AddSightBody(bloc: _bloc),
         ],
       ),
       bottomNavigationBar: Padding(
@@ -58,8 +38,8 @@ class _AddSightScreenState extends State<AddSightScreen>
         ),
         child: ActionButton(
           label: addSightActionButtonLabel,
-          isDisabled: !allDone,
-          onPressed: onActionButtonPressed,
+          isDisabled: !_bloc.allDone,
+          onPressed: () => _bloc.onActionButtonPressed(context),
         ),
       ),
     );
@@ -68,41 +48,27 @@ class _AddSightScreenState extends State<AddSightScreen>
 
 class _AddSightAppBar extends StatelessWidget {
   const _AddSightAppBar({
+    @required this.bloc,
     Key key,
-    @required this.imgUrls,
-    @required this.onDeleteImageCard,
-    @required this.onPointerDownOnImageCard,
-    @required this.onPointerMoveOnImageCard,
-    @required this.onPointerUpOnImageCard,
-    @required this.getBoxShadow,
-    @required this.onAddImageCard,
   }) : super(key: key);
 
-  final List<String> imgUrls;
-  final Function onDeleteImageCard;
-  final Function onPointerDownOnImageCard;
-  final Function onPointerMoveOnImageCard;
-  final Function onPointerUpOnImageCard;
-  final Function getBoxShadow;
-  final Function onAddImageCard;
+  final AddSightScreenBloc bloc;
 
   @override
   // ignore: long-method
   Widget build(BuildContext context) {
     return SliverAppBar(
-      pinned: false,
       elevation: 0,
-      toolbarHeight: 56.0,
       leading: Padding(
         padding: const EdgeInsets.symmetric(
           vertical: 10.0,
         ),
-        child: FlatButton(
+        child: TextButton(
           onPressed: () {
             Navigator.pop(context);
           },
           child: Text(
-            addSightCancelButtonLabel,
+            cancelButtonLabel,
             softWrap: false,
             style: textMedium16.copyWith(
               color: secondaryColor2,
@@ -121,17 +87,19 @@ class _AddSightAppBar extends StatelessWidget {
       ),
       centerTitle: true,
       bottom: PreferredSize(
-        preferredSize: Size.fromHeight(96.0),
+        preferredSize: const Size.fromHeight(96.0),
         child: Align(
           alignment: Alignment.bottomLeft,
-          child: _ImageCards(
-            imgUrls: imgUrls,
-            onDeleteImageCard: onDeleteImageCard,
-            onPointerDownOnImageCard: onPointerDownOnImageCard,
-            onPointerMoveOnImageCard: onPointerMoveOnImageCard,
-            onPointerUpOnImageCard: onPointerUpOnImageCard,
-            getBoxShadow: getBoxShadow,
-            onAddImageCard: onAddImageCard,
+          child: StreamBuilder<List<String>>(
+            initialData: bloc.imgUrls,
+            stream: bloc.outputImgStateStream,
+            builder: (context, snapshot) {
+              final imgUrls = snapshot.data;
+              return _ImageCards(
+                bloc: bloc,
+                imgUrls: imgUrls,
+              );
+            },
           ),
         ),
       ),
@@ -141,23 +109,13 @@ class _AddSightAppBar extends StatelessWidget {
 
 class _ImageCards extends StatelessWidget {
   const _ImageCards({
-    Key key,
+    @required this.bloc,
     @required this.imgUrls,
-    @required this.onDeleteImageCard,
-    @required this.onPointerDownOnImageCard,
-    @required this.onPointerMoveOnImageCard,
-    @required this.onPointerUpOnImageCard,
-    @required this.getBoxShadow,
-    @required this.onAddImageCard,
+    Key key,
   }) : super(key: key);
 
+  final AddSightScreenBloc bloc;
   final List<String> imgUrls;
-  final Function onDeleteImageCard;
-  final Function onPointerDownOnImageCard;
-  final Function onPointerMoveOnImageCard;
-  final Function onPointerUpOnImageCard;
-  final Function getBoxShadow;
-  final Function onAddImageCard;
 
   @override
   Widget build(BuildContext context) {
@@ -173,16 +131,13 @@ class _ImageCards extends StatelessWidget {
         ),
         children: [
           _AddImageCard(
-            onAddImageCard: onAddImageCard,
+            // TODO: В дальнейшем, после прохождения 16.1 сделать реализацию
+            onAddImageCard: () => bloc.onAddImageCardDummy(context),
           ),
-          for (var imgUrl in imgUrls)
+          for (final imgUrl in imgUrls)
             _ImageCard(
               imgUrl: imgUrl,
-              onDeleteImageCard: onDeleteImageCard,
-              onPointerDownOnImageCard: onPointerDownOnImageCard,
-              onPointerMoveOnImageCard: onPointerMoveOnImageCard,
-              onPointerUpOnImageCard: onPointerUpOnImageCard,
-              getBoxShadow: getBoxShadow,
+              bloc: bloc,
             ),
         ],
       ),
@@ -192,12 +147,12 @@ class _ImageCards extends StatelessWidget {
 
 class _AddImageCard extends StatelessWidget {
   const _AddImageCard({
-    Key key,
     @required this.onAddImageCard,
+    Key key,
   }) : super(key: key);
 
   static const _cardSize = 72.0;
-  final Function onAddImageCard;
+  final void Function() onAddImageCard;
 
   @override
   Widget build(BuildContext context) {
@@ -232,52 +187,50 @@ class _AddImageCard extends StatelessWidget {
 
 class _ImageCard extends StatelessWidget {
   const _ImageCard({
-    Key key,
     @required this.imgUrl,
-    @required this.onDeleteImageCard,
-    @required this.onPointerDownOnImageCard,
-    @required this.onPointerMoveOnImageCard,
-    @required this.onPointerUpOnImageCard,
-    @required this.getBoxShadow,
+    @required this.bloc,
+    Key key,
   }) : super(key: key);
 
   static const _cardSize = 72.0;
   final String imgUrl;
-  final Function onDeleteImageCard;
-  final Function onPointerDownOnImageCard;
-  final Function onPointerMoveOnImageCard;
-  final Function onPointerUpOnImageCard;
-  final Function getBoxShadow;
+  final AddSightScreenBloc bloc;
 
   @override
   Widget build(BuildContext context) {
     return Dismissible(
       key: ValueKey(imgUrl),
       direction: DismissDirection.up,
-      onDismissed: (_) => onDeleteImageCard(imgUrl),
+      onDismissed: (_) => bloc.onDeleteImageCard(imgUrl),
       child: Listener(
-        onPointerDown: (_) => onPointerDownOnImageCard(imgUrl),
-        onPointerMove: (_) => onPointerMoveOnImageCard(imgUrl),
-        onPointerUp: (_) => onPointerUpOnImageCard(imgUrl),
-        child: Container(
-          width: _cardSize,
-          height: _cardSize,
-          margin: const EdgeInsets.only(left: 16.0),
-          decoration: BoxDecoration(
-            color: placeholderColor,
-            borderRadius: allBorderRadius12,
-            boxShadow: getBoxShadow(imgUrl),
-          ),
-          child: Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: ClearButton(
-                isDeletion: true,
-                onTap: () => onDeleteImageCard(imgUrl),
+        onPointerDown: (_) => bloc.onPointerDownOnImageCard(imgUrl),
+        onPointerMove: (_) => bloc.onPointerMoveOnImageCard(imgUrl),
+        onPointerUp: (_) => bloc.onPointerUpOnImageCard(imgUrl),
+        child: StreamBuilder<bool>(
+          // TODO: kind of a hack... needs to rethink about it later!
+          stream: bloc.outputImgShadowStateStream,
+          builder: (context, snapshot) {
+            return Container(
+              width: _cardSize,
+              height: _cardSize,
+              margin: const EdgeInsets.only(left: 16.0),
+              decoration: BoxDecoration(
+                color: placeholderColor,
+                borderRadius: allBorderRadius12,
+                boxShadow: bloc.getBoxShadow(imgUrl),
               ),
-            ),
-          ),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: ClearButton(
+                    isDeletion: true,
+                    onTap: () => bloc.onDeleteImageCard(imgUrl),
+                  ),
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -285,30 +238,16 @@ class _ImageCard extends StatelessWidget {
 }
 
 class _AddSightBody extends StatelessWidget {
-  _AddSightBody({
+  const _AddSightBody({
+    @required this.bloc,
     Key key,
-    @required this.imgUrls,
-    @required this.controllers,
-    @required this.focusNodes,
-    @required this.currentFocusNode,
-    @required this.moveFocus,
-    @required this.setSelectedCategory,
-    @required this.onDeleteImageCard,
-    this.selectedCategory,
   }) : super(key: key);
 
-  final List<String> imgUrls;
-  final Map<Field, TextEditingController> controllers;
-  final Map<Field, FocusNode> focusNodes;
-  final FocusNode currentFocusNode;
-  final Category selectedCategory;
-  final Function setSelectedCategory;
-  final Function moveFocus;
-  final Function onDeleteImageCard;
+  final AddSightScreenBloc bloc;
 
-  bool hasClearButton(fieldName) =>
-      currentFocusNode == focusNodes[fieldName] &&
-      controllers[fieldName].text.isNotEmpty;
+  bool hasClearButton(Field field) =>
+      bloc.currentFocusNode == bloc.focusNodes[field] &&
+      bloc.controllers[field].text.isNotEmpty;
 
   @override
   // ignore: long-method
@@ -325,34 +264,31 @@ class _AddSightBody extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Subtitle(subtitle: addSightCategoryTitle),
-                SettingsItem(
-                  title: selectedCategory?.name ?? addSightNoCategoryTitle,
-                  isGreyedOut: selectedCategory == null,
-                  onTap: () async {
-                    final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SelectCategoryScreen(
-                          selectedCategory: selectedCategory,
-                        ),
+                const Subtitle(subtitle: addSightCategoryTitle),
+                StreamBuilder<Category>(
+                  initialData: bloc.selectedCategory,
+                  stream: bloc.outputCategoryStateStream,
+                  builder: (context, snapshot) {
+                    final category = snapshot.data;
+                    return SettingsItem(
+                      title: category?.name ?? addSightNoCategoryTitle,
+                      isGreyedOut: bloc.selectedCategory == null,
+                      onTap: () => bloc.selectCategory(context),
+                      trailing: SvgPicture.asset(
+                        AppIcons.view,
+                        width: 24.0,
+                        height: 24.0,
+                        color: Theme.of(context).primaryColor,
                       ),
                     );
-                    if (result != null) setSelectedCategory(result);
                   },
-                  trailing: SvgPicture.asset(
-                    AppIcons.view,
-                    width: 24.0,
-                    height: 24.0,
-                    color: Theme.of(context).primaryColor,
-                  ),
                 ),
                 _AddSightTextField(
                   title: addSightNameTitle,
                   hasClearButton: hasClearButton(Field.name),
-                  controller: controllers[Field.name],
-                  focusNode: focusNodes[Field.name],
-                  moveFocus: moveFocus,
+                  controller: bloc.controllers[Field.name],
+                  focusNode: bloc.focusNodes[Field.name],
+                  moveFocus: () => bloc.moveFocus(context),
                 ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -361,36 +297,34 @@ class _AddSightBody extends StatelessWidget {
                       child: _AddSightTextField(
                         title: addSightLatitudeTitle,
                         hasClearButton: hasClearButton(Field.latitude),
-                        controller: controllers[Field.latitude],
-                        focusNode: focusNodes[Field.latitude],
-                        moveFocus: moveFocus,
-                        keyboardType: TextInputType.numberWithOptions(
+                        controller: bloc.controllers[Field.latitude],
+                        focusNode: bloc.focusNodes[Field.latitude],
+                        moveFocus: () => bloc.moveFocus(context),
+                        keyboardType: const TextInputType.numberWithOptions(
                           signed: true,
                           decimal: true,
                         ),
-                        validator: (String value) =>
-                            AddSightScreenLogic.validateCoordinate(
+                        validator: (value) =>
+                            AddSightScreenBloc.validateCoordinate(
                           value,
                           Coordinate.lat,
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 16.0,
-                    ),
+                    const SizedBox(width: 16.0),
                     Expanded(
                       child: _AddSightTextField(
                         title: addSightLongitudeTitle,
                         hasClearButton: hasClearButton(Field.longitude),
-                        controller: controllers[Field.longitude],
-                        focusNode: focusNodes[Field.longitude],
-                        moveFocus: moveFocus,
-                        keyboardType: TextInputType.numberWithOptions(
+                        controller: bloc.controllers[Field.longitude],
+                        focusNode: bloc.focusNodes[Field.longitude],
+                        moveFocus: () => bloc.moveFocus(context),
+                        keyboardType: const TextInputType.numberWithOptions(
                           signed: true,
                           decimal: true,
                         ),
-                        validator: (String value) =>
-                            AddSightScreenLogic.validateCoordinate(
+                        validator: (value) =>
+                            AddSightScreenBloc.validateCoordinate(
                           value,
                           Coordinate.lng,
                         ),
@@ -401,7 +335,8 @@ class _AddSightBody extends StatelessWidget {
                 Link(
                   label: addSightSelectOnMapLabel,
                   onTap: () {
-                    print("Select on map tapped");
+                    // ignore: avoid_print
+                    print('Select on map tapped');
                   },
                 ),
                 _AddSightTextField(
@@ -410,9 +345,9 @@ class _AddSightBody extends StatelessWidget {
                   maxLines: 4,
                   isLastField: true,
                   hasClearButton: hasClearButton(Field.description),
-                  controller: controllers[Field.description],
-                  focusNode: focusNodes[Field.description],
-                  moveFocus: moveFocus,
+                  controller: bloc.controllers[Field.description],
+                  focusNode: bloc.focusNodes[Field.description],
+                  moveFocus: () => bloc.moveFocus(context),
                 ),
               ],
             ),
@@ -425,7 +360,6 @@ class _AddSightBody extends StatelessWidget {
 
 class _AddSightTextField extends StatelessWidget {
   const _AddSightTextField({
-    Key key,
     @required this.title,
     @required this.controller,
     @required this.focusNode,
@@ -436,6 +370,7 @@ class _AddSightTextField extends StatelessWidget {
     this.hasClearButton = false,
     this.keyboardType,
     this.validator,
+    Key key,
   }) : super(key: key);
 
   final int maxLines;
@@ -446,8 +381,8 @@ class _AddSightTextField extends StatelessWidget {
   final TextInputType keyboardType;
   final TextEditingController controller;
   final FocusNode focusNode;
-  final Function moveFocus;
-  final Function validator;
+  final void Function() moveFocus;
+  final String Function(String) validator;
 
   @override
   // ignore: long-method
@@ -496,7 +431,7 @@ class _AddSightTextField extends StatelessWidget {
                         },
                       ),
                     ),
-              suffixIconConstraints: BoxConstraints(
+              suffixIconConstraints: const BoxConstraints(
                 maxHeight: 40.0,
                 maxWidth: 40.0,
               ),

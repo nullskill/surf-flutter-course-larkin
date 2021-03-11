@@ -5,7 +5,7 @@ import 'package:places/ui/res/themes.dart';
 import 'package:places/ui/screens/onboarding_screen.dart';
 import 'package:places/ui/screens/settings_screen.dart';
 import 'package:places/ui/screens/sight_list/sight_list_screen.dart';
-import 'package:places/ui/screens/splash/splash_screen.dart';
+import 'package:places/ui/screens/splash_screen.dart';
 import 'package:places/ui/screens/visiting/visiting_screen.dart';
 import 'package:places/utils/theme_provider.dart';
 import 'package:provider/provider.dart';
@@ -20,28 +20,26 @@ class App extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => ThemeNotifier(),
       child: Consumer<ThemeNotifier>(
-        builder: (
-          context,
-          ThemeNotifier notifier,
-          child,
-        ) {
+        builder: (context, notifier, child) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: lightTheme,
             darkTheme: darkTheme,
             themeMode: notifier.darkTheme ? ThemeMode.dark : ThemeMode.light,
             title: appTitle,
-            routes: {
-              AppRoutes.home: (_) => SplashScreen(),
-              AppRoutes.start: (_) => SightListScreen(),
-              AppRoutes.map: (_) => Scaffold(),
-              AppRoutes.visiting: (_) => VisitingScreen(),
-              AppRoutes.settings: (_) => SettingsScreen(),
-              AppRoutes.onboarding: (_) => OnboardingScreen(),
-            },
+            routes: _routesMap,
           );
         },
       ),
     );
   }
 }
+
+final _routesMap = <String, Widget Function(BuildContext)>{
+  AppRoutes.home: (_) => SplashScreen(),
+  AppRoutes.start: (_) => SightListScreen(),
+  AppRoutes.map: (_) => const Scaffold(),
+  AppRoutes.visiting: (_) => VisitingScreen(),
+  AppRoutes.settings: (_) => SettingsScreen(),
+  AppRoutes.onboarding: (_) => OnboardingScreen(),
+};
