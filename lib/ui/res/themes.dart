@@ -97,6 +97,9 @@ final lightTheme = ThemeData(
   //TextButton
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
+      foregroundColor: MaterialStateProperty.resolveWith<Color>(
+        (states) => LightMode.greenColor,
+      ),
       overlayColor: MaterialStateProperty.resolveWith<Color>(
         (states) => LightMode.greenColor.withAlpha(50),
       ),
@@ -114,6 +117,8 @@ final lightTheme = ThemeData(
     selectedItemColor: LightMode.primaryColor,
     unselectedItemColor: inactiveColor,
   ),
+
+  timePickerTheme: _timePickerTheme(LightMode.greenColor),
 );
 
 /// Темная тема
@@ -127,7 +132,7 @@ final darkTheme = ThemeData(
   buttonColor: DarkMode.greenColor,
   canvasColor: DarkMode.primaryColor,
   backgroundColor: DarkMode.darkColor,
-  shadowColor: whiteColor,
+  shadowColor: DarkMode.greenColor.withOpacity(.25),
   accentColor: DarkMode.greenColor,
   errorColor: DarkMode.redColor,
   splashColor: DarkMode.greenColor.withOpacity(.35),
@@ -209,6 +214,9 @@ final darkTheme = ThemeData(
   //TextButton
   textButtonTheme: TextButtonThemeData(
     style: ButtonStyle(
+      foregroundColor: MaterialStateProperty.resolveWith<Color>(
+        (states) => LightMode.greenColor,
+      ),
       overlayColor: MaterialStateProperty.resolveWith<Color>(
         (states) => DarkMode.greenColor.withAlpha(50),
       ),
@@ -226,6 +234,8 @@ final darkTheme = ThemeData(
     selectedItemColor: whiteColor,
     unselectedItemColor: secondaryColor2,
   ),
+
+  timePickerTheme: _timePickerTheme(DarkMode.greenColor),
 );
 
 /// Класс общих настроек для тем
@@ -301,4 +311,35 @@ class _SliderTrackShape extends RoundedRectRangeSliderTrackShape {
       trackHeight,
     );
   }
+}
+
+TimePickerThemeData _timePickerTheme(Color mainColor) {
+  final TimePickerThemeData base = ThemeData().timePickerTheme;
+  Color myTimePickerMaterialStateColorFunc(Set<MaterialState> states,
+      {bool withBackgroundColor = false}) {
+    const Set<MaterialState> interactiveStates = <MaterialState>{
+      MaterialState.pressed,
+      MaterialState.hovered,
+      MaterialState.focused,
+      MaterialState.selected, //This is the one actually used
+    };
+    if (states.any(interactiveStates.contains)) {
+      // the color to return when button is in pressed, hovered, focused, or selected state
+      return mainColor.withOpacity(0.12);
+    }
+    // the color to return when button is in it's normal/unfocused state
+    return withBackgroundColor ? Colors.grey[200] : Colors.transparent;
+  }
+
+  return base.copyWith(
+    hourMinuteTextColor: mainColor,
+    hourMinuteColor: MaterialStateColor.resolveWith((states) =>
+        myTimePickerMaterialStateColorFunc(states, withBackgroundColor: true)),
+    //Background of Hours/Minute input
+    dayPeriodTextColor: mainColor,
+    dayPeriodColor:
+        MaterialStateColor.resolveWith(myTimePickerMaterialStateColorFunc),
+    //Background of AM/PM.
+    dialHandColor: mainColor,
+  );
 }

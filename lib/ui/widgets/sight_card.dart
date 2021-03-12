@@ -18,7 +18,7 @@ import 'package:places/ui/screens/sight_details_screen.dart';
 import 'package:places/ui/widgets/app_modal_bottom_sheet.dart';
 
 /// Виджет карточки интересного места.
-class SightCard extends StatelessWidget {
+class SightCard extends StatefulWidget {
   const SightCard({
     @required this.sight,
     this.onRemoveCard,
@@ -29,10 +29,29 @@ class SightCard extends StatelessWidget {
   final void Function() onRemoveCard;
 
   @override
+  _SightCardState createState() => _SightCardState();
+}
+
+class _SightCardState extends State<SightCard> {
+  TimeOfDay selectedTime = TimeOfDay.now();
+
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay pickedTime = await showTimePicker(
+      context: context,
+      initialTime: selectedTime,
+    );
+    if (pickedTime != null && pickedTime != selectedTime) {
+      setState(() {
+        selectedTime = pickedTime;
+      });
+    }
+  }
+
+  @override
   // ignore: long-method
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: sight.runtimeType == Sight ? 3 / 2 : 2,
+      aspectRatio: widget.sight.runtimeType == Sight ? 3 / 2 : 2,
       child: ClipRRect(
         borderRadius: allBorderRadius16,
         child: Container(
@@ -41,8 +60,8 @@ class SightCard extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  _CardTop(sight: sight),
-                  _CardBottom(sight: sight),
+                  _CardTop(sight: widget.sight),
+                  _CardBottom(sight: widget.sight),
                 ],
               ),
               Positioned.fill(
@@ -51,7 +70,8 @@ class SightCard extends StatelessWidget {
                   child: InkWell(
                     onTap: () => showAppModalBottomSheet<SightDetailsScreen>(
                       context: context,
-                      builder: (context) => SightDetailsScreen(sight: sight),
+                      builder: (context) =>
+                          SightDetailsScreen(sight: widget.sight),
                     ),
                   ),
                 ),
@@ -60,28 +80,26 @@ class SightCard extends StatelessWidget {
                 top: 16,
                 right: 16,
                 child: _CardIcon(
-                  iconName: sight.runtimeType == Sight
+                  iconName: widget.sight.runtimeType == Sight
                       ? AppIcons.heart
                       : AppIcons.close,
-                  onTap: sight.runtimeType == Sight
+                  onTap: widget.sight.runtimeType == Sight
                       ? () {
                           // TODO: Add callback body
                         }
-                      : onRemoveCard,
+                      : widget.onRemoveCard,
                 ),
               ),
               //Показываем различные иконки, в зависимости от типа карточки
-              [FavoriteSight, VisitedSight].contains(sight.runtimeType)
+              [FavoriteSight, VisitedSight].contains(widget.sight.runtimeType)
                   ? Positioned(
                       top: 16,
                       right: 56,
                       child: _CardIcon(
-                        iconName: sight.runtimeType == FavoriteSight
+                        iconName: widget.sight.runtimeType == FavoriteSight
                             ? AppIcons.calendar
                             : AppIcons.share,
-                        onTap: () {
-                          // TODO: Add callback body
-                        },
+                        onTap: () => _selectTime(context),
                       ),
                     )
                   : const SizedBox.shrink(),
