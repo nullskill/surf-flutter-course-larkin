@@ -379,7 +379,7 @@ class _BackgroundCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 10.0),
                 Text(
-                  'Удалить',
+                  visitingDeleteCardLabel,
                   style: textMedium12.copyWith(
                     color: whiteColor,
                     height: lineHeight1_3,

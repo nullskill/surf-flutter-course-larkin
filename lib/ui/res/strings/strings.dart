@@ -15,6 +15,8 @@ const String appTitle = 'Places',
 //SightCard
     sightCardPlanned = 'Запланировано на',
     sightCardVisited = 'Цель достигнута',
+    sightCardTimePickerCancelLabel = 'Отмена',
+    sightCardTimePickerSubmitLabel = 'Готово',
 
 //AppSearchBar
     searchBarHintText = 'Поиск',
@@ -49,6 +51,7 @@ const String appTitle = 'Places',
     visitingVisitedEmptyListText =
         'Завершите маршрут,\nчтобы место попало сюда.',
     visitingEmptyListText = 'Пусто',
+    visitingDeleteCardLabel = 'Удалить',
 
 //FiltersScreen
     filtersActionButtonLabel = 'Показать',

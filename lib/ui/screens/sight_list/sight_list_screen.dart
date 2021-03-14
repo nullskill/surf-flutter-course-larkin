@@ -15,6 +15,7 @@ import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_floating_action_button.dart';
 import 'package:places/ui/widgets/search_bar.dart';
 import 'package:places/ui/widgets/sight_card.dart';
+import 'package:sized_context/sized_context.dart';
 
 /// Экран списка карточек интересных мест.
 // ignore: use_key_in_widget_constructors
@@ -29,10 +30,11 @@ class _SightListScreenState extends State<SightListScreen> {
   bool isEmpty = false;
 
   // expanded height = 196 + status bar height
-  double get maxHeight => 196 + MediaQuery.of(context).padding.top;
+  double get maxHeight =>
+      context.isLandscape ? 140 : 196 + context.mq.padding.top;
 
   // global constant kToolbarHeight from material + status bar height
-  double get minHeight => kToolbarHeight + MediaQuery.of(context).padding.top;
+  double get minHeight => kToolbarHeight + context.mq.padding.top;
 
   /// Проверяет смещение между maxHeight и minHeight
   /// и создает microtask для анимации подскроливания
@@ -98,8 +100,6 @@ class _SightListScreenState extends State<SightListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final statusBarHeight = MediaQuery.of(context).padding.top;
-
     return Scaffold(
       body: NotificationListener<ScrollEndNotification>(
         onNotification: (_) {
@@ -118,11 +118,10 @@ class _SightListScreenState extends State<SightListScreen> {
               flexibleSpace: _Header(
                 maxHeight: maxHeight,
                 minHeight: minHeight,
-                statusBarHeight: statusBarHeight,
                 onTap: onTapSearchBar,
                 onFilter: onFilterSearchBar,
               ),
-              expandedHeight: maxHeight - statusBarHeight,
+              expandedHeight: maxHeight - context.mq.padding.top,
             ),
             _CardColumn(sights: sights),
           ],
@@ -151,13 +150,11 @@ class _Header extends StatelessWidget {
     this.minHeight,
     this.onFilter,
     this.onTap,
-    this.statusBarHeight,
     Key key,
   }) : super(key: key);
 
   final double maxHeight;
   final double minHeight;
-  final double statusBarHeight;
   final void Function() onTap;
   final void Function() onFilter;
 
@@ -174,11 +171,15 @@ class _Header extends StatelessWidget {
 
         return Container(
           color: Theme.of(context).canvasColor,
-          padding: EdgeInsets.only(top: statusBarHeight + 16.0),
+          padding: EdgeInsets.only(
+            top: context.mq.padding.top + (context.isLandscape ? 0.0 : 16.0),
+          ),
           child: Column(
             children: [
               SizedBox(
-                height: Tween<double>(begin: 0, end: 24).evaluate(animation),
+                height:
+                    Tween<double>(begin: context.isLandscape ? 16 : 0, end: 24)
+                        .evaluate(animation),
               ),
               Align(
                 alignment: AlignmentTween(
@@ -186,22 +187,32 @@ class _Header extends StatelessWidget {
                   end: Alignment.bottomLeft,
                 ).evaluate(animation),
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 16.0),
-                  child: Text(
-                    listTitle,
-                    style: textMedium18.copyWith(
-                      color: Theme.of(context).primaryColor,
-                      fontSize: Tween<double>(
-                        begin: 18.0,
-                        end: 32.0,
-                      ).evaluate(animation),
-                      fontWeight: _getFontWeight(animation),
-                      height: Tween<double>(
-                        begin: lineHeight1_3,
-                        end: lineHeight1_1,
-                      ).evaluate(animation),
-                    ),
-                  ),
+                  padding:
+                      EdgeInsets.only(left: context.isLandscape ? 34.0 : 16.0),
+                  child: context.isLandscape
+                      ? Text(
+                          sightListAppBarTitle,
+                          style: textMedium18.copyWith(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 18.0,
+                            height: lineHeight1_3,
+                          ),
+                        )
+                      : Text(
+                          listTitle,
+                          style: textMedium18.copyWith(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: Tween<double>(
+                              begin: 18.0,
+                              end: 32.0,
+                            ).evaluate(animation),
+                            fontWeight: _getFontWeight(animation),
+                            height: Tween<double>(
+                              begin: lineHeight1_3,
+                              end: lineHeight1_1,
+                            ).evaluate(animation),
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(height: 16.0),
@@ -254,19 +265,44 @@ class _CardColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _topPadding = context.isLandscape ? 14.0 : 0.0;
+    final _restPadding = context.isLandscape ? 34.0 : 16.0;
     return SliverPadding(
-      padding: const EdgeInsets.all(16.0),
-      sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: SightCard(sight: sights[index]),
-            );
-          },
-          childCount: sights.length,
-        ),
+      padding: EdgeInsets.fromLTRB(
+        _restPadding,
+        _topPadding,
+        _restPadding,
+        _restPadding,
       ),
+      sliver: context.isLandscape
+          ? SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                (_, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: SightCard(sight: sights[index]),
+                  );
+                },
+                childCount: sights.length,
+              ),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 36.0,
+                mainAxisSpacing: 16.0,
+                childAspectRatio: context.diagonalInches > 7 ? 1.7 : 1.0,
+              ),
+            )
+          : SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 24.0),
+                    child: SightCard(sight: sights[index]),
+                  );
+                },
+                childCount: sights.length,
+              ),
+            ),
     );
   }
 }

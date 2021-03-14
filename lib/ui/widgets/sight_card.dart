@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -16,6 +18,7 @@ import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screens/sight_details_screen.dart';
 import 'package:places/ui/widgets/app_modal_bottom_sheet.dart';
+import 'package:sized_context/sized_context.dart';
 
 /// Виджет карточки интересного места.
 class SightCard extends StatefulWidget {
@@ -36,10 +39,22 @@ class _SightCardState extends State<SightCard> {
   TimeOfDay selectedTime = TimeOfDay.now();
 
   Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay pickedTime = await showTimePicker(
-      context: context,
-      initialTime: selectedTime,
-    );
+    TimeOfDay pickedTime;
+
+    if (Platform.isIOS) {
+      pickedTime = await showModalBottomSheet(
+        context: context,
+        builder: (_) {
+          return _CupertinoTimerPicker(selectedTime: selectedTime);
+        },
+      );
+    } else {
+      pickedTime = await showTimePicker(
+        context: context,
+        initialTime: selectedTime,
+      );
+    }
+
     if (pickedTime != null && pickedTime != selectedTime) {
       setState(() {
         selectedTime = pickedTime;
@@ -47,11 +62,42 @@ class _SightCardState extends State<SightCard> {
     }
   }
 
+  double _getAspectRatio() {
+    if (widget.sight.runtimeType == Sight) {
+      if (context.diagonalInches > 7) {
+        if (context.widthPx > 500) {
+          return 21 / 9;
+        } else {
+          return 2;
+        }
+      }
+      if (context.diagonalInches > 5) {
+        if (context.heightPx > 700) {
+          return 3 / 2;
+        } else {
+          return 5 / 3;
+        }
+      } else {
+        return 4 / 3;
+      }
+    } else {
+      if (context.diagonalInches > 7) {
+        return 5 / 2;
+      }
+      if (context.diagonalInches > 5) {
+        // return 3 / 2;
+        return 16 / 9;
+      } else {
+        return 4 / 3;
+      }
+    }
+  }
+
   @override
   // ignore: long-method
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: widget.sight.runtimeType == Sight ? 3 / 2 : 2,
+      aspectRatio: _getAspectRatio(),
       child: ClipRRect(
         borderRadius: allBorderRadius16,
         child: Container(
@@ -212,6 +258,80 @@ class _CardIcon extends StatelessWidget {
   }
 }
 
+class _CupertinoTimerPicker extends StatefulWidget {
+  const _CupertinoTimerPicker({
+    @required this.selectedTime,
+    Key key,
+  }) : super(key: key);
+
+  final TimeOfDay selectedTime;
+
+  @override
+  _CupertinoTimerPickerState createState() => _CupertinoTimerPickerState();
+}
+
+class _CupertinoTimerPickerState extends State<_CupertinoTimerPicker> {
+  Duration _pickedTime;
+
+  @override
+  void initState() {
+    super.initState();
+    _pickedTime = Duration(
+      hours: widget.selectedTime.hour,
+      minutes: widget.selectedTime.minute,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 300,
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CupertinoButton(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  sightCardTimePickerCancelLabel,
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColorLight,
+                  ),
+                ),
+              ),
+              CupertinoButton(
+                onPressed: () => Navigator.pop(
+                  context,
+                  TimeOfDay(
+                    hour: _pickedTime.inHours,
+                    minute: _pickedTime.inMinutes - _pickedTime.inHours * 60,
+                  ),
+                ),
+                child: Text(
+                  sightCardTimePickerSubmitLabel,
+                  style: TextStyle(
+                    color: Theme.of(context).buttonColor,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          CupertinoTimerPicker(
+            initialTimerDuration: _pickedTime,
+            mode: CupertinoTimerPickerMode.hm,
+            onTimerDurationChanged: (newTime) {
+              setState(() {
+                _pickedTime = newTime;
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _CardBottom extends StatelessWidget {
   const _CardBottom({
     @required this.sight,
@@ -235,13 +355,16 @@ class _CardBottom extends StatelessWidget {
           children: [
             Text(
               sight.name,
+              maxLines: 1,
+              softWrap: false,
+              overflow: TextOverflow.fade,
               style: textMedium16.copyWith(
                 height: lineHeight1_25,
                 color: Theme.of(context).primaryColor,
               ),
             ),
             const SizedBox(height: 2.0),
-            _getDescriptionText(sight, Theme.of(context).buttonColor),
+            _getDescriptionText(sight, context, Theme.of(context).buttonColor),
             const SizedBox(height: 2.0),
             _getOpenHoursText(sight),
           ],
@@ -251,7 +374,14 @@ class _CardBottom extends StatelessWidget {
   }
 }
 
-Widget _getDescriptionText<T extends Sight>(T sight, Color descriptionColor) {
+Widget _getDescriptionText<T extends Sight>(
+    T sight, BuildContext context, Color descriptionColor) {
+  int maxLines = 2;
+
+  if (context.diagonalInches > 3) maxLines = 3;
+  if (context.diagonalInches > 4) maxLines = 4;
+  if (context.diagonalInches > 7) maxLines = 5;
+
   switch (sight.runtimeType) {
     case FavoriteSight:
       return Text(
@@ -275,7 +405,7 @@ Widget _getDescriptionText<T extends Sight>(T sight, Color descriptionColor) {
       return AutoSizeText(
         sight.details,
         minFontSize: 14,
-        maxLines: 5,
+        maxLines: maxLines,
         overflow: TextOverflow.ellipsis,
         style: textRegular14.copyWith(
           // height: lineHeight1_3, // don't auto size with line height!

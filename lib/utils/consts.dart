@@ -1,5 +1,6 @@
 /// Набор констант
-const kilometer = 1000,
+const isReleaseMode = false,
+    kilometer = 1000,
     themeKey = 'theme',
     firstRunKey = 'first_run',
     tempImgUrl =

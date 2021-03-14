@@ -13,6 +13,7 @@ import 'package:places/ui/widgets/app_back_button.dart';
 import 'package:places/ui/widgets/app_range_slider/app_range_slider.dart';
 import 'package:places/ui/widgets/app_range_slider/app_range_slider_helper.dart';
 import 'package:places/ui/widgets/subtitle.dart';
+import 'package:sized_context/sized_context.dart';
 
 /// Экран фильтров
 // ignore: use_key_in_widget_constructors
@@ -128,7 +129,8 @@ class _FiltersAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       leading: const AppBackButton(),
       actions: const [
-        Center(
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
           child: _ClearButton(),
         ),
       ],
@@ -144,6 +146,7 @@ class _ClearButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
+      // style: TextButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: )),
       onPressed: () {
         FiltersScreen.of(context).resetAllSettings();
       },
@@ -200,16 +203,29 @@ class _Categories extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 3,
-      shrinkWrap: true,
-      children: [
-        for (var category in FiltersScreen.of(context).getCategories)
-          _Category(
-            category: category,
-          ),
-      ],
-    );
+    return context.diagonalInches < 5
+        ? SizedBox(
+            height: 100.0,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: FiltersScreen.of(context).getCategories.length,
+              itemBuilder: (context, index) {
+                return _Category(
+                  category: FiltersScreen.of(context).getCategories[index],
+                );
+              },
+            ),
+          )
+        : GridView.count(
+            crossAxisCount: 3,
+            shrinkWrap: true,
+            children: [
+              for (var category in FiltersScreen.of(context).getCategories)
+                _Category(
+                  category: category,
+                ),
+            ],
+          );
   }
 }
 
