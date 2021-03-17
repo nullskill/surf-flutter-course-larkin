@@ -5,6 +5,7 @@ import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
+import 'package:sized_context/sized_context.dart';
 
 /// Виджет SearchBar предоставляет поле для поиска
 class SearchBar extends StatelessWidget {
@@ -33,9 +34,9 @@ class SearchBar extends StatelessWidget {
   // ignore: long-method
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
+      padding: EdgeInsets.symmetric(
         vertical: 6.0,
-        horizontal: 16.0,
+        horizontal: context.isLandscape ? 34.0 : 16.0,
       ),
       child: Stack(
         children: [

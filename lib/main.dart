@@ -1,3 +1,4 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/strings/strings.dart';
@@ -7,13 +8,20 @@ import 'package:places/ui/screens/settings_screen.dart';
 import 'package:places/ui/screens/sight_list/sight_list_screen.dart';
 import 'package:places/ui/screens/splash_screen.dart';
 import 'package:places/ui/screens/visiting/visiting_screen.dart';
+import 'package:places/utils/consts.dart';
 import 'package:places/utils/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(App());
+  runApp(
+    DevicePreview(
+      enabled: !isReleaseMode,
+      builder: (_) => App(),
+    ),
+  );
 }
 
+// ignore: use_key_in_widget_constructors
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -23,6 +31,8 @@ class App extends StatelessWidget {
         builder: (context, notifier, child) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
+            locale: DevicePreview.locale(context), // Add the locale here
+            builder: DevicePreview.appBuilder,
             theme: lightTheme,
             darkTheme: darkTheme,
             themeMode: notifier.darkTheme ? ThemeMode.dark : ThemeMode.light,
@@ -40,6 +50,6 @@ final _routesMap = <String, Widget Function(BuildContext)>{
   AppRoutes.start: (_) => SightListScreen(),
   AppRoutes.map: (_) => const Scaffold(),
   AppRoutes.visiting: (_) => VisitingScreen(),
-  AppRoutes.settings: (_) => SettingsScreen(),
+  AppRoutes.settings: (_) => const SettingsScreen(),
   AppRoutes.onboarding: (_) => OnboardingScreen(),
 };

@@ -13,6 +13,7 @@ import 'package:places/ui/widgets/app_back_button.dart';
 import 'package:places/ui/widgets/app_range_slider/app_range_slider.dart';
 import 'package:places/ui/widgets/app_range_slider/app_range_slider_helper.dart';
 import 'package:places/ui/widgets/subtitle.dart';
+import 'package:sized_context/sized_context.dart';
 
 /// Экран фильтров
 // ignore: use_key_in_widget_constructors
@@ -97,7 +98,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
           16.0,
           8.0,
           16.0,
-          MediaQuery.of(context).padding.bottom + 8.0,
+          context.mq.padding.bottom + 8.0,
         ),
         child: ActionButton(
           label: '$filtersActionButtonLabel ($_filteredCardsNumber)',
@@ -128,7 +129,8 @@ class _FiltersAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       leading: const AppBackButton(),
       actions: const [
-        Center(
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
           child: _ClearButton(),
         ),
       ],
@@ -144,9 +146,7 @@ class _ClearButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {
-        FiltersScreen.of(context).resetAllSettings();
-      },
+      onPressed: () => FiltersScreen.of(context).resetAllSettings(),
       child: Text(
         filtersClearButtonLabel,
         style: textMedium16.copyWith(
@@ -169,6 +169,7 @@ class _FiltersBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _horizontalPadding = context.diagonalInches < 5 ? 0.0 : 8.0;
     return ListView(
       padding: const EdgeInsets.symmetric(
         horizontal: 16.0,
@@ -178,14 +179,14 @@ class _FiltersBody extends StatelessWidget {
         const Subtitle(
           subtitle: filtersCategoriesTitle,
         ),
-        const Padding(
+        Padding(
           padding: EdgeInsets.fromLTRB(
-            8.0,
+            _horizontalPadding,
             24.0,
-            8.0,
+            _horizontalPadding,
             56,
           ),
-          child: _Categories(),
+          child: const _Categories(),
         ),
         AppRangeSlider(currentRangeValues: _currentRangeValues),
       ],
@@ -200,16 +201,29 @@ class _Categories extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 3,
-      shrinkWrap: true,
-      children: [
-        for (var category in FiltersScreen.of(context).getCategories)
-          _Category(
-            category: category,
-          ),
-      ],
-    );
+    final _categories = FiltersScreen.of(context).getCategories;
+    return context.diagonalInches < 5
+        ? SizedBox(
+            height: 100.0,
+            width: double.infinity,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: _categories.length,
+              itemBuilder: (context, index) {
+                return _Category(category: _categories[index]);
+              },
+            ),
+          )
+        : GridView.count(
+            crossAxisCount: 3,
+            shrinkWrap: true,
+            children: [
+              for (var category in _categories)
+                _Category(
+                  category: category,
+                ),
+            ],
+          );
   }
 }
 
@@ -231,9 +245,7 @@ class _Category extends StatelessWidget {
               type: MaterialType.transparency,
               child: InkWell(
                 borderRadius: BorderRadius.circular(32.0),
-                onTap: () {
-                  FiltersScreen.of(context).toggleCategory(category);
-                },
+                onTap: () => FiltersScreen.of(context).toggleCategory(category),
                 child: CircleAvatar(
                   radius: 32.0,
                   backgroundColor:
@@ -262,13 +274,11 @@ class _CategoryTick extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
-  static const zero = 0.0;
-
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      bottom: zero,
-      right: zero,
+      bottom: 0.0,
+      right: 0.0,
       child: CircleAvatar(
         radius: 8,
         backgroundColor: Theme.of(context).primaryColor,

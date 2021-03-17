@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
@@ -118,6 +119,7 @@ final lightTheme = ThemeData(
     unselectedItemColor: inactiveColor,
   ),
 
+  //TimePicker
   timePickerTheme: _timePickerTheme(LightMode.greenColor),
 );
 
@@ -235,7 +237,19 @@ final darkTheme = ThemeData(
     unselectedItemColor: secondaryColor2,
   ),
 
+  //TimePicker
   timePickerTheme: _timePickerTheme(DarkMode.greenColor),
+
+  cupertinoOverrideTheme: const CupertinoThemeData(
+    textTheme: CupertinoTextThemeData(
+      dateTimePickerTextStyle: TextStyle(color: whiteColor),
+      pickerTextStyle: TextStyle(
+        color: whiteColor,
+        fontSize: 17.0,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+  ),
 );
 
 /// Класс общих настроек для тем

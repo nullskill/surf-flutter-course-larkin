@@ -4,27 +4,27 @@ import 'package:places/ui/res/assets.dart';
 /// Маппинг типа места и его метаданных
 final sightTypes = <SightType, SightTypeMetadata>{
   SightType.hotel: SightTypeMetadata(
-    name: "Отель",
+    name: 'Отель',
     iconName: AppIcons.hotel,
   ),
   SightType.restaurant: SightTypeMetadata(
-    name: "Ресторан",
+    name: 'Ресторан',
     iconName: AppIcons.restaurant,
   ),
-  SightType.particular_place: SightTypeMetadata(
-    name: "Особое место",
+  SightType.particularPlace: SightTypeMetadata(
+    name: 'Особое место',
     iconName: AppIcons.particularPlace,
   ),
   SightType.park: SightTypeMetadata(
-    name: "Парк",
+    name: 'Парк',
     iconName: AppIcons.park,
   ),
   SightType.museum: SightTypeMetadata(
-    name: "Музей",
+    name: 'Музей',
     iconName: AppIcons.museum,
   ),
   SightType.cafe: SightTypeMetadata(
-    name: "Кафе",
+    name: 'Кафе',
     iconName: AppIcons.cafe,
   ),
 };
