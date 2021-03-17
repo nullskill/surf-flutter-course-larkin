@@ -16,7 +16,7 @@ void main() {
   runApp(
     DevicePreview(
       enabled: !isReleaseMode,
-      builder: (context) => App(),
+      builder: (_) => App(),
     ),
   );
 }

@@ -15,7 +15,7 @@ final mocks = <Sight>[
     details:
         'Комплекс старинных павильонов постройки начала XIX века состоит из галерей, '
         'двух десятков магазинов, образовательных мастерских и необычных кафе.',
-    type: SightType.particular_place,
+    type: SightType.particularPlace,
   ),
   Sight(
     name: 'Центр творческих индустрий «Фабрика»',
@@ -27,7 +27,7 @@ final mocks = <Sight>[
         'театральные подмостки, мастерские кино и музыки, '
         'регулярно и практически без перерыва проходят '
         'бесплатные выставки современных художников.',
-    type: SightType.particular_place,
+    type: SightType.particularPlace,
   ),
   Sight(
     name: 'Смотровая площадка PANORAMA360',
@@ -38,7 +38,7 @@ final mocks = <Sight>[
     details: 'Здесь можно полюбоваться невероятными видами Москвы, '
         'посетить фабрику мороженого или шоколада, '
         'а также заглянуть в другие развлекательные зоны.',
-    type: SightType.particular_place,
+    type: SightType.particularPlace,
   ),
   Sight(
     name: 'Музеи Московского Кремля',

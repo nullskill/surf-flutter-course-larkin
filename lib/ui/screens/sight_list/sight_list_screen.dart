@@ -14,7 +14,7 @@ import 'package:places/ui/screens/sight_search/sight_search_screen.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_floating_action_button.dart';
 import 'package:places/ui/widgets/search_bar.dart';
-import 'package:places/ui/widgets/sight_card.dart';
+import 'package:places/ui/widgets/sight_card/sight_card.dart';
 import 'package:sized_context/sized_context.dart';
 
 /// Экран списка карточек интересных мест.

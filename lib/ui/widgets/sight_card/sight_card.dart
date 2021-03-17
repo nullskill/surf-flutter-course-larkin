@@ -5,11 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
-import 'package:places/domain/base_visiting.dart';
-import 'package:places/domain/favorite_sight.dart';
 import 'package:places/domain/sight.dart';
-import 'package:places/domain/visited_sight.dart';
 import 'package:places/mocks.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/border_radiuses.dart';
@@ -18,7 +14,7 @@ import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screens/sight_details_screen.dart';
 import 'package:places/ui/widgets/app_modal_bottom_sheet.dart';
-import 'package:sized_context/sized_context.dart';
+import 'package:places/ui/widgets/sight_card/sight_card_helper.dart';
 
 /// Виджет карточки интересного места.
 class SightCard extends StatefulWidget {
@@ -36,7 +32,15 @@ class SightCard extends StatefulWidget {
 }
 
 class _SightCardState extends State<SightCard> {
+  SightCardHelper helper;
+
   TimeOfDay selectedTime = TimeOfDay.now();
+
+  @override
+  void initState() {
+    super.initState();
+    helper = SightCardHelper(sight: widget.sight);
+  }
 
   Future<void> _selectTime(BuildContext context) async {
     TimeOfDay pickedTime;
@@ -62,42 +66,11 @@ class _SightCardState extends State<SightCard> {
     }
   }
 
-  double _getAspectRatio() {
-    if (widget.sight.runtimeType == Sight) {
-      if (context.diagonalInches > 7) {
-        if (context.widthPx > 500) {
-          return 21 / 9;
-        } else {
-          return 2;
-        }
-      }
-      if (context.diagonalInches > 5) {
-        if (context.heightPx > 700) {
-          return 3 / 2;
-        } else {
-          return 5 / 3;
-        }
-      } else {
-        return 4 / 3;
-      }
-    } else {
-      if (context.diagonalInches > 7) {
-        return 5 / 2;
-      }
-      if (context.diagonalInches > 5) {
-        // return 3 / 2;
-        return 16 / 9;
-      } else {
-        return 4 / 3;
-      }
-    }
-  }
-
   @override
   // ignore: long-method
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: _getAspectRatio(),
+      aspectRatio: helper.getAspectRatio(context),
       child: ClipRRect(
         borderRadius: allBorderRadius16,
         child: Container(
@@ -107,7 +80,7 @@ class _SightCardState extends State<SightCard> {
               Column(
                 children: [
                   _CardTop(sight: widget.sight),
-                  _CardBottom(sight: widget.sight),
+                  _CardBottom(sight: widget.sight, helper: helper),
                 ],
               ),
               Positioned.fill(
@@ -126,10 +99,9 @@ class _SightCardState extends State<SightCard> {
                 top: 16,
                 right: 16,
                 child: _CardIcon(
-                  iconName: widget.sight.runtimeType == Sight
-                      ? AppIcons.heart
-                      : AppIcons.close,
-                  onTap: widget.sight.runtimeType == Sight
+                  iconName:
+                      helper.isMainListCard ? AppIcons.heart : AppIcons.close,
+                  onTap: helper.isMainListCard
                       ? () {
                           // TODO: Add callback body
                         }
@@ -137,12 +109,12 @@ class _SightCardState extends State<SightCard> {
                 ),
               ),
               //Показываем различные иконки, в зависимости от типа карточки
-              [FavoriteSight, VisitedSight].contains(widget.sight.runtimeType)
+              helper.isVisitingCard
                   ? Positioned(
                       top: 16,
                       right: 56,
                       child: _CardIcon(
-                        iconName: widget.sight.runtimeType == FavoriteSight
+                        iconName: helper.isFavoriteCard
                             ? AppIcons.calendar
                             : AppIcons.share,
                         onTap: () => _selectTime(context),
@@ -335,13 +307,16 @@ class _CupertinoTimerPickerState extends State<_CupertinoTimerPicker> {
 class _CardBottom extends StatelessWidget {
   const _CardBottom({
     @required this.sight,
+    @required this.helper,
     Key key,
   }) : super(key: key);
 
   final Sight sight;
+  final SightCardHelper helper;
 
   @override
   Widget build(BuildContext context) {
+    final openHours = helper.getOpenHours();
     return Padding(
       padding: const EdgeInsets.only(
         top: 16.0,
@@ -364,9 +339,17 @@ class _CardBottom extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 2.0),
-            _getDescriptionText(sight, context, Theme.of(context).buttonColor),
+            _getDescriptionText(context, sight, helper),
             const SizedBox(height: 2.0),
-            _getOpenHoursText(sight),
+            openHours == ''
+                ? const SizedBox.shrink()
+                : Text(
+                    openHours,
+                    style: textRegular14.copyWith(
+                      height: lineHeight1_3,
+                      color: secondaryColor2,
+                    ),
+                  ),
           ],
         ),
       ),
@@ -375,60 +358,31 @@ class _CardBottom extends StatelessWidget {
 }
 
 Widget _getDescriptionText<T extends Sight>(
-    T sight, BuildContext context, Color descriptionColor) {
-  int maxLines = 2;
+  BuildContext context,
+  T sight,
+  SightCardHelper helper,
+) {
+  final int maxLines = helper.getMaxLines(context);
 
-  if (context.diagonalInches > 3) maxLines = 3;
-  if (context.diagonalInches > 4) maxLines = 4;
-  if (context.diagonalInches > 7) maxLines = 5;
-
-  switch (sight.runtimeType) {
-    case FavoriteSight:
-      return Text(
-        '$sightCardPlanned ${DateFormat.yMMMd().format((sight as FavoriteSight).plannedDate)}',
-        style: textRegular14.copyWith(
-          height: lineHeight1_3,
-          color: descriptionColor,
-        ),
-      );
-      break;
-    case VisitedSight:
-      return Text(
-        '$sightCardVisited ${DateFormat.yMMMd().format((sight as VisitedSight).visitedDate)}',
-        style: textRegular14.copyWith(
-          height: lineHeight1_3,
-          color: secondaryColor2,
-        ),
-      );
-      break;
-    default:
-      return AutoSizeText(
-        sight.details,
-        minFontSize: 14,
-        maxLines: maxLines,
-        overflow: TextOverflow.ellipsis,
-        style: textRegular14.copyWith(
-          // height: lineHeight1_3, // don't auto size with line height!
-          color: secondaryColor2,
-        ),
-      );
+  if (helper.isVisitingCard) {
+    return Text(
+      helper.getVisitingDate(),
+      style: textRegular14.copyWith(
+        height: lineHeight1_3,
+        color: helper.isFavoriteCard
+            ? Theme.of(context).buttonColor
+            : secondaryColor2,
+      ),
+    );
   }
-}
-
-Widget _getOpenHoursText<T extends Sight>(T sight) {
-  switch (sight.runtimeType) {
-    case FavoriteSight:
-    case VisitedSight:
-      final vSight = sight as VisitingSight;
-      return Text(
-        '$sightDetailsOpenHours ${DateFormat.Hm().format(vSight.openHour)}',
-        style: textRegular14.copyWith(
-          height: lineHeight1_3,
-          color: secondaryColor2,
-        ),
-      );
-      break;
-    default:
-      return const Text('');
-  }
+  return AutoSizeText(
+    sight.details,
+    minFontSize: 14,
+    maxLines: maxLines,
+    overflow: TextOverflow.ellipsis,
+    style: textRegular14.copyWith(
+      // height: lineHeight1_3, // don't auto size with line height!
+      color: secondaryColor2,
+    ),
+  );
 }

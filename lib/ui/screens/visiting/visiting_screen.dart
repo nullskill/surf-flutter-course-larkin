@@ -12,7 +12,7 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_dismissible.dart';
 import 'package:places/ui/widgets/message_box.dart';
-import 'package:places/ui/widgets/sight_card.dart';
+import 'package:places/ui/widgets/sight_card/sight_card.dart';
 
 /// Экран избранных/посещенных интересных мест
 // ignore: use_key_in_widget_constructors
@@ -31,9 +31,9 @@ class _VisitingScreenState extends State<VisitingScreen> {
   List get getVisitedMocks => _visitedMocks;
 
   /// При удалении карточки из списка
-  void onRemoveCard<T extends Sight>(T sight, {bool hasVisited}) {
+  void onRemoveCard<T extends Sight>(T sight) {
     setState(() {
-      if (hasVisited) {
+      if (sight.runtimeType is VisitedSight) {
         _visitedMocks.remove(sight);
       } else {
         _favoriteMocks.remove(sight);
@@ -56,13 +56,9 @@ class _VisitingScreenState extends State<VisitingScreen> {
   }
 
   /// Меняет индекс карточки [sight] в списке на [index]
-  void swapCards<T extends Sight>(
-    T sight, {
-    bool hasVisited,
-    int index,
-  }) {
+  void swapCards<T extends Sight>(T sight, int index) {
     setState(() {
-      if (hasVisited) {
+      if (sight.runtimeType is VisitedSight) {
         _visitedMocks
           ..remove(sight)
           ..insert(index, (sight as VisitedSight));
@@ -186,10 +182,10 @@ class _VisitingScreenList<T extends Sight> extends StatelessWidget {
   final List sights;
   final bool hasVisited;
   final bool isDrag;
-  final Function onDragCardStarted;
-  final Function onDragCardEnd;
-  final Function onRemoveCard;
-  final Function swapCards;
+  final void Function() onDragCardStarted;
+  final void Function() onDragCardEnd;
+  final void Function(Sight) onRemoveCard;
+  final void Function(Sight, int) swapCards;
 
   @override
   // ignore: long-method
@@ -246,15 +242,15 @@ class _DragTarget extends StatelessWidget {
 
   final int index;
   final bool hasVisited;
-  final Function onRemoveCard;
-  final Function swapCards;
+  final void Function(Sight) onRemoveCard;
+  final void Function(Sight, int) swapCards;
 
   @override
   Widget build(BuildContext context) {
     return DragTarget<FavoriteSight>(
       onAccept: (data) {
         // ignore: prefer-trailing-comma
-        swapCards(hasVisited, data, index);
+        swapCards(data, index);
       },
       builder: (
         context,
@@ -292,9 +288,9 @@ class _Draggable<T extends Sight> extends StatelessWidget {
   final T sight;
   final bool hasVisited;
   final bool isDrag;
-  final Function onDragCardStarted;
-  final Function onDragCardEnd;
-  final Function onRemoveCard;
+  final void Function() onDragCardStarted;
+  final void Function() onDragCardEnd;
+  final void Function(Sight) onRemoveCard;
 
   @override
   Widget build(BuildContext context) {
@@ -337,26 +333,26 @@ class _DismissibleCard<T extends Sight> extends StatelessWidget {
 
   final T sight;
   final bool hasVisited;
-  final Function onRemoveCard;
+  final void Function(Sight) onRemoveCard;
 
   @override
   Widget build(BuildContext context) {
     return AppDismissible(
       key: ValueKey<String>(sight.name),
       direction: AppDismissDirection.endToStart,
-      onDismissed: (_) => onRemoveCard(hasVisited, sight),
-      background: const _BackgroundCard(),
+      onDismissed: (_) => onRemoveCard(sight),
+      background: const _CardBackground(),
       child: SightCard(
         key: ValueKey<String>(sight.name),
         sight: sight,
-        onRemoveCard: () => onRemoveCard(hasVisited, sight),
+        onRemoveCard: () => onRemoveCard(sight),
       ),
     );
   }
 }
 
-class _BackgroundCard extends StatelessWidget {
-  const _BackgroundCard({
+class _CardBackground extends StatelessWidget {
+  const _CardBackground({
     Key key,
   }) : super(key: key);
 
