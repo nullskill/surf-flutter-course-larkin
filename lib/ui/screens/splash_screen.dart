@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/colors.dart';
-import 'package:places/utils/app_init.dart';
+import 'package:places/util/app_init.dart';
 
 /// Сплеш-экран
 // ignore: use_key_in_widget_constructors

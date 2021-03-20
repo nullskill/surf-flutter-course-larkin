@@ -8,8 +8,8 @@ import 'package:places/ui/screens/settings_screen.dart';
 import 'package:places/ui/screens/sight_list/sight_list_screen.dart';
 import 'package:places/ui/screens/splash_screen.dart';
 import 'package:places/ui/screens/visiting/visiting_screen.dart';
-import 'package:places/utils/consts.dart';
-import 'package:places/utils/theme_provider.dart';
+import 'package:places/util/consts.dart';
+import 'package:places/util/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() {

@@ -8,7 +8,7 @@ import 'package:places/mocks.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/screens/select_category_screen.dart';
 import 'package:places/ui/widgets/select_picture_dialog.dart';
-import 'package:places/utils/consts.dart';
+import 'package:places/util/consts.dart';
 
 /// Перечисление координат
 enum Coordinate { lat, lng }

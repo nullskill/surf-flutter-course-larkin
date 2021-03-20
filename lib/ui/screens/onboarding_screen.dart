@@ -7,7 +7,7 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/widgets/action_button.dart';
-import 'package:places/utils/app_init.dart';
+import 'package:places/util/app_init.dart';
 
 /// Экран, обучающий работе с приложением
 // ignore: use_key_in_widget_constructors

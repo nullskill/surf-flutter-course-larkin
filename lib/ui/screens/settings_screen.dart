@@ -8,7 +8,7 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/widgets/app_back_button.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/settings_item.dart';
-import 'package:places/utils/theme_provider.dart';
+import 'package:places/util/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 /// Экран настроек

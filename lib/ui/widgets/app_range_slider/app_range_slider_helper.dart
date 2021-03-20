@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:places/utils/consts.dart';
+import 'package:places/util/consts.dart';
 
 /// Вспомогательный класс для виджета AppRangeSlider
 class AppRangeSliderHelper {

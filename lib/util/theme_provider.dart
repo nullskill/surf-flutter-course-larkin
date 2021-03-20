@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:places/utils/consts.dart';
+import 'package:places/util/consts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Класс провайдера выбранной темы

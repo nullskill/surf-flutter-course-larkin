@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:places/domain/sight.dart';
-import 'package:places/utils/consts.dart';
+import 'package:places/util/consts.dart';
 
 /// Вспомогательный класс для экрана фильтров
 class FiltersScreenHelper {
