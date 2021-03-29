@@ -222,7 +222,6 @@ class _BottomNavigationBar extends StatelessWidget {
         child: ActionButton(
           label: startActionButtonLabel,
           onPressed: !isLastFrame ? null : () => _startApp(context),
-          // isDisabled: false,
         ),
       ),
     );

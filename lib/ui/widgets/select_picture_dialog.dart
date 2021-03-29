@@ -9,8 +9,9 @@ import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/ui/widgets/settings_item.dart';
 
 /// Диалог выбора картинки
-// ignore: use_key_in_widget_constructors
 class SelectPictureDialog extends StatelessWidget {
+  const SelectPictureDialog({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Align(

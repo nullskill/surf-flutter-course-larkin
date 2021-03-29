@@ -37,6 +37,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
     );
   }
 
+  /// Установка выбранного диапазона радиуса
+  /// и фильтрация интересных мест
   void setRangeValues(RangeValues newValues) {
     setState(() {
       rangeValues = newValues;
@@ -46,17 +48,21 @@ class _FiltersScreenState extends State<FiltersScreen> {
     });
   }
 
+  /// Сброс всех настроек
   void resetAllSettings() => setState(() {
         searchInt.resetCategories();
         resetRangeValues();
       });
 
+  /// Изменение признака выбранности категории
+  /// и фильтрация интересных мест
   void toggleCategory(Category category) => setState(() {
         category.toggle();
         placeInt.getSights();
         searchInt.filterSights();
       });
 
+  /// Сброс выбранного диапазона радиуса
   void resetRangeValues() {
     rangeValues = const RangeValues(
       SearchInteractor.minRadius,

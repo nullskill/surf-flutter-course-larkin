@@ -74,7 +74,6 @@ class _SelectCategoryScreenState extends State<SelectCategoryScreen> {
           label: selectCategoryActionButtonLabel,
           isDisabled: selectedCategory == null,
           onPressed: () => Navigator.pop(context, selectedCategory),
-          // isDisabled: false,
         ),
       ),
     );

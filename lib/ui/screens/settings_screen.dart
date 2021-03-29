@@ -86,8 +86,7 @@ class _SettingsBody extends StatelessWidget {
               },
               trailing: GestureDetector(
                 onTap: () {
-                  // ignore: avoid_print
-                  print('Show tutorial info pressed');
+                  // TODO: Make tutorial info show
                 },
                 child: SvgPicture.asset(
                   AppIcons.info,

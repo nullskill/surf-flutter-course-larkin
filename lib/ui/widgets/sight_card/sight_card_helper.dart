@@ -20,6 +20,7 @@ class SightCardHelper {
 
   bool get isFavoriteCard => sight.runtimeType == FavoriteSight;
 
+  /// Получить соотношение ширины и высоты карточки
   double getAspectRatio(BuildContext context) {
     if (sight.runtimeType == Sight) {
       if (context.diagonalInches > 7) {
@@ -48,6 +49,7 @@ class SightCardHelper {
     }
   }
 
+  /// Получить максимальное число строк описания
   int getMaxLines(BuildContext context) {
     if (context.diagonalInches > 7) {
       return 5;
@@ -61,6 +63,7 @@ class SightCardHelper {
     return 2;
   }
 
+  /// Получить дату посещения
   String getVisitingDate() {
     if (isFavoriteCard) {
       return '$sightCardPlanned ${DateFormat.yMMMd().format((sight as FavoriteSight).plannedDate)}';
@@ -68,6 +71,7 @@ class SightCardHelper {
     return '$sightCardVisited ${DateFormat.yMMMd().format((sight as VisitedSight).visitedDate)}';
   }
 
+  /// Получить часы открытия
   String getOpenHours() {
     if (isVisitingCard) {
       return '$sightDetailsOpenHours ${DateFormat.Hm().format((sight as VisitingSight).openHour)}';

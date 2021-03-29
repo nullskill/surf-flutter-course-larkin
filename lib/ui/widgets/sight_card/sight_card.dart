@@ -46,12 +46,14 @@ class _SightCardState extends State<SightCard> {
     helper = SightCardHelper(sight: widget.sight);
   }
 
+  /// Добавление в избранное
   void addToFavorites() {
     setState(() {
       widget.addToFavorites();
     });
   }
 
+  /// Показать модальный bottom sheet с детальной инфой
   Future<void> showSightDetails(BuildContext context) async {
     final Sight sight = await placeInt.getSightDetails(widget.sight.id);
     await showAppModalBottomSheet<SightDetailsScreen>(
@@ -64,6 +66,7 @@ class _SightCardState extends State<SightCard> {
     );
   }
 
+  /// Диалог выбора времени
   Future<void> selectTime(BuildContext context) async {
     TimeOfDay pickedTime;
 

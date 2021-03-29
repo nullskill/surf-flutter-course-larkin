@@ -333,8 +333,7 @@ class _AddSightBody extends StatelessWidget {
                 Link(
                   label: addSightSelectOnMapLabel,
                   onTap: () {
-                    // ignore: avoid_print
-                    print('Select on map tapped');
+                    // TODO: Make select on map
                   },
                 ),
                 _AddSightTextField(

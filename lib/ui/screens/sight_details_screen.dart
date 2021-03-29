@@ -201,8 +201,7 @@ class _SightDetailsBody extends StatelessWidget {
               iconName: AppIcons.go,
               label: sightDetailsActionButtonLabel,
               onPressed: () {
-                // ignore: avoid_print
-                print('ActionButton pressed');
+                // TODO: Make ActionButton callback
               },
             ),
             const SizedBox(height: 24.0),
