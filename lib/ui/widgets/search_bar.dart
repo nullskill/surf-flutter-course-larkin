@@ -31,7 +31,6 @@ class SearchBar extends StatelessWidget {
   final TextEditingController searchController;
 
   @override
-  // ignore: long-method
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(

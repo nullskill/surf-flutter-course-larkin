@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/domain/favorite_sight.dart';
+import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/domain/sight.dart';
-import 'package:places/domain/visited_sight.dart';
-import 'package:places/mocks.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
@@ -15,58 +13,20 @@ import 'package:places/ui/widgets/message_box.dart';
 import 'package:places/ui/widgets/sight_card/sight_card.dart';
 
 /// Экран избранных/посещенных интересных мест
-// ignore: use_key_in_widget_constructors
 class VisitingScreen extends StatefulWidget {
+  const VisitingScreen({Key key}) : super(key: key);
+
   @override
   _VisitingScreenState createState() => _VisitingScreenState();
 }
 
 class _VisitingScreenState extends State<VisitingScreen> {
-  final List<FavoriteSight> _favoriteMocks = favoriteMocks;
-  final List<VisitedSight> _visitedMocks = visitedMocks;
-  bool isDrag = false;
+  final PlaceInteractor placeInt = PlaceInteractor();
 
-  List get getFavoriteMocks => _favoriteMocks;
-
-  List get getVisitedMocks => _visitedMocks;
-
-  /// При удалении карточки из списка
-  void onRemoveCard<T extends Sight>(T sight) {
+  /// Удаляет карточку из списка избранных/посещенных мест
+  void removeFromFavorites<T extends Sight>(T sight) {
     setState(() {
-      if (sight.runtimeType is VisitedSight) {
-        _visitedMocks.remove(sight);
-      } else {
-        _favoriteMocks.remove(sight);
-      }
-    });
-  }
-
-  /// При начале перетаскивания карточки
-  void onDragCardStarted() {
-    setState(() {
-      isDrag = true;
-    });
-  }
-
-  /// При окончании перетаскивания карточки
-  void onDragCardEnd() {
-    setState(() {
-      isDrag = false;
-    });
-  }
-
-  /// Меняет индекс карточки [sight] в списке на [index]
-  void swapCards<T extends Sight>(T sight, int index) {
-    setState(() {
-      if (sight.runtimeType is VisitedSight) {
-        _visitedMocks
-          ..remove(sight)
-          ..insert(index, (sight as VisitedSight));
-      } else {
-        _favoriteMocks
-          ..remove(sight)
-          ..insert(index, (sight as FavoriteSight));
-      }
+      placeInt.removeFromFavorites(sight);
     });
   }
 
@@ -79,21 +39,13 @@ class _VisitingScreenState extends State<VisitingScreen> {
         body: TabBarView(
           children: [
             _VisitingScreenList(
-              sights: getFavoriteMocks,
-              isDrag: isDrag,
-              onDragCardStarted: onDragCardStarted,
-              onDragCardEnd: onDragCardEnd,
-              onRemoveCard: onRemoveCard,
-              swapCards: swapCards,
+              sights: placeInt.favoriteSights,
+              onRemoveCard: removeFromFavorites,
             ),
             _VisitingScreenList(
-              sights: getVisitedMocks,
-              isDrag: isDrag,
+              sights: placeInt.visitedSights,
               hasVisited: true,
-              onDragCardStarted: onDragCardStarted,
-              onDragCardEnd: onDragCardEnd,
-              onRemoveCard: onRemoveCard,
-              swapCards: swapCards,
+              onRemoveCard: removeFromFavorites,
             ),
           ],
         ),
@@ -170,25 +122,16 @@ class _AppBarBottom extends StatelessWidget implements PreferredSizeWidget {
 class _VisitingScreenList<T extends Sight> extends StatelessWidget {
   const _VisitingScreenList({
     @required this.sights,
-    @required this.onDragCardStarted,
-    @required this.onDragCardEnd,
     @required this.onRemoveCard,
-    @required this.swapCards,
     this.hasVisited = false,
-    this.isDrag = false,
     Key key,
   }) : super(key: key);
 
-  final List sights;
+  final List<T> sights;
   final bool hasVisited;
-  final bool isDrag;
-  final void Function() onDragCardStarted;
-  final void Function() onDragCardEnd;
   final void Function(Sight) onRemoveCard;
-  final void Function(Sight, int) swapCards;
 
   @override
-  // ignore: long-method
   Widget build(BuildContext context) {
     return sights.isEmpty
         ? MessageBox(
@@ -198,128 +141,41 @@ class _VisitingScreenList<T extends Sight> extends StatelessWidget {
                 ? visitingVisitedEmptyListText
                 : visitingWishToVisitEmptyListText,
           )
-        : ListView(
+        : ReorderableListView.builder(
             padding: const EdgeInsets.all(16.0),
-            children: [
-              _DragTarget(
-                index: 0,
+            proxyDecorator: proxyDecorator,
+            onReorder: onReorder,
+            itemCount: sights.length,
+            itemBuilder: (_, index) {
+              final T sight = sights[index];
+              return _DismissibleCard<T>(
+                key: ValueKey<int>(sight.id),
+                sight: sight,
                 hasVisited: hasVisited,
                 onRemoveCard: onRemoveCard,
-                swapCards: swapCards,
-              ),
-              for (var sight in sights) ...[
-                _Draggable<T>(
-                  sight: sight as T,
-                  hasVisited: hasVisited,
-                  isDrag: isDrag,
-                  onDragCardStarted: onDragCardStarted,
-                  onDragCardEnd: onDragCardEnd,
-                  onRemoveCard: onRemoveCard,
-                ),
-                _DragTarget(
-                  index: sights.indexOf(sight),
-                  hasVisited: hasVisited,
-                  onRemoveCard: onRemoveCard,
-                  swapCards: swapCards,
-                ),
-                // SizedBox(
-                //   height: 16.0,
-                // ),
-              ],
-            ],
+              );
+            },
           );
   }
-}
 
-class _DragTarget extends StatelessWidget {
-  const _DragTarget({
-    @required this.index,
-    @required this.hasVisited,
-    @required this.onRemoveCard,
-    @required this.swapCards,
-    Key key,
-  }) : super(key: key);
-
-  final int index;
-  final bool hasVisited;
-  final void Function(Sight) onRemoveCard;
-  final void Function(Sight, int) swapCards;
-
-  @override
-  Widget build(BuildContext context) {
-    return DragTarget<FavoriteSight>(
-      onAccept: (data) {
-        // ignore: prefer-trailing-comma
-        swapCards(data, index);
-      },
-      builder: (
-        context,
-        candidateData,
-        rejectedData,
-      ) {
-        if (candidateData.isEmpty) {
-          return const SizedBox(
-            height: 16,
-            width: double.infinity,
-          );
-        }
-
-        return _DismissibleCard(
-          sight: candidateData.first,
-          hasVisited: hasVisited,
-          onRemoveCard: onRemoveCard,
-        );
-      },
-    );
-  }
-}
-
-class _Draggable<T extends Sight> extends StatelessWidget {
-  const _Draggable({
-    @required this.sight,
-    @required this.hasVisited,
-    @required this.isDrag,
-    @required this.onDragCardStarted,
-    @required this.onDragCardEnd,
-    @required this.onRemoveCard,
-    Key key,
-  }) : super(key: key);
-
-  final T sight;
-  final bool hasVisited;
-  final bool isDrag;
-  final void Function() onDragCardStarted;
-  final void Function() onDragCardEnd;
-  final void Function(Sight) onRemoveCard;
-
-  @override
-  Widget build(BuildContext context) {
-    return LongPressDraggable<T>(
-      data: sight,
-      axis: Axis.vertical,
-      childWhenDragging: const SizedBox.shrink(),
-      feedback: Container(
-        height: 100,
-        width: MediaQuery.of(context).size.width - 32.0,
-        decoration: BoxDecoration(
-          color: placeholderColor,
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: NetworkImage(sight.url),
-          ),
-          borderRadius: allBorderRadius16,
+  Widget proxyDecorator(Widget child, int index, Animation animation) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24.0),
+      child: Material(
+        borderRadius: allBorderRadius16,
+        elevation: 6.0,
+        child: SightCard(
+          sight: sights[index],
         ),
       ),
-      onDragStarted: () => onDragCardStarted,
-      onDragEnd: (_) => onDragCardEnd,
-      child: isDrag
-          ? const SizedBox.shrink()
-          : _DismissibleCard(
-              sight: sight,
-              hasVisited: hasVisited,
-              onRemoveCard: onRemoveCard,
-            ),
     );
+  }
+
+  void onReorder(int oldIndex, int newIndex) {
+    final int index = newIndex > oldIndex ? newIndex - 1 : newIndex;
+    final swappingCard = sights.removeAt(oldIndex);
+
+    sights.insert(index, swappingCard);
   }
 }
 
@@ -338,14 +194,16 @@ class _DismissibleCard<T extends Sight> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppDismissible(
-      key: ValueKey<String>(sight.name),
+      key: key,
       direction: AppDismissDirection.endToStart,
       onDismissed: (_) => onRemoveCard(sight),
       background: const _CardBackground(),
-      child: SightCard(
-        key: ValueKey<String>(sight.name),
-        sight: sight,
-        onRemoveCard: () => onRemoveCard(sight),
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 24.0),
+        child: SightCard(
+          sight: sight,
+          onRemoveCard: () => onRemoveCard(sight),
+        ),
       ),
     );
   }
@@ -358,30 +216,33 @@ class _CardBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: allBorderRadius16,
-      child: Container(
-        color: Theme.of(context).errorColor,
-        child: Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SvgPicture.asset(
-                  AppIcons.bucket,
-                  color: whiteColor,
-                ),
-                const SizedBox(height: 10.0),
-                Text(
-                  visitingDeleteCardLabel,
-                  style: textMedium12.copyWith(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24.0),
+      child: ClipRRect(
+        borderRadius: allBorderRadius16,
+        child: Container(
+          color: Theme.of(context).errorColor,
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SvgPicture.asset(
+                    AppIcons.bucket,
                     color: whiteColor,
-                    height: lineHeight1_3,
                   ),
-                ),
-              ],
+                  const SizedBox(height: 10.0),
+                  Text(
+                    visitingDeleteCardLabel,
+                    style: textMedium12.copyWith(
+                      color: whiteColor,
+                      height: lineHeight1_3,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

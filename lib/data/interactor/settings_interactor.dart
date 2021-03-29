@@ -3,8 +3,8 @@ import 'package:places/util/consts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Класс провайдера выбранной темы
-class ThemeNotifier extends ChangeNotifier {
-  ThemeNotifier() {
+class SettingsInteractor extends ChangeNotifier {
+  SettingsInteractor() {
     _darkTheme = true;
     _loadFromPrefs();
   }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/bloc/bloc_provider.dart';
+import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/domain/sight.dart';
-import 'package:places/mocks.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
@@ -13,20 +14,23 @@ import 'package:places/ui/screens/filters/filters_screen.dart';
 import 'package:places/ui/screens/sight_search/sight_search_screen.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_floating_action_button.dart';
+import 'package:places/ui/widgets/circular_progress.dart';
 import 'package:places/ui/widgets/search_bar.dart';
 import 'package:places/ui/widgets/sight_card/sight_card.dart';
 import 'package:sized_context/sized_context.dart';
 
 /// Экран списка карточек интересных мест.
-// ignore: use_key_in_widget_constructors
 class SightListScreen extends StatefulWidget {
+  const SightListScreen({Key key}) : super(key: key);
+
   @override
   _SightListScreenState createState() => _SightListScreenState();
 }
 
 class _SightListScreenState extends State<SightListScreen> {
-  final controller = ScrollController();
-  List<Sight> sights = mocks;
+  final ScrollController controller = ScrollController();
+  final PlaceInteractor placeInt = PlaceInteractor();
+  final SearchInteractor searchInt = SearchInteractor();
   bool isEmpty = false;
 
   // expanded height = 196 + status bar height
@@ -36,7 +40,14 @@ class _SightListScreenState extends State<SightListScreen> {
   // global constant kToolbarHeight from material + status bar height
   double get minHeight => kToolbarHeight + context.mq.padding.top;
 
-  /// Проверяет смещение между maxHeight и minHeight
+  @override
+  void dispose() {
+    controller.dispose();
+
+    super.dispose();
+  }
+
+  /// Проверяет смещение между [maxHeight] и [minHeight]
   /// и создает microtask для анимации подскроливания
   /// после завершения билда
   void snapAppBar() {
@@ -56,18 +67,11 @@ class _SightListScreenState extends State<SightListScreen> {
     }
   }
 
-  @override
-  void dispose() {
-    controller.dispose();
-
-    super.dispose();
-  }
-
   /// При тапе на поле SearchBar переход на SightSearchScreen
   void onTapSearchBar() {
     Navigator.of(context).push(
       MaterialPageRoute<SightSearchScreen>(
-        builder: (context) => SightSearchScreen(),
+        builder: (context) => const SightSearchScreen(),
       ),
     );
   }
@@ -76,12 +80,10 @@ class _SightListScreenState extends State<SightListScreen> {
   Future<void> onFilterSearchBar() async {
     await Navigator.of(context).push(
       MaterialPageRoute<FiltersScreen>(
-        builder: (context) => FiltersScreen(),
+        builder: (context) => const FiltersScreen(),
       ),
     );
-    setState(() {
-      sights = getFilteredMocks();
-    });
+    setState(() {});
   }
 
   /// При нажатии FAB кнопки "Новое место" переход на AddSightScreen
@@ -123,7 +125,7 @@ class _SightListScreenState extends State<SightListScreen> {
               ),
               expandedHeight: maxHeight - context.mq.padding.top,
             ),
-            _CardColumn(sights: sights),
+            _CardColumn(placeInt: placeInt),
           ],
         ),
       ),
@@ -159,7 +161,6 @@ class _Header extends StatelessWidget {
   final void Function() onFilter;
 
   @override
-  // ignore: long-method
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -257,52 +258,113 @@ class _Header extends StatelessWidget {
 
 class _CardColumn extends StatelessWidget {
   const _CardColumn({
-    @required this.sights,
+    @required this.placeInt,
     Key key,
   }) : super(key: key);
 
-  final List<Sight> sights;
+  final PlaceInteractor placeInt;
 
   @override
   Widget build(BuildContext context) {
     final _topPadding = context.isLandscape ? 14.0 : 0.0;
     final _restPadding = context.isLandscape ? 34.0 : 16.0;
-    return SliverPadding(
-      padding: EdgeInsets.fromLTRB(
-        _restPadding,
-        _topPadding,
-        _restPadding,
-        _restPadding,
-      ),
-      sliver: context.isLandscape
-          ? SliverGrid(
-              delegate: SliverChildBuilderDelegate(
-                (_, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: SightCard(sight: sights[index]),
-                  );
-                },
-                childCount: sights.length,
+    return FutureBuilder(
+      future: placeInt.getSights(),
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+          case ConnectionState.waiting:
+          case ConnectionState.active:
+            return SliverFillRemaining(
+              child: FractionallySizedBox(
+                alignment: Alignment.topCenter,
+                heightFactor: .8,
+                child: Center(
+                  child: CircularProgress(
+                    size: 40.0,
+                    primaryColor: secondaryColor2,
+                    secondaryColor: Theme.of(context).backgroundColor,
+                  ),
+                ),
               ),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 36.0,
-                mainAxisSpacing: 16.0,
-                childAspectRatio: context.diagonalInches > 7 ? 1.7 : 1.0,
+            );
+          case ConnectionState.done:
+          default:
+            return SliverPadding(
+              padding: EdgeInsets.fromLTRB(
+                _restPadding,
+                _topPadding,
+                _restPadding,
+                _restPadding,
               ),
-            )
-          : SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 24.0),
-                    child: SightCard(sight: sights[index]),
-                  );
-                },
-                childCount: sights.length,
-              ),
+              sliver: context.isLandscape
+                  ? _SliverGrid(placeInt: placeInt)
+                  : _SliverList(placeInt: placeInt),
+            );
+        }
+      },
+    );
+  }
+}
+
+class _SliverGrid extends StatelessWidget {
+  const _SliverGrid({
+    @required this.placeInt,
+    Key key,
+  }) : super(key: key);
+
+  final PlaceInteractor placeInt;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverGrid(
+      delegate: SliverChildBuilderDelegate(
+        (_, index) {
+          final Sight sight = placeInt.sights[index];
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 16.0),
+            child: SightCard(
+              sight: sight,
+              addToFavorites: () => placeInt.toggleFavoriteSight(sight),
             ),
+          );
+        },
+        childCount: placeInt.sights.length,
+      ),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 36.0,
+        mainAxisSpacing: 16.0,
+        childAspectRatio: context.diagonalInches > 7 ? 1.7 : 1.0,
+      ),
+    );
+  }
+}
+
+class _SliverList extends StatelessWidget {
+  const _SliverList({
+    @required this.placeInt,
+    Key key,
+  }) : super(key: key);
+
+  final PlaceInteractor placeInt;
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (_, index) {
+          final Sight sight = placeInt.sights[index];
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 24.0),
+            child: SightCard(
+              sight: sight,
+              addToFavorites: () => placeInt.toggleFavoriteSight(sight),
+            ),
+          );
+        },
+        childCount: placeInt.sights.length,
+      ),
     );
   }
 }

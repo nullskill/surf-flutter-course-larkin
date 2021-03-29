@@ -11,7 +11,7 @@ final sightTypes = <SightType, SightTypeMetadata>{
     name: 'Ресторан',
     iconName: AppIcons.restaurant,
   ),
-  SightType.particularPlace: SightTypeMetadata(
+  SightType.other: SightTypeMetadata(
     name: 'Особое место',
     iconName: AppIcons.particularPlace,
   ),
@@ -26,5 +26,17 @@ final sightTypes = <SightType, SightTypeMetadata>{
   SightType.cafe: SightTypeMetadata(
     name: 'Кафе',
     iconName: AppIcons.cafe,
+  ),
+  SightType.temple: SightTypeMetadata(
+    name: 'Храм',
+    iconName: AppIcons.particularPlace,
+  ),
+  SightType.monument: SightTypeMetadata(
+    name: 'Монумент',
+    iconName: AppIcons.particularPlace,
+  ),
+  SightType.theatre: SightTypeMetadata(
+    name: 'Театр',
+    iconName: AppIcons.particularPlace,
   ),
 };

@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-import 'package:places/domain/base_visiting.dart';
+import 'package:places/domain/base/visiting_sight.dart';
 import 'package:places/domain/favorite_sight.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/domain/visited_sight.dart';

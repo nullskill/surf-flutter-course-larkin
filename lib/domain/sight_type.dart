@@ -1,11 +1,14 @@
 /// Перечисление возможных типов мест
 enum SightType {
+  temple,
+  monument,
+  park,
+  theatre,
+  museum,
   hotel,
   restaurant,
-  particularPlace,
-  park,
-  museum,
   cafe,
+  other,
 }
 
 /// Класс метаданных типа места

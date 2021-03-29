@@ -6,8 +6,9 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/util/app_init.dart';
 
 /// Сплеш-экран
-// ignore: use_key_in_widget_constructors
 class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key key}) : super(key: key);
+
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }

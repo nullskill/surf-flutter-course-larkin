@@ -1,5 +1,6 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/themes.dart';
@@ -9,10 +10,12 @@ import 'package:places/ui/screens/sight_list/sight_list_screen.dart';
 import 'package:places/ui/screens/splash_screen.dart';
 import 'package:places/ui/screens/visiting/visiting_screen.dart';
 import 'package:places/util/consts.dart';
-import 'package:places/util/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  if (isReleaseMode) {
+    debugPrint = (message, {wrapWidth}) {};
+  }
   runApp(
     DevicePreview(
       enabled: !isReleaseMode,
@@ -26,8 +29,8 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => ThemeNotifier(),
-      child: Consumer<ThemeNotifier>(
+      create: (_) => SettingsInteractor(),
+      child: Consumer<SettingsInteractor>(
         builder: (context, notifier, child) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
@@ -46,10 +49,10 @@ class App extends StatelessWidget {
 }
 
 final _routesMap = <String, Widget Function(BuildContext)>{
-  AppRoutes.home: (_) => SplashScreen(),
-  AppRoutes.start: (_) => SightListScreen(),
+  AppRoutes.home: (_) => const SplashScreen(),
+  AppRoutes.start: (_) => const SightListScreen(),
   AppRoutes.map: (_) => const Scaffold(),
-  AppRoutes.visiting: (_) => VisitingScreen(),
+  AppRoutes.visiting: (_) => const VisitingScreen(),
   AppRoutes.settings: (_) => const SettingsScreen(),
-  AppRoutes.onboarding: (_) => OnboardingScreen(),
+  AppRoutes.onboarding: (_) => const OnboardingScreen(),
 };

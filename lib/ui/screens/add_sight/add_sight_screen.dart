@@ -17,10 +17,10 @@ import 'package:places/ui/widgets/subtitle.dart';
 class AddSightScreen extends StatelessWidget {
   AddSightScreen({Key key}) : super(key: key);
 
+  // TODO: Refactor this later on block 13
   final AddSightScreenBloc _bloc = AddSightScreenBloc();
 
   @override
-  // ignore: long-method
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomScrollView(
@@ -55,7 +55,6 @@ class _AddSightAppBar extends StatelessWidget {
   final AddSightScreenBloc bloc;
 
   @override
-  // ignore: long-method
   Widget build(BuildContext context) {
     return SliverAppBar(
       elevation: 0,
@@ -250,7 +249,6 @@ class _AddSightBody extends StatelessWidget {
       bloc.controllers[field].text.isNotEmpty;
 
   @override
-  // ignore: long-method
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
       child: Column(
@@ -385,7 +383,6 @@ class _AddSightTextField extends StatelessWidget {
   final String Function(String) validator;
 
   @override
-  // ignore: long-method
   Widget build(BuildContext context) {
     return Column(
       children: [
