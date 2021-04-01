@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:places/bloc/base.dart';
+import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/domain/category.dart';
 import 'package:places/domain/sight.dart';
-import 'package:places/mocks.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/screens/select_category_screen.dart';
 import 'package:places/ui/widgets/select_picture_dialog.dart';
-import 'package:places/utils/consts.dart';
+import 'package:places/util/consts.dart';
 
 /// Перечисление координат
 enum Coordinate { lat, lng }
@@ -57,6 +57,7 @@ class _CategoryEvent
   AddSightScreenCategoryEvent event;
 }
 
+// TODO: Refactor this later on block 13
 /// Класс логики экрана добавления нового места
 class AddSightScreenBloc implements Bloc {
   AddSightScreenBloc() {
@@ -65,6 +66,7 @@ class AddSightScreenBloc implements Bloc {
     _inputCategoryEventController.stream.listen(_mapCategoryEventToState);
   }
 
+  final PlaceInteractor placeInteractor = PlaceInteractor();
   final _inputImgEventController = StreamController<_ImageCardEvent>();
   final _inputCategoryEventController = StreamController<_CategoryEvent>();
   final _outputImgStateController = StreamController<List<String>>.broadcast();
@@ -330,7 +332,7 @@ class AddSightScreenBloc implements Bloc {
       transitionDuration: const Duration(milliseconds: 250),
       context: context,
       pageBuilder: (context, anim1, anim2) {
-        return SelectPictureDialog();
+        return const SelectPictureDialog();
       },
       transitionBuilder: (context, anim1, anim2, child) {
         return SlideTransition(
@@ -356,12 +358,12 @@ class AddSightScreenBloc implements Bloc {
 
   /// При нажатии на ActionButton
   void onActionButtonPressed(BuildContext context) {
-    mocks.add(
+    placeInteractor.addNewSight(
       Sight(
         name: controllers[Field.name].text,
         lat: double.tryParse(controllers[Field.latitude].text),
         lng: double.tryParse(controllers[Field.longitude].text),
-        url: tempImgUrl,
+        urls: [tempImgUrl],
         details: controllers[Field.description].text,
         type: selectedCategory.type,
       ),

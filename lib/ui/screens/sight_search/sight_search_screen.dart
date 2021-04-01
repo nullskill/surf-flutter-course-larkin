@@ -1,10 +1,12 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/interactor/search_interactor.dart';
+import 'package:places/data/model/places_filter_dto.dart';
+import 'package:places/domain/categories.dart';
 import 'package:places/domain/sight.dart';
-import 'package:places/mocks.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
@@ -13,6 +15,7 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screens/sight_details_screen.dart';
 import 'package:places/ui/widgets/app_back_button.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
+import 'package:places/ui/widgets/app_modal_bottom_sheet.dart';
 import 'package:places/ui/widgets/circular_progress.dart';
 import 'package:places/ui/widgets/link.dart';
 import 'package:places/ui/widgets/message_box.dart';
@@ -20,36 +23,27 @@ import 'package:places/ui/widgets/search_bar.dart';
 import 'package:places/ui/widgets/settings_item.dart';
 import 'package:places/ui/widgets/subtitle.dart';
 
-/// Хранит историю поиска
-final _history = <String>[];
-
-// ignore: use_key_in_widget_constructors
 class SightSearchScreen extends StatefulWidget {
+  const SightSearchScreen({Key key}) : super(key: key);
+
   @override
   _SightSearchScreenState createState() => _SightSearchScreenState();
 }
 
 class _SightSearchScreenState extends State<SightSearchScreen> {
-  static const searchDelay = 200;
   static const debounceDelay = 3000;
-  static const maxHistoryLength = 5;
 
+  final PlaceInteractor placeInteractor = PlaceInteractor();
+  final SearchInteractor searchInteractor = SearchInteractor();
   final searchController = TextEditingController();
   final searchFocusNode = FocusNode();
   StreamController<List<Sight>> streamController;
-  StreamSubscription<List> streamSub;
+  StreamSubscription<void> streamSub;
   Timer debounce;
   String prevSearchText = '';
   bool isSearching = false;
   bool hasError = false;
   bool hasClearButton = false;
-  int requestCounter = 0;
-
-  List<String> get history => _history.reversed
-      .toList()
-      .sublist(0, min(maxHistoryLength, _history.length));
-
-  bool get isHistoryEmpty => _history.isEmpty;
 
   @override
   void initState() {
@@ -94,13 +88,13 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
 
   /// При удалении элемента истории
   void onDeleteFromHistory(String item) {
-    deleteFromHistory(item);
+    searchInteractor.deleteFromHistory(item);
     setState(() {});
   }
 
   /// При очистке истории
   void onClearHistory() {
-    clearHistory();
+    searchInteractor.clearHistory();
     setState(() {});
     FocusScope.of(context).requestFocus(searchFocusNode);
   }
@@ -143,61 +137,23 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
       ),
       () {
         streamSub?.cancel();
-        streamSub = getSightList(searchController.text).listen(
-          (searchResult) {
+        streamSub = searchInteractor
+            .searchPlaces(PlacesFilterDto(nameFilter: searchController.text))
+            .asStream()
+            .listen(
+          (_) {
             isSearching = false;
-            streamController.sink.add(searchResult);
-            addToHistory(searchController.text);
+            streamController.sink.add(searchInteractor.foundSights);
+            searchInteractor.addToHistory(searchController.text);
           },
           // ignore: avoid_types_on_closure_parameters
-          onError: (Exception error) {
+          onError: (Object error) {
             isSearching = false;
             streamController.addError(error);
           },
         );
       },
     );
-  }
-
-  /// Генератор для поиска карточек ближайших интересных мест,
-  /// содержащих в названии, либо в описании искомую строку
-  Stream<List<Sight>> getSightList(String searchString) async* {
-    final _searchString = searchString.trim().toLowerCase();
-
-    await Future<void>.delayed(const Duration(milliseconds: searchDelay));
-
-    yield [
-      ...getFilteredMocks().where((el) =>
-          el.name.toLowerCase().contains(_searchString) ||
-          el.details.toLowerCase().contains(_searchString)),
-    ];
-
-    requestCounter++;
-    if (requestCounter % 3 == 0) throw Exception();
-  }
-
-  /// Возвращает true, если элемент последний
-  bool isLastInHistory(String item) {
-    return history.last == item;
-  }
-
-  /// Добавляет элемент в историю
-  void addToHistory(String item) {
-    deleteFromHistory(item);
-    _history.add(item);
-    if (_history.length > maxHistoryLength) _history.removeAt(0);
-  }
-
-  /// Удаляет элемент из истории
-  void deleteFromHistory(String item) {
-    final index = _history.indexOf(item);
-
-    if (!index.isNegative) _history.removeAt(index);
-  }
-
-  /// Очищает историю
-  void clearHistory() {
-    _history.clear();
   }
 
   @override
@@ -222,6 +178,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
             return _SearchResultsList(
               sights: snapshot.data,
               removeSearchFocus: removeSearchFocus,
+              placeInt: placeInteractor,
             );
           } else if (snapshot.hasData) {
             return _MessageBox(
@@ -233,11 +190,11 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
               onTap: removeSearchFocus,
             );
           } else {
-            return history.isEmpty
+            return searchInteractor.isHistoryEmpty
                 ? const SizedBox()
                 : _SearchHistoryList(
-                    history: history,
-                    isLastInHistory: isLastInHistory,
+                    history: searchInteractor.history,
+                    isLastInHistory: searchInteractor.isLastInHistory,
                     onTapOnHistory: onTapOnHistory,
                     onClearHistory: onClearHistory,
                     onDeleteFromHistory: onDeleteFromHistory,
@@ -318,11 +275,13 @@ class _SearchResultsList extends StatelessWidget {
   const _SearchResultsList({
     @required this.sights,
     @required this.removeSearchFocus,
+    @required this.placeInt,
     Key key,
   }) : super(key: key);
 
   final List<Sight> sights;
   final void Function() removeSearchFocus;
+  final PlaceInteractor placeInt;
 
   @override
   Widget build(BuildContext context) {
@@ -332,7 +291,12 @@ class _SearchResultsList extends StatelessWidget {
         itemCount: sights?.length ?? 0,
         separatorBuilder: (context, index) => const Divider(),
         itemBuilder: (context, index) {
-          return _ListTile(sight: sights[index]);
+          final Sight sight = sights[index];
+          return _ListTile(
+            sight: sight,
+            isFavoriteSight: () => placeInt.isFavoriteSight(sight),
+            toggleFavoriteSight: () => placeInt.toggleFavoriteSight(sight),
+          );
         },
       ),
     );
@@ -342,22 +306,30 @@ class _SearchResultsList extends StatelessWidget {
 class _ListTile extends StatelessWidget {
   const _ListTile({
     @required this.sight,
+    @required this.isFavoriteSight,
+    @required this.toggleFavoriteSight,
     Key key,
   }) : super(key: key);
 
   final Sight sight;
+  final bool Function() isFavoriteSight;
+  final void Function() toggleFavoriteSight;
+
+  Future<void> showSightDetails(BuildContext context) async {
+    await showAppModalBottomSheet<SightDetailsScreen>(
+      context: context,
+      builder: (_) => SightDetailsScreen(
+        sight: sight,
+        isFavoriteSight: isFavoriteSight,
+        addToFavorites: toggleFavoriteSight,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute<SightDetailsScreen>(
-            builder: (context) => SightDetailsScreen(sight: sight),
-          ),
-        );
-      },
+      onTap: () => showSightDetails(context),
       leading: Container(
         width: 56.0,
         height: 56.0,
@@ -365,7 +337,7 @@ class _ListTile extends StatelessWidget {
           color: placeholderColor,
           borderRadius: allBorderRadius12,
           image: DecorationImage(
-            image: NetworkImage(sight.url),
+            image: NetworkImage(sight.urls.first),
             fit: BoxFit.cover,
           ),
         ),

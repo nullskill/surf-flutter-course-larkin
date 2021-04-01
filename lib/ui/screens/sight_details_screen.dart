@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/domain/categories.dart';
 import 'package:places/domain/sight.dart';
-import 'package:places/mocks.dart';
 import 'package:places/ui/res/app_color_scheme.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/border_radiuses.dart';
@@ -9,15 +9,20 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/widgets/action_button.dart';
+import 'package:sized_context/sized_context.dart';
 
 /// Экран отображения подробной информации о посещаемом месте.
 class SightDetailsScreen extends StatelessWidget {
   const SightDetailsScreen({
     @required this.sight,
+    @required this.isFavoriteSight,
+    @required this.addToFavorites,
     Key key,
   }) : super(key: key);
 
   final Sight sight;
+  final bool Function() isFavoriteSight;
+  final void Function() addToFavorites;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +31,10 @@ class SightDetailsScreen extends StatelessWidget {
       body: CustomScrollView(
         slivers: [
           _SightDetailsAppBar(sight: sight),
-          _SightDetailsBody(sight: sight),
+          _SightDetailsBody(
+              sight: sight,
+              isFavoriteSight: isFavoriteSight,
+              addToFavorites: addToFavorites),
         ],
       ),
     );
@@ -52,7 +60,7 @@ class _SightDetailsAppBar extends StatelessWidget {
           SizedBox(
             height: double.infinity,
             child: _Gallery(
-              imgUrl: sight.url,
+              imgUrls: sight.urls,
             ),
           ),
           Align(
@@ -91,35 +99,33 @@ class _SightDetailsAppBar extends StatelessWidget {
 
 class _Gallery extends StatefulWidget {
   const _Gallery({
-    @required this.imgUrl,
+    @required this.imgUrls,
     Key key,
   }) : super(key: key);
 
-  static const imageCount = 5;
-  final String imgUrl;
+  final List<String> imgUrls;
 
   @override
   _GalleryState createState() => _GalleryState();
 }
 
 class _GalleryState extends State<_Gallery> {
-  int currentIndex = 1;
+  int currentIndex = 0;
 
   @override
-  // ignore: long-method
   Widget build(BuildContext context) {
     return Stack(
       children: [
         PageView.builder(
           onPageChanged: (index) {
             setState(() {
-              currentIndex = index + 1;
+              currentIndex = index;
             });
           },
-          itemCount: _Gallery.imageCount,
+          itemCount: widget.imgUrls.length,
           itemBuilder: (context, index) {
             return Image.network(
-              widget.imgUrl,
+              widget.imgUrls[currentIndex],
               fit: BoxFit.cover,
               loadingBuilder: (
                 context,
@@ -144,9 +150,7 @@ class _GalleryState extends State<_Gallery> {
           bottom: 0,
           child: Container(
             height: 8.0,
-            width: MediaQuery.of(context).size.width /
-                _Gallery.imageCount *
-                currentIndex,
+            width: context.widthPx / widget.imgUrls.length * (currentIndex + 1),
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
               borderRadius: rightBorderRadius8,
@@ -161,16 +165,21 @@ class _GalleryState extends State<_Gallery> {
 class _SightDetailsBody extends StatelessWidget {
   const _SightDetailsBody({
     @required this.sight,
+    @required this.isFavoriteSight,
+    @required this.addToFavorites,
     Key key,
   }) : super(key: key);
 
   final Sight sight;
+  final bool Function() isFavoriteSight;
+  final void Function() addToFavorites;
 
   @override
   Widget build(BuildContext context) {
     return SliverFillRemaining(
       child: Container(
         width: double.infinity,
+        color: Theme.of(context).canvasColor,
         padding: const EdgeInsets.symmetric(
           horizontal: 16.0,
           vertical: 24.0,
@@ -192,12 +201,13 @@ class _SightDetailsBody extends StatelessWidget {
               iconName: AppIcons.go,
               label: sightDetailsActionButtonLabel,
               onPressed: () {
-                // ignore: avoid_print
-                print('ActionButton pressed');
+                // TODO: Make ActionButton callback
               },
             ),
             const SizedBox(height: 24.0),
-            const _CardMenu(),
+            _CardMenu(
+                isFavoriteSight: isFavoriteSight,
+                addToFavorites: addToFavorites),
           ],
         ),
       ),
@@ -250,10 +260,26 @@ class _CardLabel extends StatelessWidget {
   }
 }
 
-class _CardMenu extends StatelessWidget {
+class _CardMenu extends StatefulWidget {
   const _CardMenu({
+    @required this.isFavoriteSight,
+    @required this.addToFavorites,
     Key key,
   }) : super(key: key);
+
+  final bool Function() isFavoriteSight;
+  final void Function() addToFavorites;
+
+  @override
+  _CardMenuState createState() => _CardMenuState();
+}
+
+class _CardMenuState extends State<_CardMenu> {
+  void addToFavorites() {
+    setState(() {
+      widget.addToFavorites();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -262,15 +288,19 @@ class _CardMenu extends StatelessWidget {
         const Divider(height: .8),
         const SizedBox(height: 8),
         Row(
-          children: const [
+          children: [
             _ExpandedButton(
               title: sightDetailsPlan,
               iconName: AppIcons.calendar,
+              onPressed: addToFavorites,
             ),
             _ExpandedButton(
               title: sightDetailsAddToFavorites,
-              iconName: AppIcons.heart,
+              iconName: widget.isFavoriteSight()
+                  ? AppIcons.heartFull
+                  : AppIcons.heart,
               selected: true,
+              onPressed: addToFavorites,
             ),
           ],
         ),
@@ -283,6 +313,7 @@ class _ExpandedButton extends StatelessWidget {
   const _ExpandedButton({
     @required this.title,
     @required this.iconName,
+    @required this.onPressed,
     this.selected = false,
     Key key,
   }) : super(key: key);
@@ -290,6 +321,7 @@ class _ExpandedButton extends StatelessWidget {
   final String title;
   final String iconName;
   final bool selected;
+  final void Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -301,10 +333,7 @@ class _ExpandedButton extends StatelessWidget {
           minimumSize: const Size(40.0, 40.0),
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
-        onPressed: () {
-          // ignore: avoid_print
-          print('_ExpandedButton pressed');
-        },
+        onPressed: onPressed,
         icon: SvgPicture.asset(
           iconName,
           width: 24.0,

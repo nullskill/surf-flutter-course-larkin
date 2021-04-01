@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/strings/strings.dart';
@@ -8,14 +9,11 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/widgets/app_back_button.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/settings_item.dart';
-import 'package:places/utils/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 /// Экран настроек
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({
-    Key key,
-  }) : super(key: key);
+  const SettingsScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +63,7 @@ class _SettingsBody extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
         child: Column(
           children: [
-            Consumer<ThemeNotifier>(
+            Consumer<SettingsInteractor>(
               builder: (
                 context,
                 notifier,
@@ -88,8 +86,7 @@ class _SettingsBody extends StatelessWidget {
               },
               trailing: GestureDetector(
                 onTap: () {
-                  // ignore: avoid_print
-                  print('Show tutorial info pressed');
+                  // TODO: Make tutorial info show
                 },
                 child: SvgPicture.asset(
                   AppIcons.info,
@@ -105,7 +102,7 @@ class _SettingsBody extends StatelessWidget {
     );
   }
 
-  void _onChanged(ThemeNotifier notifier) {
+  void _onChanged(SettingsInteractor notifier) {
     notifier.toggleTheme();
   }
 }

@@ -7,11 +7,12 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/widgets/action_button.dart';
-import 'package:places/utils/app_init.dart';
+import 'package:places/util/app_init.dart';
 
 /// Экран, обучающий работе с приложением
-// ignore: use_key_in_widget_constructors
 class OnboardingScreen extends StatefulWidget {
+  const OnboardingScreen({Key key}) : super(key: key);
+
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
 }
@@ -20,7 +21,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int currentPage = 0;
 
   @override
-  // ignore: long-method
   Widget build(BuildContext context) {
     final isLastFrame = currentPage == tutorialFrames.length - 1;
 
@@ -131,7 +131,6 @@ class _Frame extends StatelessWidget {
   final int index, length;
 
   @override
-  // ignore: long-method
   Widget build(BuildContext context) {
     return Center(
       child: Column(
@@ -223,7 +222,6 @@ class _BottomNavigationBar extends StatelessWidget {
         child: ActionButton(
           label: startActionButtonLabel,
           onPressed: !isLastFrame ? null : () => _startApp(context),
-          // isDisabled: false,
         ),
       ),
     );

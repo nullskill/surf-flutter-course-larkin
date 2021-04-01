@@ -5,8 +5,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/domain/categories.dart';
 import 'package:places/domain/sight.dart';
-import 'package:places/mocks.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
@@ -21,17 +22,20 @@ class SightCard extends StatefulWidget {
   const SightCard({
     @required this.sight,
     this.onRemoveCard,
+    this.addToFavorites,
     Key key,
   }) : super(key: key);
 
   final Sight sight;
   final void Function() onRemoveCard;
+  final void Function() addToFavorites;
 
   @override
   _SightCardState createState() => _SightCardState();
 }
 
 class _SightCardState extends State<SightCard> {
+  final PlaceInteractor placeInteractor = PlaceInteractor();
   SightCardHelper helper;
 
   TimeOfDay selectedTime = TimeOfDay.now();
@@ -42,7 +46,28 @@ class _SightCardState extends State<SightCard> {
     helper = SightCardHelper(sight: widget.sight);
   }
 
-  Future<void> _selectTime(BuildContext context) async {
+  /// Добавление в избранное
+  void addToFavorites() {
+    setState(() {
+      widget.addToFavorites();
+    });
+  }
+
+  /// Показать модальный bottom sheet с детальной инфой
+  Future<void> showSightDetails(BuildContext context) async {
+    final Sight sight = await placeInteractor.getSightDetails(widget.sight.id);
+    await showAppModalBottomSheet<SightDetailsScreen>(
+      context: context,
+      builder: (_) => SightDetailsScreen(
+        sight: sight,
+        isFavoriteSight: () => placeInteractor.isFavoriteSight(sight),
+        addToFavorites: () => placeInteractor.toggleFavoriteSight(sight),
+      ),
+    );
+  }
+
+  /// Диалог выбора времени
+  Future<void> selectTime(BuildContext context) async {
     TimeOfDay pickedTime;
 
     if (Platform.isIOS) {
@@ -67,7 +92,6 @@ class _SightCardState extends State<SightCard> {
   }
 
   @override
-  // ignore: long-method
   Widget build(BuildContext context) {
     return AspectRatio(
       aspectRatio: helper.getAspectRatio(context),
@@ -87,11 +111,7 @@ class _SightCardState extends State<SightCard> {
                 child: Material(
                   type: MaterialType.transparency,
                   child: InkWell(
-                    onTap: () => showAppModalBottomSheet<SightDetailsScreen>(
-                      context: context,
-                      builder: (context) =>
-                          SightDetailsScreen(sight: widget.sight),
-                    ),
+                    onTap: () => showSightDetails(context),
                   ),
                 ),
               ),
@@ -99,12 +119,13 @@ class _SightCardState extends State<SightCard> {
                 top: 16,
                 right: 16,
                 child: _CardIcon(
-                  iconName:
-                      helper.isMainListCard ? AppIcons.heart : AppIcons.close,
+                  iconName: helper.isMainListCard
+                      ? placeInteractor.isFavoriteSight(widget.sight)
+                          ? AppIcons.heartFull
+                          : AppIcons.heart
+                      : AppIcons.close,
                   onTap: helper.isMainListCard
-                      ? () {
-                          // TODO: Add callback body
-                        }
+                      ? addToFavorites
                       : widget.onRemoveCard,
                 ),
               ),
@@ -117,7 +138,7 @@ class _SightCardState extends State<SightCard> {
                         iconName: helper.isFavoriteCard
                             ? AppIcons.calendar
                             : AppIcons.share,
-                        onTap: () => _selectTime(context),
+                        onTap: () => selectTime(context),
                       ),
                     )
                   : const SizedBox.shrink(),
@@ -146,7 +167,7 @@ class _CardTop extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          _CardImage(imgUrl: sight.url),
+          _CardImage(imgUrl: sight.urls.first),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(

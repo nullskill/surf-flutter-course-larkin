@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:places/ui/res/text_styles.dart';
 
+/// Виджет "гиперссылки"
 class Link extends StatelessWidget {
   const Link({
     @required this.label,

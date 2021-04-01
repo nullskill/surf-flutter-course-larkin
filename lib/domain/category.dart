@@ -19,7 +19,7 @@ class Category {
   String name;
   String iconName;
   SightType type;
-  bool selected;
+  bool selected = false;
 
   /// Меняет признак выбранности категории
   void toggle() {

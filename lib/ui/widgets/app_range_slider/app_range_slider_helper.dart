@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:places/utils/consts.dart';
+import 'package:places/util/consts.dart';
 
 /// Вспомогательный класс для виджета AppRangeSlider
 class AppRangeSliderHelper {
@@ -11,8 +11,6 @@ class AppRangeSliderHelper {
   static const divisions = 100,
       minValue = 100.0,
       maxValue = 10000.0,
-      initialMinValue = 100.0,
-      initialMaxValue = 5000.0,
       _m = 'м',
       _km = 'км';
 

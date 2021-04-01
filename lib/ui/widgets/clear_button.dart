@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/colors.dart';
 
+/// Виджет кнопки очистки/удаления
 class ClearButton extends StatelessWidget {
   const ClearButton({
     @required this.onTap,
