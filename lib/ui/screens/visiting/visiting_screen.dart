@@ -21,12 +21,12 @@ class VisitingScreen extends StatefulWidget {
 }
 
 class _VisitingScreenState extends State<VisitingScreen> {
-  final PlaceInteractor placeInt = PlaceInteractor();
+  final PlaceInteractor placeInteractor = PlaceInteractor();
 
   /// Удаляет карточку из списка избранных/посещенных мест
   void removeFromFavorites<T extends Sight>(T sight) {
     setState(() {
-      placeInt.removeFromFavorites(sight);
+      placeInteractor.removeFromFavorites(sight);
     });
   }
 
@@ -39,11 +39,11 @@ class _VisitingScreenState extends State<VisitingScreen> {
         body: TabBarView(
           children: [
             _VisitingScreenList(
-              sights: placeInt.favoriteSights,
+              sights: placeInteractor.favoriteSights,
               onRemoveCard: removeFromFavorites,
             ),
             _VisitingScreenList(
-              sights: placeInt.visitedSights,
+              sights: placeInteractor.visitedSights,
               hasVisited: true,
               onRemoveCard: removeFromFavorites,
             ),

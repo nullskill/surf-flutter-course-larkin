@@ -26,11 +26,11 @@ class SearchInteractor {
   /// Минимальный и максимальный радиус
   static const double minRadius = 100.0, maxRadius = 5000.0;
 
-  /// Максимальная длина истории
-  static const maxHistoryLength = 5;
-
   /// Выбранные минимальный и максимальный радиус
   double selectedMinRadius = minRadius, selectedMaxRadius = maxRadius;
+
+  /// Максимальная длина истории
+  static const int maxHistoryLength = 5;
 
   final SearchRepository _repo;
   final List<Category> _categories;

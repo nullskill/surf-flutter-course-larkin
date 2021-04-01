@@ -23,17 +23,17 @@ class FiltersScreen extends StatefulWidget {
 
 class _FiltersScreenState extends State<FiltersScreen> {
   RangeValues rangeValues;
-  PlaceInteractor placeInt;
-  SearchInteractor searchInt;
+  PlaceInteractor placeInteractor;
+  SearchInteractor searchInteractor;
 
   @override
   void initState() {
     super.initState();
-    placeInt = PlaceInteractor();
-    searchInt = SearchInteractor();
+    placeInteractor = PlaceInteractor();
+    searchInteractor = SearchInteractor();
     rangeValues = RangeValues(
-      searchInt.selectedMinRadius,
-      searchInt.selectedMaxRadius,
+      searchInteractor.selectedMinRadius,
+      searchInteractor.selectedMaxRadius,
     );
   }
 
@@ -42,15 +42,15 @@ class _FiltersScreenState extends State<FiltersScreen> {
   void setRangeValues(RangeValues newValues) {
     setState(() {
       rangeValues = newValues;
-      searchInt.setRadius(rangeValues);
-      placeInt.getSights();
-      searchInt.filterSights();
+      searchInteractor.setRadius(rangeValues);
+      placeInteractor.getSights();
+      searchInteractor.filterSights();
     });
   }
 
   /// Сброс всех настроек
   void resetAllSettings() => setState(() {
-        searchInt.resetCategories();
+        searchInteractor.resetCategories();
         resetRangeValues();
       });
 
@@ -58,8 +58,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
   /// и фильтрация интересных мест
   void toggleCategory(Category category) => setState(() {
         category.toggle();
-        placeInt.getSights();
-        searchInt.filterSights();
+        placeInteractor.getSights();
+        searchInteractor.filterSights();
       });
 
   /// Сброс выбранного диапазона радиуса
@@ -68,7 +68,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
       SearchInteractor.minRadius,
       SearchInteractor.maxRadius,
     );
-    searchInt.setRadius(rangeValues);
+    searchInteractor.setRadius(rangeValues);
   }
 
   @override
@@ -77,7 +77,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
       appBar: _FiltersAppBar(resetAllSettings: resetAllSettings),
       body: _FiltersBody(
         currentRangeValues: rangeValues,
-        categories: searchInt.getCategories,
+        categories: searchInteractor.getCategories,
         toggleCategory: toggleCategory,
         setRangeValues: setRangeValues,
       ),
@@ -89,8 +89,9 @@ class _FiltersScreenState extends State<FiltersScreen> {
           context.mq.padding.bottom + 8.0,
         ),
         child: ActionButton(
-          label: '$filtersActionButtonLabel (${searchInt.filteredNumber})',
-          isDisabled: searchInt.filteredNumber == 0,
+          label:
+              '$filtersActionButtonLabel (${searchInteractor.filteredNumber})',
+          isDisabled: searchInteractor.filteredNumber == 0,
           onPressed: () => Navigator.pop(context),
         ),
       ),

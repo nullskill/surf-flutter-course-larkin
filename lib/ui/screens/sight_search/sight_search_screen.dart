@@ -33,8 +33,8 @@ class SightSearchScreen extends StatefulWidget {
 class _SightSearchScreenState extends State<SightSearchScreen> {
   static const debounceDelay = 3000;
 
-  final PlaceInteractor placeInt = PlaceInteractor();
-  final SearchInteractor searchInt = SearchInteractor();
+  final PlaceInteractor placeInteractor = PlaceInteractor();
+  final SearchInteractor searchInteractor = SearchInteractor();
   final searchController = TextEditingController();
   final searchFocusNode = FocusNode();
   StreamController<List<Sight>> streamController;
@@ -88,13 +88,13 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
 
   /// При удалении элемента истории
   void onDeleteFromHistory(String item) {
-    searchInt.deleteFromHistory(item);
+    searchInteractor.deleteFromHistory(item);
     setState(() {});
   }
 
   /// При очистке истории
   void onClearHistory() {
-    searchInt.clearHistory();
+    searchInteractor.clearHistory();
     setState(() {});
     FocusScope.of(context).requestFocus(searchFocusNode);
   }
@@ -137,14 +137,14 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
       ),
       () {
         streamSub?.cancel();
-        streamSub = searchInt
+        streamSub = searchInteractor
             .searchPlaces(PlacesFilterDto(nameFilter: searchController.text))
             .asStream()
             .listen(
           (_) {
             isSearching = false;
-            streamController.sink.add(searchInt.foundSights);
-            searchInt.addToHistory(searchController.text);
+            streamController.sink.add(searchInteractor.foundSights);
+            searchInteractor.addToHistory(searchController.text);
           },
           // ignore: avoid_types_on_closure_parameters
           onError: (Object error) {
@@ -178,7 +178,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
             return _SearchResultsList(
               sights: snapshot.data,
               removeSearchFocus: removeSearchFocus,
-              placeInt: placeInt,
+              placeInt: placeInteractor,
             );
           } else if (snapshot.hasData) {
             return _MessageBox(
@@ -190,11 +190,11 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
               onTap: removeSearchFocus,
             );
           } else {
-            return searchInt.isHistoryEmpty
+            return searchInteractor.isHistoryEmpty
                 ? const SizedBox()
                 : _SearchHistoryList(
-                    history: searchInt.history,
-                    isLastInHistory: searchInt.isLastInHistory,
+                    history: searchInteractor.history,
+                    isLastInHistory: searchInteractor.isLastInHistory,
                     onTapOnHistory: onTapOnHistory,
                     onClearHistory: onClearHistory,
                     onDeleteFromHistory: onDeleteFromHistory,

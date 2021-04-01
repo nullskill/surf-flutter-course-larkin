@@ -19,13 +19,13 @@ void main() {
   runApp(
     DevicePreview(
       enabled: !isReleaseMode,
-      builder: (_) => App(),
+      builder: (_) => const App(),
     ),
   );
 }
 
-// ignore: use_key_in_widget_constructors
 class App extends StatelessWidget {
+  const App({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -34,7 +34,7 @@ class App extends StatelessWidget {
         builder: (context, notifier, child) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            locale: DevicePreview.locale(context), // Add the locale here
+            locale: DevicePreview.locale(context),
             builder: DevicePreview.appBuilder,
             theme: lightTheme,
             darkTheme: darkTheme,

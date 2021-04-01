@@ -66,7 +66,7 @@ class AddSightScreenBloc implements Bloc {
     _inputCategoryEventController.stream.listen(_mapCategoryEventToState);
   }
 
-  final PlaceInteractor placeInt = PlaceInteractor();
+  final PlaceInteractor placeInteractor = PlaceInteractor();
   final _inputImgEventController = StreamController<_ImageCardEvent>();
   final _inputCategoryEventController = StreamController<_CategoryEvent>();
   final _outputImgStateController = StreamController<List<String>>.broadcast();
@@ -332,7 +332,7 @@ class AddSightScreenBloc implements Bloc {
       transitionDuration: const Duration(milliseconds: 250),
       context: context,
       pageBuilder: (context, anim1, anim2) {
-        return SelectPictureDialog();
+        return const SelectPictureDialog();
       },
       transitionBuilder: (context, anim1, anim2, child) {
         return SlideTransition(
@@ -358,7 +358,7 @@ class AddSightScreenBloc implements Bloc {
 
   /// При нажатии на ActionButton
   void onActionButtonPressed(BuildContext context) {
-    placeInt.addNewSight(
+    placeInteractor.addNewSight(
       Sight(
         name: controllers[Field.name].text,
         lat: double.tryParse(controllers[Field.latitude].text),

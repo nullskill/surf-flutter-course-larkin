@@ -1,55 +1,34 @@
-import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:places/data/model/place.dart';
+import 'package:places/data/repository/json_parsing.dart';
 import 'package:places/data/repository/network/api_service.dart';
 
 /// Репозиторий для интересного места
 class PlaceRepository {
-  final ApiService _helper = ApiService();
+  final ApiService _api = ApiService();
+
+  static const String placePath = '/place';
 
   /// GET /place
   /// Получение списка всех мест
   Future<List<Place>> getPlaces() async {
-    final dynamic response = await _helper.get<String>('/place');
+    final String response = await _api.get<String>(placePath);
 
-    return _parsePlaces(response.toString());
+    return parsePlaces(response);
   }
 
   /// GET /place/:id
   /// Получение места по [id]
   Future<Place> getPlaceDetails(int id) async {
-    final dynamic response = await _helper.get<String>('/place/$id');
+    final String response = await _api.get<String>('$placePath/$id');
 
-    return _parsePlace(response.toString());
+    return parsePlace(response);
   }
 
   /// POST /place
   /// Добавление места
   Future<Place> addNewPlace(Place place) async {
-    final dynamic response =
-        await _helper.post<String>('/place', place.toJson());
+    final dynamic response = await _api.post<String>(placePath, place.toJson());
 
-    return _parsePlace(response.toString());
-  }
-
-  List<Place> _parsePlaces(String rawJson) {
-    final List<dynamic> placeListJson = jsonDecode(rawJson) as List<dynamic>;
-    final List<Map<String, dynamic>> placeList =
-        List<Map<String, dynamic>>.from(placeListJson);
-    final List<Place> places =
-        placeList.map((placeJson) => Place.fromJson(placeJson)).toList();
-
-    debugPrint(places.length.toString());
-
-    return places;
-  }
-
-  Place _parsePlace(String rawJson) {
-    final Map<String, dynamic> placeJson =
-        jsonDecode(rawJson) as Map<String, dynamic>;
-    final Place place = Place.fromJson(placeJson);
-
-    return place;
+    return parsePlace(response.toString());
   }
 }

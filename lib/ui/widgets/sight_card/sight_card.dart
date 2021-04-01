@@ -35,7 +35,7 @@ class SightCard extends StatefulWidget {
 }
 
 class _SightCardState extends State<SightCard> {
-  final PlaceInteractor placeInt = PlaceInteractor();
+  final PlaceInteractor placeInteractor = PlaceInteractor();
   SightCardHelper helper;
 
   TimeOfDay selectedTime = TimeOfDay.now();
@@ -55,13 +55,13 @@ class _SightCardState extends State<SightCard> {
 
   /// Показать модальный bottom sheet с детальной инфой
   Future<void> showSightDetails(BuildContext context) async {
-    final Sight sight = await placeInt.getSightDetails(widget.sight.id);
+    final Sight sight = await placeInteractor.getSightDetails(widget.sight.id);
     await showAppModalBottomSheet<SightDetailsScreen>(
       context: context,
       builder: (_) => SightDetailsScreen(
         sight: sight,
-        isFavoriteSight: () => placeInt.isFavoriteSight(sight),
-        addToFavorites: () => placeInt.toggleFavoriteSight(sight),
+        isFavoriteSight: () => placeInteractor.isFavoriteSight(sight),
+        addToFavorites: () => placeInteractor.toggleFavoriteSight(sight),
       ),
     );
   }
@@ -120,7 +120,7 @@ class _SightCardState extends State<SightCard> {
                 right: 16,
                 child: _CardIcon(
                   iconName: helper.isMainListCard
-                      ? placeInt.isFavoriteSight(widget.sight)
+                      ? placeInteractor.isFavoriteSight(widget.sight)
                           ? AppIcons.heartFull
                           : AppIcons.heart
                       : AppIcons.close,

@@ -29,8 +29,8 @@ class SightListScreen extends StatefulWidget {
 
 class _SightListScreenState extends State<SightListScreen> {
   final ScrollController controller = ScrollController();
-  final PlaceInteractor placeInt = PlaceInteractor();
-  final SearchInteractor searchInt = SearchInteractor();
+  final PlaceInteractor placeInteractor = PlaceInteractor();
+  final SearchInteractor searchInteractor = SearchInteractor();
   bool isEmpty = false;
 
   // expanded height = 196 + status bar height
@@ -125,7 +125,7 @@ class _SightListScreenState extends State<SightListScreen> {
               ),
               expandedHeight: maxHeight - context.mq.padding.top,
             ),
-            _CardColumn(placeInt: placeInt),
+            _CardColumn(placeInt: placeInteractor),
           ],
         ),
       ),
