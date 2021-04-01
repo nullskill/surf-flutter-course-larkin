@@ -13,12 +13,12 @@ class PlaceInteractor {
 
   PlaceInteractor._internal()
       : _repo = PlaceRepository(),
-        _searchInt = SearchInteractor();
+        _searchInteractor = SearchInteractor();
 
   static final PlaceInteractor _interactor = PlaceInteractor._internal();
 
   final PlaceRepository _repo;
-  final SearchInteractor _searchInt;
+  final SearchInteractor _searchInteractor;
 
   List<Sight> _sights = [];
   List<FavoriteSight> _favoriteSights = [];
@@ -26,7 +26,9 @@ class PlaceInteractor {
 
   /// Отсортированный список мест
   List<Sight> get sights {
-    if (_searchInt.filteredNumber > 0) return _searchInt.filteredSights;
+    if (_searchInteractor.filteredNumber > 0) {
+      return _searchInteractor.filteredSights;
+    }
     return _sights;
   }
 
@@ -42,7 +44,7 @@ class PlaceInteractor {
 
   /// Получение списка всех мест
   Future<void> getSights() async {
-    if (_searchInt.filteredNumber > 0) return;
+    if (_searchInteractor.filteredNumber > 0) return;
 
     final List<Place> _places = await _repo.getPlaces();
 
@@ -99,12 +101,12 @@ class PlaceInteractor {
   /// Сортирует список моделей [Sight] по удаленности
   /// и инициализирует им список [_sights]
   void _sortSights() {
-    _sights = _searchInt.getSortedSights(_sights);
-    _searchInt.sights = _sights;
+    _sights = _searchInteractor.getSortedSights(_sights);
+    _searchInteractor.sights = _sights;
   }
 
   /// Сортирует список моделей [FavoriteSight] по удаленности
   /// и инициализирует им список [_favoriteSights]
   void _sortFavorites() =>
-      _favoriteSights = _searchInt.getSortedSights(_favoriteSights);
+      _favoriteSights = _searchInteractor.getSortedSights(_favoriteSights);
 }

@@ -178,7 +178,7 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
             return _SearchResultsList(
               sights: snapshot.data,
               removeSearchFocus: removeSearchFocus,
-              placeInt: placeInteractor,
+              placeInteractor: placeInteractor,
             );
           } else if (snapshot.hasData) {
             return _MessageBox(
@@ -275,13 +275,13 @@ class _SearchResultsList extends StatelessWidget {
   const _SearchResultsList({
     @required this.sights,
     @required this.removeSearchFocus,
-    @required this.placeInt,
+    @required this.placeInteractor,
     Key key,
   }) : super(key: key);
 
   final List<Sight> sights;
   final void Function() removeSearchFocus;
-  final PlaceInteractor placeInt;
+  final PlaceInteractor placeInteractor;
 
   @override
   Widget build(BuildContext context) {
@@ -294,8 +294,9 @@ class _SearchResultsList extends StatelessWidget {
           final Sight sight = sights[index];
           return _ListTile(
             sight: sight,
-            isFavoriteSight: () => placeInt.isFavoriteSight(sight),
-            toggleFavoriteSight: () => placeInt.toggleFavoriteSight(sight),
+            isFavoriteSight: () => placeInteractor.isFavoriteSight(sight),
+            toggleFavoriteSight: () =>
+                placeInteractor.toggleFavoriteSight(sight),
           );
         },
       ),
