@@ -193,18 +193,22 @@ class _DismissibleCard<T extends Sight> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppDismissible(
-      key: key,
-      direction: AppDismissDirection.endToStart,
-      onDismissed: (_) => onRemoveCard(sight),
-      background: const _CardBackground(),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 24.0),
-        child: SightCard(
-          sight: sight,
-          onRemoveCard: () => onRemoveCard(sight),
+    return Column(
+      children: [
+        AppDismissible(
+          key: key,
+          direction: AppDismissDirection.endToStart,
+          onDismissed: (_) => onRemoveCard(sight),
+          background: const _CardBackground(),
+          child: SightCard(
+            sight: sight,
+            onRemoveCard: () => onRemoveCard(sight),
+          ),
         ),
-      ),
+        const SizedBox(
+          height: 24.0,
+        ),
+      ],
     );
   }
 }
