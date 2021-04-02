@@ -193,18 +193,22 @@ class _DismissibleCard<T extends Sight> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppDismissible(
-      key: key,
-      direction: AppDismissDirection.endToStart,
-      onDismissed: (_) => onRemoveCard(sight),
-      background: const _CardBackground(),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 24.0),
-        child: SightCard(
-          sight: sight,
-          onRemoveCard: () => onRemoveCard(sight),
+    return Column(
+      children: [
+        AppDismissible(
+          key: key,
+          direction: AppDismissDirection.endToStart,
+          onDismissed: (_) => onRemoveCard(sight),
+          background: const _CardBackground(),
+          child: SightCard(
+            sight: sight,
+            onRemoveCard: () => onRemoveCard(sight),
+          ),
         ),
-      ),
+        const SizedBox(
+          height: 24.0,
+        ),
+      ],
     );
   }
 }
@@ -216,33 +220,30 @@ class _CardBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 24.0),
-      child: ClipRRect(
-        borderRadius: allBorderRadius16,
-        child: Container(
-          color: Theme.of(context).errorColor,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  SvgPicture.asset(
-                    AppIcons.bucket,
+    return ClipRRect(
+      borderRadius: allBorderRadius16,
+      child: Container(
+        color: Theme.of(context).errorColor,
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SvgPicture.asset(
+                  AppIcons.bucket,
+                  color: whiteColor,
+                ),
+                const SizedBox(height: 10.0),
+                Text(
+                  visitingDeleteCardLabel,
+                  style: textMedium12.copyWith(
                     color: whiteColor,
+                    height: lineHeight1_3,
                   ),
-                  const SizedBox(height: 10.0),
-                  Text(
-                    visitingDeleteCardLabel,
-                    style: textMedium12.copyWith(
-                      color: whiteColor,
-                      height: lineHeight1_3,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
