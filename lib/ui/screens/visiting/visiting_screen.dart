@@ -49,9 +49,7 @@ class _VisitingScreenState extends State<VisitingScreen> {
             ),
           ],
         ),
-        bottomNavigationBar: const AppBottomNavigationBar(
-          currentIndex: 2,
-        ),
+        bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 2),
       ),
     );
   }
@@ -164,9 +162,7 @@ class _VisitingScreenList<T extends Sight> extends StatelessWidget {
       child: Material(
         borderRadius: allBorderRadius16,
         elevation: 6.0,
-        child: SightCard(
-          sight: sights[index],
-        ),
+        child: SightCard(sight: sights[index]),
       ),
     );
   }
@@ -205,9 +201,7 @@ class _DismissibleCard<T extends Sight> extends StatelessWidget {
             onRemoveCard: () => onRemoveCard(sight),
           ),
         ),
-        const SizedBox(
-          height: 24.0,
-        ),
+        const SizedBox(height: 24.0),
       ],
     );
   }
