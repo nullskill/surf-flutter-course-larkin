@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
@@ -40,17 +41,33 @@ class _SightCardState extends State<SightCard> {
 
   TimeOfDay selectedTime = TimeOfDay.now();
 
+  final _favoriteSightStateController = StreamController<bool>();
+
+  Stream<bool> get favoriteSightStateStream =>
+      _favoriteSightStateController.stream;
+
   @override
   void initState() {
     super.initState();
     helper = SightCardHelper(sight: widget.sight);
+    updateFavoriteStatus();
   }
 
-  /// Добавление в избранное
+  @override
+  void dispose() {
+    _favoriteSightStateController.close();
+    super.dispose();
+  }
+
+  /// Добавление в стрим признака избранного
   void addToFavorites() {
-    setState(() {
-      widget.addToFavorites();
-    });
+    widget.addToFavorites();
+    updateFavoriteStatus();
+  }
+
+  void updateFavoriteStatus() {
+    _favoriteSightStateController.sink
+        .add(placeInteractor.isFavoriteSight(widget.sight));
   }
 
   /// Показать модальный bottom sheet с детальной инфой
@@ -118,15 +135,20 @@ class _SightCardState extends State<SightCard> {
               Positioned(
                 top: 16,
                 right: 16,
-                child: _CardIcon(
-                  iconName: helper.isMainListCard
-                      ? placeInteractor.isFavoriteSight(widget.sight)
-                          ? AppIcons.heartFull
-                          : AppIcons.heart
-                      : AppIcons.close,
-                  onTap: helper.isMainListCard
-                      ? addToFavorites
-                      : widget.onRemoveCard,
+                child: StreamBuilder<bool>(
+                  stream: favoriteSightStateStream,
+                  builder: (context, snapshot) {
+                    return _CardIcon(
+                      iconName: helper.isMainListCard
+                          ? snapshot.hasData && snapshot.data
+                              ? AppIcons.heartFull
+                              : AppIcons.heart
+                          : AppIcons.close,
+                      onTap: helper.isMainListCard
+                          ? addToFavorites
+                          : widget.onRemoveCard,
+                    );
+                  },
                 ),
               ),
               //Показываем различные иконки, в зависимости от типа карточки
