@@ -9,9 +9,8 @@ class ApiService {
     _dio = Dio(_baseOptions);
 
     _dio.interceptors.add(InterceptorsWrapper(
-      onError: (e, handler) {
-        debugPrint('API error: $e');
-        handler.next(e);
+      onError: (e, _) {
+        _throwException(e);
       },
       onRequest: (options, handler) {
         debugPrint(
@@ -21,7 +20,7 @@ class ApiService {
       onResponse: (response, handler) {
         final req = response.requestOptions;
         debugPrint(
-            '<< ${response.statusCode} [${req.method} ${req.path}]: ${response.data}');
+            '<< ${response.statusCode} [${req.method} ${req.baseUrl}${req.path}]: ${response.data}');
         handler.next(response);
       },
     ));
@@ -37,39 +36,37 @@ class ApiService {
     receiveTimeout: _timeOut,
     sendTimeout: _timeOut,
     followRedirects: false,
-    validateStatus: (status) => status <= 500,
+    validateStatus: (status) => status < 300,
     headers: <String, String>{'Accept': 'application/json'},
     responseType: ResponseType.plain,
   );
 
   Future<String> get<T>(String path) async {
     final response = await _dio.get<T>(path);
-    return _getResponseData(response);
+    return response.data.toString();
   }
 
   Future<String> post<T>(String path, Map<String, dynamic> data) async {
     final response = await _dio.post<T>(path, data: data);
-    return _getResponseData(response);
+    return response.data.toString();
   }
 
-  String _getResponseData(Response response) {
-    if (response == null) {
-      throw Exception('Network Unreachable');
-    }
-    switch (response.statusCode) {
-      case 200:
-      case 201:
-        return response.data.toString();
+  String _throwException(DioError e) {
+    final res = e.response;
+    final req = e.requestOptions;
+    final reqString =
+        '${res.statusCode} [${req.method} ${req.baseUrl}${req.path}]';
+
+    switch (res.statusCode) {
       case 400:
-        throw BadRequestException(response.data.toString());
+        throw BadRequestException(reqString);
       case 409:
-        throw BadRequestException('Object Already Exists');
+        throw BadRequestException('$reqString: Object Already Exists');
       case 404:
-        throw BadRequestException('No Object Found');
+        throw BadRequestException('$reqString: No Object Found');
       case 500:
       default:
-        throw FetchDataException(
-            'Server Responded With ${response.statusCode} Code');
+        throw NetworkException(reqString);
     }
   }
 }

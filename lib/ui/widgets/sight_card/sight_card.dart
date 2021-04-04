@@ -41,10 +41,10 @@ class _SightCardState extends State<SightCard> {
 
   TimeOfDay selectedTime = TimeOfDay.now();
 
-  final _favoriteSightStateController = StreamController<bool>();
+  final favoriteSightStateController = StreamController<bool>();
 
   Stream<bool> get favoriteSightStateStream =>
-      _favoriteSightStateController.stream;
+      favoriteSightStateController.stream;
 
   @override
   void initState() {
@@ -55,7 +55,7 @@ class _SightCardState extends State<SightCard> {
 
   @override
   void dispose() {
-    _favoriteSightStateController.close();
+    favoriteSightStateController.close();
     super.dispose();
   }
 
@@ -65,8 +65,9 @@ class _SightCardState extends State<SightCard> {
     updateFavoriteStatus();
   }
 
+  /// Обновляет признак избранного через стрим
   void updateFavoriteStatus() {
-    _favoriteSightStateController.sink
+    favoriteSightStateController.sink
         .add(placeInteractor.isFavoriteSight(widget.sight));
   }
 

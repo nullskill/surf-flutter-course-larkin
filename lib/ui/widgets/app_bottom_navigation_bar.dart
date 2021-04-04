@@ -72,32 +72,20 @@ class AppBottomNavigationBar extends StatelessWidget {
     switch (index) {
       case 3:
         if (currentRoute == AppRoutes.settings) return;
-        Navigator.pushNamed(
-          context,
-          AppRoutes.settings,
-        );
+        Navigator.pushNamed(context, AppRoutes.settings);
         break;
       case 2:
         if (currentRoute == AppRoutes.visiting) return;
-        Navigator.pushNamed(
-          context,
-          AppRoutes.visiting,
-        );
+        Navigator.pushNamed(context, AppRoutes.visiting);
         break;
       case 1:
         if (currentRoute == AppRoutes.map) return;
-        Navigator.pushNamed(
-          context,
-          AppRoutes.map,
-        );
+        Navigator.pushNamed(context, AppRoutes.map);
         break;
       case 0:
       default:
         if (currentRoute == AppRoutes.start) return;
-        Navigator.pushNamed(
-          context,
-          AppRoutes.start,
-        );
+        Navigator.pushNamed(context, AppRoutes.start);
         break;
     }
   }

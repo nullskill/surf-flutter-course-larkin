@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:places/data/model/location.dart';
 import 'package:places/data/model/place.dart';
@@ -124,10 +125,14 @@ class SearchInteractor {
 
   /// Получение списка найденных/отфильтрованных мест в репо
   Future<void> searchPlaces(PlacesFilterDto filterDto) async {
-    final List<Place> _places = await _repo.getFilteredPlaces(filterDto);
-
-    _foundSights = _places.map((p) => Sight.fromPlace(p)).toList();
-    _foundSights = getSortedSights(_foundSights);
+    try {
+      final List<Place> _places = await _repo.getFilteredPlaces(filterDto);
+      _foundSights = _places.map((p) => Sight.fromPlace(p)).toList();
+      _foundSights = getSortedSights(_foundSights);
+    } on DioError catch (e) {
+      debugPrint('Error searching sights: ${e.error}');
+      rethrow;
+    }
   }
 
   /// Сортирует список моделей [Sight] по удаленности,

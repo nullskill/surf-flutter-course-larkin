@@ -4,6 +4,7 @@ import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/themes.dart';
+import 'package:places/ui/screens/error_screen.dart';
 import 'package:places/ui/screens/onboarding_screen.dart';
 import 'package:places/ui/screens/settings_screen.dart';
 import 'package:places/ui/screens/sight_list/sight_list_screen.dart';
@@ -55,4 +56,5 @@ final _routesMap = <String, Widget Function(BuildContext)>{
   AppRoutes.visiting: (_) => const VisitingScreen(),
   AppRoutes.settings: (_) => const SettingsScreen(),
   AppRoutes.onboarding: (_) => const OnboardingScreen(),
+  AppRoutes.error: (_) => const ErrorScreen(),
 };

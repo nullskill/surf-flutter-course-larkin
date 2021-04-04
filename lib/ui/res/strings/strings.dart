@@ -26,7 +26,7 @@ const String appTitle = 'Places',
 
 //ErrorScreen
     errorTitle = 'Ошибка',
-    errorMessage = 'Что то пошло не так...\nПопробуйте позже.',
+    errorMessage = 'Что-то пошло не так...\nПопробуйте позже.',
 
 //SightSearchScreen
     sightSearchHistoryTitle = 'Вы искали',

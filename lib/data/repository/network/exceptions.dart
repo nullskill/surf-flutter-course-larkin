@@ -10,8 +10,8 @@ class ApiException implements Exception {
   }
 }
 
-class FetchDataException extends ApiException {
-  FetchDataException([String message])
+class NetworkException extends ApiException {
+  NetworkException([String message])
       : super(message, 'Error During Communication: ');
 }
 
