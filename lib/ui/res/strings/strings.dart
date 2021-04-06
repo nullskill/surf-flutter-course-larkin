@@ -33,8 +33,6 @@ const String appTitle = 'Places',
     sightSearchClearHistoryLabel = 'Очистить историю',
     sightSearchNothingFoundTitle = 'Ничего не найдено.',
     sightSearchNothingFoundMessage = 'Попробуйте изменить параметры поиска',
-    sightSearchHasErrorTitle = 'Ошибка',
-    sightSearchHasErrorMessage = 'Что то пошло не так.\nПопробуйте позже.',
 
 //SightDetailsScreen
     sightDetailsActionButtonLabel = 'построить маршрут',

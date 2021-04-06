@@ -56,5 +56,5 @@ final _routesMap = <String, Widget Function(BuildContext)>{
   AppRoutes.visiting: (_) => const VisitingScreen(),
   AppRoutes.settings: (_) => const SettingsScreen(),
   AppRoutes.onboarding: (_) => const OnboardingScreen(),
-  AppRoutes.error: (_) => const ErrorScreen(),
+  AppRoutes.error: (_) => ErrorScreen(), // analyzer breaks with const
 };

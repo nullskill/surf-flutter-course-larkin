@@ -55,9 +55,9 @@ class ApiService {
     final res = e.response;
     final req = e.requestOptions;
     final reqString =
-        '${res.statusCode} [${req.method} ${req.baseUrl}${req.path}]';
+        '${res?.statusCode ?? 'No Response'} [${req.method} ${req.baseUrl}${req.path}]';
 
-    switch (res.statusCode) {
+    switch (res?.statusCode) {
       case 400:
         throw BadRequestException(reqString);
       case 409:

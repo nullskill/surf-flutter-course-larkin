@@ -377,12 +377,9 @@ class _MessageBox extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       onTap: onTap,
       child: MessageBox(
-        title:
-            hasError ? sightSearchHasErrorTitle : sightSearchNothingFoundTitle,
+        title: hasError ? errorTitle : sightSearchNothingFoundTitle,
         iconName: hasError ? AppIcons.emptyError : AppIcons.emptySearch,
-        message: hasError
-            ? sightSearchHasErrorMessage
-            : sightSearchNothingFoundMessage,
+        message: hasError ? errorMessage : sightSearchNothingFoundMessage,
       ),
     );
   }

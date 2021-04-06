@@ -37,6 +37,7 @@ class _SightListScreenState extends State<SightListScreen> {
   final sightListController = StreamController<List<Sight>>();
 
   Stream<List<Sight>> get sightListStream => sightListController.stream;
+  bool isLoading;
 
   // expanded height = 196 + status bar height
   double get maxHeight =>
@@ -48,9 +49,16 @@ class _SightListScreenState extends State<SightListScreen> {
   @override
   void initState() {
     super.initState();
-    placeInteractor.getSights().then(
-        (value) => sightListController.sink.add(placeInteractor.sights),
-        onError: (Object error) => sightListController.sink.addError(error));
+
+    isLoading = true;
+    placeInteractor
+        .getSights()
+        .then((value) => sightListController.sink.add(placeInteractor.sights),
+            onError: (Object e) =>
+                Navigator.pushNamed(context, AppRoutes.error))
+        .whenComplete(() => setState(() {
+              isLoading = false;
+            }));
   }
 
   @override
@@ -140,8 +148,10 @@ class _SightListScreenState extends State<SightListScreen> {
               expandedHeight: maxHeight - context.mq.padding.top,
             ),
             _CardColumn(
-                sightListStateStream: sightListStream,
-                placeInteractor: placeInteractor),
+              sightListStream: sightListStream,
+              placeInteractor: placeInteractor,
+              isLoading: isLoading,
+            ),
           ],
         ),
       ),
@@ -275,19 +285,21 @@ class _Header extends StatelessWidget {
 class _CardColumn extends StatelessWidget {
   const _CardColumn({
     @required this.placeInteractor,
-    @required this.sightListStateStream,
+    @required this.sightListStream,
+    @required this.isLoading,
     Key key,
   }) : super(key: key);
 
   final PlaceInteractor placeInteractor;
-  final Stream<List<Sight>> sightListStateStream;
+  final Stream<List<Sight>> sightListStream;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     final _topPadding = context.isLandscape ? 14.0 : 0.0;
     final _restPadding = context.isLandscape ? 34.0 : 16.0;
     return StreamBuilder<List<Sight>>(
-      stream: sightListStateStream,
+      stream: sightListStream,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return SliverPadding(
@@ -307,18 +319,13 @@ class _CardColumn extends StatelessWidget {
                     toggleFavoriteSight: placeInteractor.toggleFavoriteSight,
                   ),
           );
-        } else if (snapshot.hasError && !placeInteractor.hasGetSightsError) {
-          placeInteractor.setSightsError();
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.pushNamed(context, AppRoutes.error);
-          });
         }
         return SliverFillRemaining(
           child: FractionallySizedBox(
             alignment: Alignment.topCenter,
             heightFactor: .8,
             child: Center(
-              child: !placeInteractor.hasGetSightsError
+              child: isLoading
                   ? CircularProgress(
                       size: 40.0,
                       primaryColor: secondaryColor2,

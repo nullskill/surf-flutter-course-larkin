@@ -1,5 +1,3 @@
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/repository/place_repository.dart';
@@ -26,14 +24,6 @@ class PlaceInteractor {
   List<FavoriteSight> _favoriteSights = [];
   final List<VisitedSight> _visitedSights = [];
 
-  bool _hasGetSightsError = false;
-
-  /// Признак ошибки при получении списка мест через API
-  bool get hasGetSightsError => _hasGetSightsError;
-
-  /// Устанавливает признак ошибки при получении списка мест через API
-  void setSightsError() => _hasGetSightsError = true;
-
   /// Отсортированный список мест
   List<Sight> get sights {
     if (_searchInteractor.filteredNumber > 0) {
@@ -56,41 +46,25 @@ class PlaceInteractor {
   Future<void> getSights() async {
     if (_searchInteractor.filteredNumber > 0) return;
 
-    try {
-      _hasGetSightsError = false;
-      final List<Place> _places = await _repo.getPlaces();
-      _sights = _places.map((p) => Sight.fromPlace(p)).toList();
-      _sortSights();
-    } on DioError catch (e) {
-      debugPrint('Error getting sights: ${e.error}');
-      rethrow;
-    }
+    final List<Place> _places = await _repo.getPlaces();
+    _sights = _places.map((p) => Sight.fromPlace(p)).toList();
+    _sortSights();
   }
 
   /// Получение места по [id]
   Future<Sight> getSightDetails(int id) async {
     Place place;
 
-    try {
-      place = await _repo.getPlaceDetails(id);
-    } on DioError catch (e) {
-      debugPrint('Error getting sight details: ${e.error}');
-      rethrow;
-    }
+    place = await _repo.getPlaceDetails(id);
 
     return Sight.fromPlace(place);
   }
 
   /// Добавление нового места (возвращается с id)
   Future<void> addNewSight(Sight sight) async {
-    try {
-      final Place place = await _repo.addNewPlace(Place.fromSight(sight));
-      _sights.add(Sight.fromPlace(place));
-      _sortSights();
-    } on DioError catch (e) {
-      debugPrint('Error adding new sight: ${e.error}');
-      rethrow;
-    }
+    final Place place = await _repo.addNewPlace(Place.fromSight(sight));
+    _sights.add(Sight.fromPlace(place));
+    _sortSights();
   }
 
   /// Добавление/удаление места в/из избранное
