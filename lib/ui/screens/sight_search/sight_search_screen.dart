@@ -22,6 +22,7 @@ import 'package:places/ui/widgets/message_box.dart';
 import 'package:places/ui/widgets/search_bar.dart';
 import 'package:places/ui/widgets/settings_item.dart';
 import 'package:places/ui/widgets/subtitle.dart';
+import 'package:provider/provider.dart';
 
 class SightSearchScreen extends StatefulWidget {
   const SightSearchScreen({Key key}) : super(key: key);
@@ -33,10 +34,10 @@ class SightSearchScreen extends StatefulWidget {
 class _SightSearchScreenState extends State<SightSearchScreen> {
   static const debounceDelay = 3000;
 
-  final PlaceInteractor placeInteractor = PlaceInteractor();
-  final SearchInteractor searchInteractor = SearchInteractor();
-  final searchController = TextEditingController();
-  final searchFocusNode = FocusNode();
+  PlaceInteractor placeInteractor;
+  SearchInteractor searchInteractor;
+  TextEditingController searchController;
+  FocusNode searchFocusNode;
   StreamController<List<Sight>> streamController;
   StreamSubscription<void> streamSub;
   Timer debounce;
@@ -49,6 +50,10 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
   void initState() {
     super.initState();
 
+    placeInteractor = context.read<PlaceInteractor>();
+    searchInteractor = context.read<SearchInteractor>();
+    searchController = TextEditingController();
+    searchFocusNode = FocusNode();
     streamController = StreamController.broadcast();
     searchController.addListener(searchControllerListener);
   }

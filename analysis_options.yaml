@@ -1,5 +1,10 @@
 include: package:surf_lint_rules/analysis_options.yaml
 
+linter:
+  rules:
+    sort_pub_dependencies: false
+
 analyzer:
   exclude:
     - lib/ui/widgets/app_dismissible.dart
+    - test/*

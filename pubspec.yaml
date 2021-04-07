@@ -12,27 +12,28 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.2
-  #  A powerful Http client for Dart
-  dio: ^4.0.0
   # Utility classes to work with asynchronous computations
   async: ^2.5.0
   # Widget that automatically resizes text to fit perfectly within its bounds
   auto_size_text: ^3.0.0-nullsafety.0
-  # SVG image
-  flutter_svg: ^0.21.0-nullsafety.0
-  # Support for inside scrollview + dragging down to close (showModalBottomSheet cannot)
-  modal_bottom_sheet: ^2.0.0
-  # Extension package for easy access the MediaQuery sizing info on the build context
-  sized_context: ^0.2.1+1
+  # Cupertino icons
+  cupertino_icons: ^1.0.2
   # Approximate how the app looks and performs on another device
   device_preview: ^0.7.1
+  #  A powerful Http client for Dart
+  dio: ^4.0.0
+  # SVG image
+  flutter_svg: ^0.21.0-nullsafety.0
   # Package provides internationalization and localization facilities
   intl: ^0.17.0
+  # Support for inside scrollview + dragging down to close (showModalBottomSheet cannot)
+  modal_bottom_sheet: ^2.0.0
   # State provider
   provider: ^5.0.0
   # Wraps platform-specific persistent storage for simple data
   shared_preferences: ^2.0.5
+  # Extension package for easy access the MediaQuery sizing info on the build context
+  sized_context: ^0.2.1+1
 
 dev_dependencies:
   flutter_test:

@@ -11,6 +11,7 @@ import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_dismissible.dart';
 import 'package:places/ui/widgets/message_box.dart';
 import 'package:places/ui/widgets/sight_card/sight_card.dart';
+import 'package:provider/provider.dart';
 
 /// Экран избранных/посещенных интересных мест
 class VisitingScreen extends StatefulWidget {
@@ -21,7 +22,14 @@ class VisitingScreen extends StatefulWidget {
 }
 
 class _VisitingScreenState extends State<VisitingScreen> {
-  final PlaceInteractor placeInteractor = PlaceInteractor();
+  PlaceInteractor placeInteractor;
+
+  @override
+  void initState() {
+    super.initState();
+
+    placeInteractor = context.read<PlaceInteractor>();
+  }
 
   /// Удаляет карточку из списка избранных/посещенных мест
   void removeFromFavorites<T extends Sight>(T sight) {

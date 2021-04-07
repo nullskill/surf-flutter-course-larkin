@@ -13,15 +13,7 @@ import 'package:places/util/consts.dart';
 
 /// Интерактор поиска и фильтрации интересных мест
 class SearchInteractor {
-  factory SearchInteractor() {
-    return _interactor;
-  }
-
-  SearchInteractor._internal()
-      : _repo = SearchRepository(),
-        _categories = <Category>[...categories];
-
-  static final SearchInteractor _interactor = SearchInteractor._internal();
+  SearchInteractor(this._repo);
 
   /// Минимальный и максимальный радиус
   static const double minRadius = 100.0, maxRadius = 5000.0;
@@ -33,7 +25,7 @@ class SearchInteractor {
   static const int maxHistoryLength = 5;
 
   final SearchRepository _repo;
-  final List<Category> _categories;
+  final List<Category> _categories = <Category>[...categories];
   final List<String> _history = [];
 
   List<Sight> _sights = [];

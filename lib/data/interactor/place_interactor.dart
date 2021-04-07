@@ -7,15 +7,7 @@ import 'package:places/domain/visited_sight.dart';
 
 /// Интерактор для работы с интересным местом
 class PlaceInteractor {
-  factory PlaceInteractor() {
-    return _interactor;
-  }
-
-  PlaceInteractor._internal()
-      : _repo = PlaceRepository(),
-        _searchInteractor = SearchInteractor();
-
-  static final PlaceInteractor _interactor = PlaceInteractor._internal();
+  PlaceInteractor(this._repo, this._searchInteractor);
 
   final PlaceRepository _repo;
   final SearchInteractor _searchInteractor;
