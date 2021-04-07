@@ -1,6 +1,7 @@
 import 'package:places/data/model/place.dart';
 import 'package:places/data/repository/json_parsing.dart';
 import 'package:places/data/repository/network/api_service.dart';
+import 'package:places/data/repository/network/error_handler.dart';
 
 /// Репозиторий для интересного места
 class PlaceRepository {
@@ -11,7 +12,10 @@ class PlaceRepository {
   /// GET /place
   /// Получение списка всех мест
   Future<List<Place>> getPlaces() async {
-    final String response = await _api.get<String>(placePath);
+    final String response = await handleError(
+      future: () => _api.get<String>(placePath),
+      message: 'Error getting sights',
+    );
 
     return parsePlaces(response);
   }
@@ -19,7 +23,10 @@ class PlaceRepository {
   /// GET /place/:id
   /// Получение места по [id]
   Future<Place> getPlaceDetails(int id) async {
-    final String response = await _api.get<String>('$placePath/$id');
+    final String response = await handleError(
+      future: () => _api.get<String>('$placePath/$id'),
+      message: 'Error getting sight details',
+    );
 
     return parsePlace(response);
   }
@@ -27,8 +34,11 @@ class PlaceRepository {
   /// POST /place
   /// Добавление места
   Future<Place> addNewPlace(Place place) async {
-    final dynamic response = await _api.post<String>(placePath, place.toJson());
+    final String response = await handleError(
+      future: () => _api.post<String>(placePath, place.toJson()),
+      message: 'Error adding new sight',
+    );
 
-    return parsePlace(response.toString());
+    return parsePlace(response);
   }
 }

@@ -125,7 +125,6 @@ class SearchInteractor {
   /// Получение списка найденных/отфильтрованных мест в репо
   Future<void> searchPlaces(PlacesFilterDto filterDto) async {
     final List<Place> _places = await _repo.getFilteredPlaces(filterDto);
-
     _foundSights = _places.map((p) => Sight.fromPlace(p)).toList();
     _foundSights = getSortedSights(_foundSights);
   }

@@ -15,6 +15,8 @@ dependencies:
   cupertino_icons: ^1.0.2
   #  A powerful Http client for Dart
   dio: ^4.0.0
+  # Utility classes to work with asynchronous computations
+  async: ^2.5.0
   # Widget that automatically resizes text to fit perfectly within its bounds
   auto_size_text: ^3.0.0-nullsafety.0
   # SVG image

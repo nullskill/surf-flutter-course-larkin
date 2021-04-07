@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/bloc/bloc_provider.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
@@ -31,7 +34,10 @@ class _SightListScreenState extends State<SightListScreen> {
   final ScrollController controller = ScrollController();
   final PlaceInteractor placeInteractor = PlaceInteractor();
   final SearchInteractor searchInteractor = SearchInteractor();
-  bool isEmpty = false;
+  final sightListController = StreamController<List<Sight>>();
+
+  Stream<List<Sight>> get sightListStream => sightListController.stream;
+  bool isLoading;
 
   // expanded height = 196 + status bar height
   double get maxHeight =>
@@ -41,8 +47,24 @@ class _SightListScreenState extends State<SightListScreen> {
   double get minHeight => kToolbarHeight + context.mq.padding.top;
 
   @override
+  void initState() {
+    super.initState();
+
+    isLoading = true;
+    placeInteractor
+        .getSights()
+        .then((value) => sightListController.sink.add(placeInteractor.sights),
+            onError: (Object e) =>
+                Navigator.pushNamed(context, AppRoutes.error))
+        .whenComplete(() => setState(() {
+              isLoading = false;
+            }));
+  }
+
+  @override
   void dispose() {
     controller.dispose();
+    sightListController.close();
 
     super.dispose();
   }
@@ -125,7 +147,11 @@ class _SightListScreenState extends State<SightListScreen> {
               ),
               expandedHeight: maxHeight - context.mq.padding.top,
             ),
-            _CardColumn(placeInteractor: placeInteractor),
+            _CardColumn(
+              sightListStream: sightListStream,
+              placeInteractor: placeInteractor,
+              isLoading: isLoading,
+            ),
           ],
         ),
       ),
@@ -259,49 +285,56 @@ class _Header extends StatelessWidget {
 class _CardColumn extends StatelessWidget {
   const _CardColumn({
     @required this.placeInteractor,
+    @required this.sightListStream,
+    @required this.isLoading,
     Key key,
   }) : super(key: key);
 
   final PlaceInteractor placeInteractor;
+  final Stream<List<Sight>> sightListStream;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     final _topPadding = context.isLandscape ? 14.0 : 0.0;
     final _restPadding = context.isLandscape ? 34.0 : 16.0;
-    return FutureBuilder(
-      future: placeInteractor.getSights(),
+    return StreamBuilder<List<Sight>>(
+      stream: sightListStream,
       builder: (context, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.none:
-          case ConnectionState.waiting:
-          case ConnectionState.active:
-            return SliverFillRemaining(
-              child: FractionallySizedBox(
-                alignment: Alignment.topCenter,
-                heightFactor: .8,
-                child: Center(
-                  child: CircularProgress(
-                    size: 40.0,
-                    primaryColor: secondaryColor2,
-                    secondaryColor: Theme.of(context).backgroundColor,
+        if (snapshot.hasData) {
+          return SliverPadding(
+            padding: EdgeInsets.fromLTRB(
+              _restPadding,
+              _topPadding,
+              _restPadding,
+              _restPadding,
+            ),
+            sliver: context.isLandscape
+                ? _SliverGrid(
+                    sights: snapshot.data,
+                    toggleFavoriteSight: placeInteractor.toggleFavoriteSight,
+                  )
+                : _SliverList(
+                    sights: snapshot.data,
+                    toggleFavoriteSight: placeInteractor.toggleFavoriteSight,
                   ),
-                ),
-              ),
-            );
-          case ConnectionState.done:
-          default:
-            return SliverPadding(
-              padding: EdgeInsets.fromLTRB(
-                _restPadding,
-                _topPadding,
-                _restPadding,
-                _restPadding,
-              ),
-              sliver: context.isLandscape
-                  ? _SliverGrid(placeInteractor: placeInteractor)
-                  : _SliverList(placeInteractor: placeInteractor),
-            );
+          );
         }
+        return SliverFillRemaining(
+          child: FractionallySizedBox(
+            alignment: Alignment.topCenter,
+            heightFactor: .8,
+            child: Center(
+              child: isLoading
+                  ? CircularProgress(
+                      size: 40.0,
+                      primaryColor: secondaryColor2,
+                      secondaryColor: Theme.of(context).backgroundColor,
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          ),
+        );
       },
     );
   }
@@ -309,27 +342,29 @@ class _CardColumn extends StatelessWidget {
 
 class _SliverGrid extends StatelessWidget {
   const _SliverGrid({
-    @required this.placeInteractor,
+    @required this.toggleFavoriteSight,
+    @required this.sights,
     Key key,
   }) : super(key: key);
 
-  final PlaceInteractor placeInteractor;
+  final void Function(Sight) toggleFavoriteSight;
+  final List<Sight> sights;
 
   @override
   Widget build(BuildContext context) {
     return SliverGrid(
       delegate: SliverChildBuilderDelegate(
         (_, index) {
-          final Sight sight = placeInteractor.sights[index];
+          final Sight sight = sights[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
             child: SightCard(
               sight: sight,
-              addToFavorites: () => placeInteractor.toggleFavoriteSight(sight),
+              addToFavorites: () => toggleFavoriteSight(sight),
             ),
           );
         },
-        childCount: placeInteractor.sights.length,
+        childCount: sights.length,
       ),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -343,27 +378,29 @@ class _SliverGrid extends StatelessWidget {
 
 class _SliverList extends StatelessWidget {
   const _SliverList({
-    @required this.placeInteractor,
+    @required this.toggleFavoriteSight,
+    @required this.sights,
     Key key,
   }) : super(key: key);
 
-  final PlaceInteractor placeInteractor;
+  final void Function(Sight) toggleFavoriteSight;
+  final List<Sight> sights;
 
   @override
   Widget build(BuildContext context) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (_, index) {
-          final Sight sight = placeInteractor.sights[index];
+          final Sight sight = sights[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 24.0),
             child: SightCard(
               sight: sight,
-              addToFavorites: () => placeInteractor.toggleFavoriteSight(sight),
+              addToFavorites: () => toggleFavoriteSight(sight),
             ),
           );
         },
-        childCount: placeInteractor.sights.length,
+        childCount: sights.length,
       ),
     );
   }

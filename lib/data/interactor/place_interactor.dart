@@ -47,14 +47,15 @@ class PlaceInteractor {
     if (_searchInteractor.filteredNumber > 0) return;
 
     final List<Place> _places = await _repo.getPlaces();
-
     _sights = _places.map((p) => Sight.fromPlace(p)).toList();
     _sortSights();
   }
 
   /// Получение места по [id]
   Future<Sight> getSightDetails(int id) async {
-    final Place place = await _repo.getPlaceDetails(id);
+    Place place;
+
+    place = await _repo.getPlaceDetails(id);
 
     return Sight.fromPlace(place);
   }
@@ -62,7 +63,6 @@ class PlaceInteractor {
   /// Добавление нового места (возвращается с id)
   Future<void> addNewSight(Sight sight) async {
     final Place place = await _repo.addNewPlace(Place.fromSight(sight));
-
     _sights.add(Sight.fromPlace(place));
     _sortSights();
   }
