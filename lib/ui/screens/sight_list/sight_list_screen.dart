@@ -153,7 +153,7 @@ class _SightListScreenState extends State<SightListScreen> {
             ),
             _CardColumn(
               sightListStream: sightListStream,
-              placeInteractor: context.read<PlaceInteractor>(),
+              placeInteractor: placeInteractor,
               isLoading: isLoading,
             ),
           ],
