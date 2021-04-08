@@ -6,11 +6,11 @@ import 'package:places/ui/widgets/message_box.dart';
 /// Экран для отображения ошибки.
 class ErrorScreen extends StatelessWidget {
   const ErrorScreen({
-    Key key,
     this.title = errorTitle,
     this.iconName = AppIcons.emptyError,
     this.message = errorMessage,
     this.link,
+    Key key,
   }) : super(key: key);
 
   final String title, iconName, message;

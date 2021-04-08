@@ -6,7 +6,7 @@ class AppIcons {
   AppIcons._();
 
   /// Paths
-  static const _baseResPath = 'res/icons',
+  static const String _baseResPath = 'res/icons',
       _menuPath = '$_baseResPath/menu',
       _otherPath = '$_baseResPath/other',
       _catalogPath = '$_baseResPath/catalog',
@@ -15,15 +15,15 @@ class AppIcons {
       _logoPath = '$_baseResPath/logo';
 
   /// Logo
-  static const logo = '$_logoPath/logo.svg';
+  static const String logo = '$_logoPath/logo.svg';
 
   /// Tutorial
-  static const frame1 = '$_tutorialPath/frame1.svg',
+  static const String frame1 = '$_tutorialPath/frame1.svg',
       frame2 = '$_tutorialPath/frame2.svg',
       frame3 = '$_tutorialPath/frame3.svg';
 
   /// Catalog
-  static const cafe = '$_catalogPath/cafe.svg',
+  static const String cafe = '$_catalogPath/cafe.svg',
       hotel = '$_catalogPath/hotel.svg',
       museum = '$_catalogPath/museum.svg',
       park = '$_catalogPath/park.svg',
@@ -31,14 +31,14 @@ class AppIcons {
       restaurant = '$_catalogPath/restaurant.svg';
 
   /// Empty pages
-  static const emptyCard = '$_emptyPagesPath/card.svg',
+  static const String emptyCard = '$_emptyPagesPath/card.svg',
       emptyError = '$_emptyPagesPath/error.svg',
       emptyGo = '$_emptyPagesPath/go.svg',
       emptyMap = '$_emptyPagesPath/map.svg',
       emptySearch = '$_emptyPagesPath/search.svg';
 
   /// Menu
-  static const list = '$_menuPath/list.svg',
+  static const String list = '$_menuPath/list.svg',
       listFull = '$_menuPath/list_full.svg',
       map = '$_menuPath/map.svg',
       mapFull = '$_menuPath/map_full.svg',
@@ -48,7 +48,7 @@ class AppIcons {
       settingsFull = '$_menuPath/settings_full.svg';
 
   /// Other
-  static const arrow = '$_otherPath/arrow.svg',
+  static const String arrow = '$_otherPath/arrow.svg',
       bucket = '$_otherPath/bucket.svg',
       calendar = '$_otherPath/calendar.svg',
       calendarFull = '$_otherPath/calendar_full.svg',

@@ -1,17 +1,15 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/bloc/bloc_provider.dart';
 import 'package:places/data/interactor/place_interactor.dart';
-import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/screens/add_sight/add_sight_bloc.dart';
 import 'package:places/ui/screens/add_sight/add_sight_screen.dart';
 import 'package:places/ui/screens/filters/filters_screen.dart';
 import 'package:places/ui/screens/sight_search/sight_search_screen.dart';
@@ -20,6 +18,7 @@ import 'package:places/ui/widgets/app_floating_action_button.dart';
 import 'package:places/ui/widgets/circular_progress.dart';
 import 'package:places/ui/widgets/search_bar.dart';
 import 'package:places/ui/widgets/sight_card/sight_card.dart';
+import 'package:provider/provider.dart';
 import 'package:sized_context/sized_context.dart';
 
 /// Экран списка карточек интересных мест.
@@ -32,9 +31,8 @@ class SightListScreen extends StatefulWidget {
 
 class _SightListScreenState extends State<SightListScreen> {
   final ScrollController controller = ScrollController();
-  final PlaceInteractor placeInteractor = PlaceInteractor();
-  final SearchInteractor searchInteractor = SearchInteractor();
   final sightListController = StreamController<List<Sight>>();
+  PlaceInteractor placeInteractor;
 
   Stream<List<Sight>> get sightListStream => sightListController.stream;
   bool isLoading;
@@ -50,15 +48,8 @@ class _SightListScreenState extends State<SightListScreen> {
   void initState() {
     super.initState();
 
-    isLoading = true;
-    placeInteractor
-        .getSights()
-        .then((value) => sightListController.sink.add(placeInteractor.sights),
-            onError: (Object e) =>
-                Navigator.pushNamed(context, AppRoutes.error))
-        .whenComplete(() => setState(() {
-              isLoading = false;
-            }));
+    placeInteractor = context.read<PlaceInteractor>();
+    refreshSights();
   }
 
   @override
@@ -67,6 +58,22 @@ class _SightListScreenState extends State<SightListScreen> {
     sightListController.close();
 
     super.dispose();
+  }
+
+  Future<void> refreshSights() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      await placeInteractor.getSights();
+      sightListController.sink.add(placeInteractor.sights);
+    } on DioError catch (_) {
+      await Navigator.pushNamed(context, AppRoutes.error);
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   /// Проверяет смещение между [maxHeight] и [minHeight]
@@ -105,21 +112,18 @@ class _SightListScreenState extends State<SightListScreen> {
         builder: (context) => const FiltersScreen(),
       ),
     );
-    setState(() {});
+    await refreshSights();
   }
 
   /// При нажатии FAB кнопки "Новое место" переход на AddSightScreen
   Future<void> onPressedFab() async {
     await Navigator.push(
       context,
-      MaterialPageRoute<BlocProvider>(
-        builder: (context) => BlocProvider(
-          bloc: AddSightScreenBloc(),
-          child: AddSightScreen(),
-        ),
+      MaterialPageRoute<AddSightScreen>(
+        builder: (context) => const AddSightScreen(),
       ),
     );
-    setState(() {});
+    await refreshSights();
   }
 
   @override

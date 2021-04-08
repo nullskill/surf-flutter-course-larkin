@@ -13,8 +13,8 @@ class PlaceRepository {
   /// Получение списка всех мест
   Future<List<Place>> getPlaces() async {
     final String response = await handleError(
-      future: () => _api.get<String>(placePath),
-      message: 'Error getting sights',
+      () => _api.get<String>(placePath),
+      message: 'Error getting places',
     );
 
     return parsePlaces(response);
@@ -24,8 +24,8 @@ class PlaceRepository {
   /// Получение места по [id]
   Future<Place> getPlaceDetails(int id) async {
     final String response = await handleError(
-      future: () => _api.get<String>('$placePath/$id'),
-      message: 'Error getting sight details',
+      () => _api.get<String>('$placePath/$id'),
+      message: 'Error getting place details',
     );
 
     return parsePlace(response);
@@ -35,8 +35,8 @@ class PlaceRepository {
   /// Добавление места
   Future<Place> addNewPlace(Place place) async {
     final String response = await handleError(
-      future: () => _api.post<String>(placePath, place.toJson()),
-      message: 'Error adding new sight',
+      () => _api.post<String>(placePath, place.toJson()),
+      message: 'Error adding new place',
     );
 
     return parsePlace(response);

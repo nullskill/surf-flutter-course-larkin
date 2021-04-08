@@ -17,6 +17,7 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screens/sight_details_screen.dart';
 import 'package:places/ui/widgets/app_modal_bottom_sheet.dart';
 import 'package:places/ui/widgets/sight_card/sight_card_helper.dart';
+import 'package:provider/provider.dart';
 
 /// Виджет карточки интересного места.
 class SightCard extends StatefulWidget {
@@ -36,7 +37,7 @@ class SightCard extends StatefulWidget {
 }
 
 class _SightCardState extends State<SightCard> {
-  final PlaceInteractor placeInteractor = PlaceInteractor();
+  PlaceInteractor placeInteractor;
   SightCardHelper helper;
 
   TimeOfDay selectedTime = TimeOfDay.now();
@@ -49,6 +50,8 @@ class _SightCardState extends State<SightCard> {
   @override
   void initState() {
     super.initState();
+
+    placeInteractor = context.read<PlaceInteractor>();
     helper = SightCardHelper(sight: widget.sight);
     updateFavoriteStatus();
   }

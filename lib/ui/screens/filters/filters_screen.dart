@@ -11,6 +11,7 @@ import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/ui/widgets/app_back_button.dart';
 import 'package:places/ui/widgets/app_range_slider/app_range_slider.dart';
 import 'package:places/ui/widgets/subtitle.dart';
+import 'package:provider/provider.dart';
 import 'package:sized_context/sized_context.dart';
 
 /// Экран фильтров
@@ -29,8 +30,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
   @override
   void initState() {
     super.initState();
-    placeInteractor = PlaceInteractor();
-    searchInteractor = SearchInteractor();
+    placeInteractor = context.read<PlaceInteractor>();
+    searchInteractor = context.read<SearchInteractor>();
     rangeValues = RangeValues(
       searchInteractor.selectedMinRadius,
       searchInteractor.selectedMaxRadius,
