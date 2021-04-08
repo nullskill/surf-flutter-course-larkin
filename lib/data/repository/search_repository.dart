@@ -14,8 +14,8 @@ class SearchRepository {
   /// Получение списка отфильтрованных мест
   Future<List<Place>> getFilteredPlaces(PlacesFilterDto filterDto) async {
     final String response = await handleError(
-      future: () => _api.post<String>(filteredPlacesPath, filterDto.toJson()),
-      message: 'Error searching sights',
+      () => _api.post<String>(filteredPlacesPath, filterDto.toJson()),
+      message: 'Error searching places',
     );
 
     return parsePlaces(response);
