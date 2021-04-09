@@ -30,4 +30,14 @@ class Sight {
   final double lat, lng;
   final SightType type;
   double distance = 0.0;
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Sight && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => name.hashCode;
 }
