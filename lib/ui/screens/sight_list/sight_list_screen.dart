@@ -1,10 +1,13 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/interactor/search_interactor.dart';
+import 'package:places/data/repository/place_repository.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/store/sight_list/sight_list_store.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/colors.dart';
@@ -31,11 +34,7 @@ class SightListScreen extends StatefulWidget {
 
 class _SightListScreenState extends State<SightListScreen> {
   final ScrollController controller = ScrollController();
-  final sightListController = StreamController<List<Sight>>();
-  PlaceInteractor placeInteractor;
-
-  Stream<List<Sight>> get sightListStream => sightListController.stream;
-  bool isLoading;
+  SightListStore store;
 
   // expanded height = 196 + status bar height
   double get maxHeight =>
@@ -48,32 +47,16 @@ class _SightListScreenState extends State<SightListScreen> {
   void initState() {
     super.initState();
 
-    placeInteractor = context.read<PlaceInteractor>();
+    store = SightListStore(
+        context.read<PlaceRepository>(), context.read<SearchInteractor>());
     refreshSights();
   }
 
   @override
   void dispose() {
     controller.dispose();
-    sightListController.close();
 
     super.dispose();
-  }
-
-  Future<void> refreshSights() async {
-    setState(() {
-      isLoading = true;
-    });
-    try {
-      await placeInteractor.getSights();
-      sightListController.sink.add(placeInteractor.sights);
-    } on DioError catch (_) {
-      await Navigator.pushNamed(context, AppRoutes.error);
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
   }
 
   /// Проверяет смещение между [maxHeight] и [minHeight]
@@ -126,52 +109,58 @@ class _SightListScreenState extends State<SightListScreen> {
     await refreshSights();
   }
 
+  Future<void> refreshSights() async {
+    await store.loadSights();
+    if (store.hasError) {
+      await Navigator.pushNamed(context, AppRoutes.error);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: NotificationListener<ScrollEndNotification>(
-        onNotification: (_) {
-          snapAppBar();
-          return false;
-        },
-        child: CustomScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          controller: controller,
-          slivers: [
-            SliverAppBar(
-              pinned: true,
-              stretch: true,
-              elevation: 0,
-              automaticallyImplyLeading: false,
-              flexibleSpace: _Header(
-                maxHeight: maxHeight,
-                minHeight: minHeight,
-                onTap: onTapSearchBar,
-                onFilter: onFilterSearchBar,
+    return Provider(
+      create: (_) => store,
+      child: Scaffold(
+        body: NotificationListener<ScrollEndNotification>(
+          onNotification: (_) {
+            snapAppBar();
+            return false;
+          },
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            controller: controller,
+            slivers: [
+              SliverAppBar(
+                pinned: true,
+                stretch: true,
+                elevation: 0,
+                automaticallyImplyLeading: false,
+                flexibleSpace: _Header(
+                  maxHeight: maxHeight,
+                  minHeight: minHeight,
+                  onTap: onTapSearchBar,
+                  onFilter: onFilterSearchBar,
+                ),
+                expandedHeight: maxHeight - context.mq.padding.top,
               ),
-              expandedHeight: maxHeight - context.mq.padding.top,
-            ),
-            _CardColumn(
-              sightListStream: sightListStream,
-              placeInteractor: placeInteractor,
-              isLoading: isLoading,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: AppFloatingActionButton(
-        icon: SvgPicture.asset(AppIcons.plus, color: whiteColor),
-        label: Text(
-          sightListFabLabel.toUpperCase(),
-          style: textBold14.copyWith(
-            color: whiteColor,
-            height: lineHeight1_3,
+              const _CardColumn(),
+            ],
           ),
         ),
-        onPressed: onPressedFab,
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: AppFloatingActionButton(
+          icon: SvgPicture.asset(AppIcons.plus, color: whiteColor),
+          label: Text(
+            sightListFabLabel.toUpperCase(),
+            style: textBold14.copyWith(
+              color: whiteColor,
+              height: lineHeight1_3,
+            ),
+          ),
+          onPressed: onPressedFab,
+        ),
+        bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 0),
       ),
-      bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 0),
     );
   }
 }
@@ -287,88 +276,64 @@ class _Header extends StatelessWidget {
 }
 
 class _CardColumn extends StatelessWidget {
-  const _CardColumn({
-    @required this.placeInteractor,
-    @required this.sightListStream,
-    @required this.isLoading,
-    Key key,
-  }) : super(key: key);
-
-  final PlaceInteractor placeInteractor;
-  final Stream<List<Sight>> sightListStream;
-  final bool isLoading;
+  const _CardColumn({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final _topPadding = context.isLandscape ? 14.0 : 0.0;
     final _restPadding = context.isLandscape ? 34.0 : 16.0;
-    return StreamBuilder<List<Sight>>(
-      stream: sightListStream,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return SliverPadding(
-            padding: EdgeInsets.fromLTRB(
-              _restPadding,
-              _topPadding,
-              _restPadding,
-              _restPadding,
-            ),
-            sliver: context.isLandscape
-                ? _SliverGrid(
-                    sights: snapshot.data,
-                    toggleFavoriteSight: placeInteractor.toggleFavoriteSight,
-                  )
-                : _SliverList(
-                    sights: snapshot.data,
-                    toggleFavoriteSight: placeInteractor.toggleFavoriteSight,
+    return Observer(builder: (context) {
+      final SightListStore store = context.read<SightListStore>();
+      return store.isLoading
+          ? SliverFillRemaining(
+              child: FractionallySizedBox(
+                alignment: Alignment.topCenter,
+                heightFactor: .8,
+                child: Center(
+                  child: CircularProgress(
+                    size: 40.0,
+                    primaryColor: secondaryColor2,
+                    secondaryColor: Theme.of(context).backgroundColor,
                   ),
-          );
-        }
-        return SliverFillRemaining(
-          child: FractionallySizedBox(
-            alignment: Alignment.topCenter,
-            heightFactor: .8,
-            child: Center(
-              child: isLoading
-                  ? CircularProgress(
-                      size: 40.0,
-                      primaryColor: secondaryColor2,
-                      secondaryColor: Theme.of(context).backgroundColor,
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          ),
-        );
-      },
-    );
+                ),
+              ),
+            )
+          : SliverPadding(
+              padding: EdgeInsets.fromLTRB(
+                _restPadding,
+                _topPadding,
+                _restPadding,
+                _restPadding,
+              ),
+              sliver: context.isLandscape
+                  ? _SliverGrid(store: store)
+                  : _SliverList(store: store),
+            );
+    });
   }
 }
 
 class _SliverGrid extends StatelessWidget {
-  const _SliverGrid({
-    @required this.toggleFavoriteSight,
-    @required this.sights,
-    Key key,
-  }) : super(key: key);
+  const _SliverGrid({this.store, Key key}) : super(key: key);
 
-  final void Function(Sight) toggleFavoriteSight;
-  final List<Sight> sights;
+  final SightListStore store;
 
   @override
   Widget build(BuildContext context) {
     return SliverGrid(
       delegate: SliverChildBuilderDelegate(
         (_, index) {
-          final Sight sight = sights[index];
+          final Sight sight = store.sights[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
             child: SightCard(
               sight: sight,
-              addToFavorites: () => toggleFavoriteSight(sight),
+              addToFavorites: () =>
+                  context.read<PlaceInteractor>().toggleFavoriteSight(sight),
             ),
           );
         },
-        childCount: sights.length,
+        childCount: store.sights.length,
       ),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -381,30 +346,26 @@ class _SliverGrid extends StatelessWidget {
 }
 
 class _SliverList extends StatelessWidget {
-  const _SliverList({
-    @required this.toggleFavoriteSight,
-    @required this.sights,
-    Key key,
-  }) : super(key: key);
+  const _SliverList({this.store, Key key}) : super(key: key);
 
-  final void Function(Sight) toggleFavoriteSight;
-  final List<Sight> sights;
+  final SightListStore store;
 
   @override
   Widget build(BuildContext context) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (_, index) {
-          final Sight sight = sights[index];
+          final Sight sight = store.sights[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 24.0),
             child: SightCard(
               sight: sight,
-              addToFavorites: () => toggleFavoriteSight(sight),
+              addToFavorites: () =>
+                  context.read<PlaceInteractor>().toggleFavoriteSight(sight),
             ),
           );
         },
-        childCount: sights.length,
+        childCount: store.sights.length,
       ),
     );
   }
