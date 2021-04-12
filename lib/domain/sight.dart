@@ -1,8 +1,10 @@
+import 'package:equatable/equatable.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/domain/sight_type.dart';
 
 /// Класс интересного места
-class Sight {
+// ignore: must_be_immutable
+class Sight extends Equatable {
   Sight({
     this.id,
     this.name,
@@ -32,12 +34,5 @@ class Sight {
   double distance = 0.0;
 
   @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Sight && runtimeType == other.runtimeType && id == other.id;
-
-  @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
-  int get hashCode => name.hashCode;
+  List<Object> get props => [id];
 }

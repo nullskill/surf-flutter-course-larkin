@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/bloc/sight_card/sight_card_bloc.dart';
+import 'package:places/bloc/sight_card/sight_card_event.dart';
+import 'package:places/bloc/sight_card/sight_card_state.dart';
+import 'package:places/data/repository/visiting_repository.dart';
 import 'package:places/domain/categories.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/res/app_color_scheme.dart';
@@ -15,27 +20,25 @@ import 'package:sized_context/sized_context.dart';
 class SightDetailsScreen extends StatelessWidget {
   const SightDetailsScreen({
     @required this.sight,
-    @required this.isFavoriteSight,
-    @required this.addToFavorites,
     Key key,
   }) : super(key: key);
 
   final Sight sight;
-  final bool Function() isFavoriteSight;
-  final void Function() addToFavorites;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: transparentColor,
-      body: CustomScrollView(
-        slivers: [
-          _SightDetailsAppBar(sight: sight),
-          _SightDetailsBody(
-              sight: sight,
-              isFavoriteSight: isFavoriteSight,
-              addToFavorites: addToFavorites),
-        ],
+    return BlocProvider<SightCardBloc>(
+      create: (context) =>
+          SightCardBloc(context.read<VisitingRepository>(), sight)
+            ..add(SightCardCheckIsFavoriteEvent()),
+      child: Scaffold(
+        backgroundColor: transparentColor,
+        body: CustomScrollView(
+          slivers: [
+            _SightDetailsAppBar(sight: sight),
+            _SightDetailsBody(sight: sight),
+          ],
+        ),
       ),
     );
   }
@@ -165,17 +168,15 @@ class _GalleryState extends State<_Gallery> {
 class _SightDetailsBody extends StatelessWidget {
   const _SightDetailsBody({
     @required this.sight,
-    @required this.isFavoriteSight,
-    @required this.addToFavorites,
     Key key,
   }) : super(key: key);
 
   final Sight sight;
-  final bool Function() isFavoriteSight;
-  final void Function() addToFavorites;
 
   @override
   Widget build(BuildContext context) {
+    final SightCardBloc bloc = context.read<SightCardBloc>();
+
     return SliverFillRemaining(
       child: Container(
         width: double.infinity,
@@ -205,9 +206,13 @@ class _SightDetailsBody extends StatelessWidget {
               },
             ),
             const SizedBox(height: 24.0),
-            _CardMenu(
-                isFavoriteSight: isFavoriteSight,
-                addToFavorites: addToFavorites),
+            BlocBuilder<SightCardBloc, SightCardState>(
+              builder: (_, state) => _CardMenu(
+                  isFavoriteSight:
+                      state is SightCardLoadSuccess && state.isFavoriteSight,
+                  addToFavorites: () =>
+                      bloc.add(SightCardToggleFavoriteEvent())),
+            ),
           ],
         ),
       ),
@@ -267,7 +272,7 @@ class _CardMenu extends StatefulWidget {
     Key key,
   }) : super(key: key);
 
-  final bool Function() isFavoriteSight;
+  final bool isFavoriteSight;
   final void Function() addToFavorites;
 
   @override
@@ -296,9 +301,8 @@ class _CardMenuState extends State<_CardMenu> {
             ),
             _ExpandedButton(
               title: sightDetailsAddToFavorites,
-              iconName: widget.isFavoriteSight()
-                  ? AppIcons.heartFull
-                  : AppIcons.heart,
+              iconName:
+                  widget.isFavoriteSight ? AppIcons.heartFull : AppIcons.heart,
               selected: true,
               onPressed: addToFavorites,
             ),

@@ -324,11 +324,7 @@ class _ListTile extends StatelessWidget {
   Future<void> showSightDetails(BuildContext context) async {
     await showAppModalBottomSheet<SightDetailsScreen>(
       context: context,
-      builder: (_) => SightDetailsScreen(
-        sight: sight,
-        isFavoriteSight: isFavoriteSight,
-        addToFavorites: toggleFavoriteSight,
-      ),
+      builder: (_) => SightDetailsScreen(sight: sight),
     );
   }
 

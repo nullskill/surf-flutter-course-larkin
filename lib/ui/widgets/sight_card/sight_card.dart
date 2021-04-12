@@ -5,8 +5,13 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/bloc/sight_card/sight_card_bloc.dart';
+import 'package:places/bloc/sight_card/sight_card_event.dart';
+import 'package:places/bloc/sight_card/sight_card_state.dart';
 import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/repository/visiting_repository.dart';
 import 'package:places/domain/categories.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/res/assets.dart';
@@ -24,13 +29,11 @@ class SightCard extends StatefulWidget {
   const SightCard({
     @required this.sight,
     this.onRemoveCard,
-    this.addToFavorites,
     Key key,
   }) : super(key: key);
 
   final Sight sight;
   final void Function() onRemoveCard;
-  final void Function() addToFavorites;
 
   @override
   _SightCardState createState() => _SightCardState();
@@ -39,13 +42,9 @@ class SightCard extends StatefulWidget {
 class _SightCardState extends State<SightCard> {
   PlaceInteractor placeInteractor;
   SightCardHelper helper;
+  SightCardBloc bloc;
 
   TimeOfDay selectedTime = TimeOfDay.now();
-
-  final favoriteSightStateController = StreamController<bool>();
-
-  Stream<bool> get favoriteSightStateStream =>
-      favoriteSightStateController.stream;
 
   @override
   void initState() {
@@ -53,25 +52,13 @@ class _SightCardState extends State<SightCard> {
 
     placeInteractor = context.read<PlaceInteractor>();
     helper = SightCardHelper(sight: widget.sight);
-    updateFavoriteStatus();
-  }
-
-  @override
-  void dispose() {
-    favoriteSightStateController.close();
-    super.dispose();
+    bloc = SightCardBloc(context.read<VisitingRepository>(), widget.sight)
+      ..add(SightCardCheckIsFavoriteEvent());
   }
 
   /// Добавление в стрим признака избранного
   void addToFavorites() {
-    widget.addToFavorites();
-    updateFavoriteStatus();
-  }
-
-  /// Обновляет признак избранного через стрим
-  void updateFavoriteStatus() {
-    favoriteSightStateController.sink
-        .add(placeInteractor.isFavoriteSight(widget.sight));
+    bloc.add(SightCardToggleFavoriteEvent());
   }
 
   /// Показать модальный bottom sheet с детальной инфой
@@ -79,12 +66,9 @@ class _SightCardState extends State<SightCard> {
     final Sight sight = await placeInteractor.getSightDetails(widget.sight.id);
     await showAppModalBottomSheet<SightDetailsScreen>(
       context: context,
-      builder: (_) => SightDetailsScreen(
-        sight: sight,
-        isFavoriteSight: () => placeInteractor.isFavoriteSight(sight),
-        addToFavorites: () => placeInteractor.toggleFavoriteSight(sight),
-      ),
+      builder: (_) => SightDetailsScreen(sight: sight),
     );
+    bloc.add(SightCardCheckIsFavoriteEvent());
   }
 
   /// Диалог выбора времени
@@ -114,64 +98,65 @@ class _SightCardState extends State<SightCard> {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: helper.getAspectRatio(context),
-      child: ClipRRect(
-        borderRadius: allBorderRadius16,
-        child: Container(
-          color: Theme.of(context).backgroundColor,
-          child: Stack(
-            children: [
-              Column(
+    return BlocBuilder<SightCardBloc, SightCardState>(
+      bloc: bloc,
+      builder: (context, state) {
+        return AspectRatio(
+          aspectRatio: helper.getAspectRatio(context),
+          child: ClipRRect(
+            borderRadius: allBorderRadius16,
+            child: Container(
+              color: Theme.of(context).backgroundColor,
+              child: Stack(
                 children: [
-                  _CardTop(sight: widget.sight),
-                  _CardBottom(sight: widget.sight, helper: helper),
-                ],
-              ),
-              Positioned.fill(
-                child: Material(
-                  type: MaterialType.transparency,
-                  child: InkWell(
-                    onTap: () => showSightDetails(context),
+                  Column(
+                    children: [
+                      _CardTop(sight: widget.sight),
+                      _CardBottom(sight: widget.sight, helper: helper),
+                    ],
                   ),
-                ),
-              ),
-              Positioned(
-                top: 16,
-                right: 16,
-                child: StreamBuilder<bool>(
-                  stream: favoriteSightStateStream,
-                  builder: (context, snapshot) {
-                    return _CardIcon(
+                  Positioned.fill(
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: InkWell(
+                        onTap: () => showSightDetails(context),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 16,
+                    right: 16,
+                    child: _CardIcon(
                       iconName: helper.isMainListCard
-                          ? snapshot.hasData && snapshot.data
+                          ? (state is SightCardLoadSuccess &&
+                                  state.isFavoriteSight)
                               ? AppIcons.heartFull
                               : AppIcons.heart
                           : AppIcons.close,
                       onTap: helper.isMainListCard
                           ? addToFavorites
                           : widget.onRemoveCard,
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                  //Показываем различные иконки, в зависимости от типа карточки
+                  helper.isVisitingCard
+                      ? Positioned(
+                          top: 16,
+                          right: 56,
+                          child: _CardIcon(
+                            iconName: helper.isFavoriteCard
+                                ? AppIcons.calendar
+                                : AppIcons.share,
+                            onTap: () => selectTime(context),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ],
               ),
-              //Показываем различные иконки, в зависимости от типа карточки
-              helper.isVisitingCard
-                  ? Positioned(
-                      top: 16,
-                      right: 56,
-                      child: _CardIcon(
-                        iconName: helper.isFavoriteCard
-                            ? AppIcons.calendar
-                            : AppIcons.share,
-                        onTap: () => selectTime(context),
-                      ),
-                    )
-                  : const SizedBox.shrink(),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

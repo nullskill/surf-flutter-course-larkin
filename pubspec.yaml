@@ -22,6 +22,10 @@ dependencies:
   device_preview: ^0.7.1
   # A powerful Http client for Dart
   dio: ^4.0.0
+  # Package to compare objects in Dart w/o == operator & hash code
+  equatable: ^2.0.0
+  # Felix Angelov loves it
+  flutter_bloc: ^7.0.0
   # Provides the Observer widget that listens to observables
   flutter_mobx: ^2.0.0
   # SVG image

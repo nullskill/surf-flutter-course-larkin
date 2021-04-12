@@ -3,6 +3,7 @@ import 'package:places/domain/base/visiting_sight.dart';
 import 'package:places/domain/sight.dart';
 
 /// Класс посещенного интересного места
+// ignore: must_be_immutable
 class VisitedSight extends Sight implements VisitingSight {
   VisitedSight.fromSight({
     @required Sight sight,

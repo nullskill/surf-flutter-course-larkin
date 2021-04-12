@@ -1,6 +1,6 @@
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/places_filter_dto.dart';
-import 'package:places/data/repository/json_parsing.dart';
+import 'package:places/data/repository/common/json_parsing.dart';
 import 'package:places/data/repository/network/api_service.dart';
 import 'package:places/data/repository/network/error_handler.dart';
 
