@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/repository/place_repository.dart';
 import 'package:places/domain/sight.dart';
@@ -326,11 +326,7 @@ class _SliverGrid extends StatelessWidget {
           final Sight sight = store.sights[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
-            child: SightCard(
-              sight: sight,
-              addToFavorites: () =>
-                  context.read<PlaceInteractor>().toggleFavoriteSight(sight),
-            ),
+            child: SightCard(sight: sight),
           );
         },
         childCount: store.sights.length,
@@ -358,11 +354,7 @@ class _SliverList extends StatelessWidget {
           final Sight sight = store.sights[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 24.0),
-            child: SightCard(
-              sight: sight,
-              addToFavorites: () =>
-                  context.read<PlaceInteractor>().toggleFavoriteSight(sight),
-            ),
+            child: SightCard(sight: sight),
           );
         },
         childCount: store.sights.length,

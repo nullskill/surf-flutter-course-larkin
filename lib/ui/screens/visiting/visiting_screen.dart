@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/bloc/visiting/visiting_bloc.dart';
+import 'package:places/bloc/visiting/visiting_event.dart';
+import 'package:places/bloc/visiting/visiting_state.dart';
+import 'package:places/data/repository/visiting_repository.dart';
+import 'package:places/domain/favorite_sight.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/domain/visited_sight.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
@@ -9,9 +15,9 @@ import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_dismissible.dart';
+import 'package:places/ui/widgets/circular_progress.dart';
 import 'package:places/ui/widgets/message_box.dart';
 import 'package:places/ui/widgets/sight_card/sight_card.dart';
-import 'package:provider/provider.dart';
 
 /// Экран избранных/посещенных интересных мест
 class VisitingScreen extends StatefulWidget {
@@ -22,20 +28,23 @@ class VisitingScreen extends StatefulWidget {
 }
 
 class _VisitingScreenState extends State<VisitingScreen> {
-  PlaceInteractor placeInteractor;
+  VisitingBloc bloc;
 
   @override
   void initState() {
     super.initState();
 
-    placeInteractor = context.read<PlaceInteractor>();
+    bloc = VisitingBloc(context.read<VisitingRepository>())
+      ..add(VisitingLoadEvent());
   }
 
   /// Удаляет карточку из списка избранных/посещенных мест
-  void removeFromFavorites<T extends Sight>(T sight) {
-    setState(() {
-      placeInteractor.removeFromFavorites(sight);
-    });
+  void removeFromVisiting<T extends Sight>(T sight) {
+    if (sight is FavoriteSight) {
+      bloc.add(VisitingRemoveFromFavoritesEvent(sight));
+    } else if (sight is VisitedSight) {
+      bloc.add(VisitingRemoveFromVisitedEvent(sight));
+    }
   }
 
   @override
@@ -46,15 +55,49 @@ class _VisitingScreenState extends State<VisitingScreen> {
         appBar: const _VisitingScreenAppBar(),
         body: TabBarView(
           children: [
-            _VisitingScreenList(
-              sights: placeInteractor.favoriteSights,
-              onRemoveCard: removeFromFavorites,
-            ),
-            _VisitingScreenList(
-              sights: placeInteractor.visitedSights,
-              hasVisited: true,
-              onRemoveCard: removeFromFavorites,
-            ),
+            BlocBuilder<VisitingBloc, VisitingState>(
+                bloc: bloc,
+                builder: (_, state) {
+                  if (state is VisitingRemoveInProgress) {}
+                  if (state is VisitingLoadInProgress) {
+                    return Center(
+                      child: CircularProgress(
+                        size: 40.0,
+                        primaryColor: secondaryColor2,
+                        secondaryColor: Theme.of(context).backgroundColor,
+                      ),
+                    );
+                  }
+                  if (state is VisitingLoadSuccess) {
+                    return _VisitingScreenList(
+                      sights: state.favoriteSights,
+                      onRemoveCard: removeFromVisiting,
+                    );
+                  }
+                  throw ArgumentError('Wrong state in _VisitingScreenState');
+                }),
+            BlocBuilder<VisitingBloc, VisitingState>(
+                bloc: bloc,
+                builder: (_, state) {
+                  if (state is VisitingRemoveInProgress) {}
+                  if (state is VisitingLoadInProgress) {
+                    return Center(
+                      child: CircularProgress(
+                        size: 40.0,
+                        primaryColor: secondaryColor2,
+                        secondaryColor: Theme.of(context).backgroundColor,
+                      ),
+                    );
+                  }
+                  if (state is VisitingLoadSuccess) {
+                    return _VisitingScreenList(
+                      sights: state.visitedSights,
+                      hasVisited: true,
+                      onRemoveCard: removeFromVisiting,
+                    );
+                  }
+                  throw ArgumentError('Wrong state in _VisitingScreenState');
+                }),
           ],
         ),
         bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 2),
@@ -135,7 +178,7 @@ class _VisitingScreenList<T extends Sight> extends StatelessWidget {
 
   final List<T> sights;
   final bool hasVisited;
-  final void Function(Sight) onRemoveCard;
+  final void Function<T extends Sight>(T) onRemoveCard;
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +236,7 @@ class _DismissibleCard<T extends Sight> extends StatelessWidget {
 
   final T sight;
   final bool hasVisited;
-  final void Function(Sight) onRemoveCard;
+  final void Function<T extends Sight>(T) onRemoveCard;
 
   @override
   Widget build(BuildContext context) {

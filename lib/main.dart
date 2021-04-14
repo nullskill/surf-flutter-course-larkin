@@ -1,10 +1,12 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/repository/place_repository.dart';
 import 'package:places/data/repository/search_repository.dart';
+import 'package:places/data/repository/visiting_repository.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/themes.dart';
@@ -42,12 +44,16 @@ class App extends StatelessWidget {
         PlaceInteractor(
             context.read<PlaceRepository>(), context.read<SearchInteractor>());
 
+    VisitingRepository initVisitingRepository(BuildContext context) =>
+        VisitingRepository();
+
     return MultiProvider(
       providers: [
         Provider<SearchRepository>(create: initSearchRepository),
         Provider<SearchInteractor>(create: initSearchInteractor),
         Provider<PlaceRepository>(create: initPlaceRepository),
         Provider<PlaceInteractor>(create: initPlaceInteractor),
+        Provider<VisitingRepository>(create: initVisitingRepository),
         ChangeNotifierProvider<SettingsInteractor>(
             create: (_) => SettingsInteractor()),
       ],
