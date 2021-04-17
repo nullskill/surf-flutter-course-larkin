@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/data/interactor/place_interactor.dart';
-import 'package:places/data/interactor/search_interactor.dart';
-import 'package:places/data/model/places_filter_dto.dart';
 import 'package:places/domain/categories.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/redux/action/sight_search_action.dart';
+import 'package:places/redux/action/sight_search_history_action.dart';
+import 'package:places/redux/state/app_state.dart';
+import 'package:places/redux/state/sight_search_state.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
@@ -22,7 +24,6 @@ import 'package:places/ui/widgets/message_box.dart';
 import 'package:places/ui/widgets/search_bar.dart';
 import 'package:places/ui/widgets/settings_item.dart';
 import 'package:places/ui/widgets/subtitle.dart';
-import 'package:provider/provider.dart';
 
 class SightSearchScreen extends StatefulWidget {
   const SightSearchScreen({Key key}) : super(key: key);
@@ -32,38 +33,27 @@ class SightSearchScreen extends StatefulWidget {
 }
 
 class _SightSearchScreenState extends State<SightSearchScreen> {
-  static const debounceDelay = 3000;
+  static const debounceDelay = 2000;
 
-  PlaceInteractor placeInteractor;
-  SearchInteractor searchInteractor;
   TextEditingController searchController;
   FocusNode searchFocusNode;
-  StreamController<List<Sight>> streamController;
-  StreamSubscription<void> streamSub;
   Timer debounce;
   String prevSearchText = '';
-  bool isSearching = false;
-  bool hasError = false;
   bool hasClearButton = false;
 
   @override
   void initState() {
     super.initState();
 
-    placeInteractor = context.read<PlaceInteractor>();
-    searchInteractor = context.read<SearchInteractor>();
     searchController = TextEditingController();
     searchFocusNode = FocusNode();
-    streamController = StreamController.broadcast();
     searchController.addListener(searchControllerListener);
   }
 
   @override
   void dispose() {
     debounce?.cancel();
-    streamSub?.cancel();
     searchController.dispose();
-    streamController.close();
 
     super.dispose();
   }
@@ -85,6 +75,13 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
     search();
   }
 
+  /// Добавление элемента истории
+  void addToHistory(String item) {
+    if (item.isNotEmpty) {
+      StoreProvider.of<AppState>(context).dispatch(AddToHistoryAction(item));
+    }
+  }
+
   /// При тапе на элементе истории
   void onTapOnHistory(String item) {
     searchController.text = item;
@@ -93,14 +90,12 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
 
   /// При удалении элемента истории
   void onDeleteFromHistory(String item) {
-    searchInteractor.deleteFromHistory(item);
-    setState(() {});
+    StoreProvider.of<AppState>(context).dispatch(DeleteFromHistoryAction(item));
   }
 
   /// При очистке истории
   void onClearHistory() {
-    searchInteractor.clearHistory();
-    setState(() {});
+    StoreProvider.of<AppState>(context).dispatch(ClearHistoryAction());
     FocusScope.of(context).requestFocus(searchFocusNode);
   }
 
@@ -109,55 +104,20 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
     searchFocusNode.unfocus();
   }
 
-  /// Осуществляет поиск через подписку на стрим getSightList через заданный
-  /// интервал [debounceDelay], отменяя при необходимости текущий. Результат
-  /// поиска проваливается в [streamController] и попадает в [StreamBuilder]
+  /// Диспатчит начало поиска
+  void dispatchSearchAction() {
+    StoreProvider.of<AppState>(context)
+        .dispatch(StartSearchAction(searchController.text));
+    addToHistory(searchController.text);
+  }
+
+  /// Осуществляет поиск
   Future<void> search() async {
     if (debounce?.isActive ?? false) debounce.cancel();
 
-    if (searchController.text == prevSearchText && !isSearching) {
-      if (hasError) {
-        // После ошибки нужна возможность заново отправить запрос по кнопке,
-        // поэтому триггерим обновление стейта для ребилда виджета
-        setState(() {});
-      } else {
-        return;
-      }
-    }
-
-    if (searchController.text.isEmpty) {
-      if (prevSearchText.isNotEmpty) {
-        isSearching = false;
-        await streamSub?.cancel();
-        streamController.sink.add(null);
-      }
-      return;
-    }
-
-    isSearching = true;
-
     debounce = Timer(
-      const Duration(
-        milliseconds: debounceDelay,
-      ),
-      () {
-        streamSub?.cancel();
-        streamSub = searchInteractor
-            .searchPlaces(PlacesFilterDto(nameFilter: searchController.text))
-            .asStream()
-            .listen(
-          (_) {
-            isSearching = false;
-            streamController.sink.add(searchInteractor.foundSights);
-            searchInteractor.addToHistory(searchController.text);
-          },
-          // ignore: avoid_types_on_closure_parameters
-          onError: (Object error) {
-            isSearching = false;
-            streamController.addError(error);
-          },
-        );
-      },
+      Duration(milliseconds: searchController.text.isEmpty ? 0 : debounceDelay),
+      dispatchSearchAction,
     );
   }
 
@@ -170,41 +130,43 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
         searchFocusNode: searchFocusNode,
         onEditingComplete: onEditingComplete,
       ),
-      body: StreamBuilder<List<Sight>>(
-        stream: streamController.stream,
-        builder: (context, snapshot) {
-          // Проверять snapshot.connectionState для streamController.stream нет
-          // смысла, т.к. он изначально имеет состояние waiting, а после первого
-          // event и до конца жизни - active.
-          hasError = snapshot.hasError;
-          if (isSearching) {
+      body: StoreConnector<AppState, SightSearchState>(
+        converter: (store) => store.state.sightSearchState,
+        builder: (context, vm) {
+          if (vm is SearchLoadingState) {
             return const _SearchIndicator();
-          } else if (snapshot.hasData && snapshot.data.isNotEmpty) {
+          } else if (vm is SearchDataState) {
+            if (vm.hasError) {
+              return _MessageBox(
+                hasError: true,
+                onTap: removeSearchFocus,
+              );
+            }
+            if (vm.foundSights.isEmpty) {
+              return _MessageBox(
+                onTap: removeSearchFocus,
+              );
+            }
             return _SearchResultsList(
-              sights: snapshot.data,
+              sights: vm.foundSights,
               removeSearchFocus: removeSearchFocus,
-              placeInteractor: placeInteractor,
             );
-          } else if (snapshot.hasData) {
-            return _MessageBox(
-              onTap: removeSearchFocus,
-            );
-          } else if (snapshot.hasError) {
-            return _MessageBox(
-              hasError: true,
-              onTap: removeSearchFocus,
-            );
-          } else {
-            return searchInteractor.isHistoryEmpty
+          } else if (vm is SearchInitialState) {
+            final historyState = StoreProvider.of<AppState>(context)
+                .state
+                .sightSearchHistoryState;
+            return historyState.isHistoryEmpty
                 ? const SizedBox()
                 : _SearchHistoryList(
-                    history: searchInteractor.history,
-                    isLastInHistory: searchInteractor.isLastInHistory,
+                    history: historyState.reversedHistory,
+                    isLastInHistory: historyState.isLastInHistory,
                     onTapOnHistory: onTapOnHistory,
                     onClearHistory: onClearHistory,
                     onDeleteFromHistory: onDeleteFromHistory,
                   );
           }
+
+          throw ArgumentError('No view for state $vm');
         },
       ),
       bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 0),
@@ -280,13 +242,11 @@ class _SearchResultsList extends StatelessWidget {
   const _SearchResultsList({
     @required this.sights,
     @required this.removeSearchFocus,
-    @required this.placeInteractor,
     Key key,
   }) : super(key: key);
 
   final List<Sight> sights;
   final void Function() removeSearchFocus;
-  final PlaceInteractor placeInteractor;
 
   @override
   Widget build(BuildContext context) {
@@ -297,12 +257,7 @@ class _SearchResultsList extends StatelessWidget {
         separatorBuilder: (context, index) => const Divider(),
         itemBuilder: (context, index) {
           final Sight sight = sights[index];
-          return _ListTile(
-            sight: sight,
-            isFavoriteSight: () => placeInteractor.isFavoriteSight(sight),
-            toggleFavoriteSight: () =>
-                placeInteractor.toggleFavoriteSight(sight),
-          );
+          return _ListTile(sight: sight);
         },
       ),
     );
@@ -312,14 +267,10 @@ class _SearchResultsList extends StatelessWidget {
 class _ListTile extends StatelessWidget {
   const _ListTile({
     @required this.sight,
-    @required this.isFavoriteSight,
-    @required this.toggleFavoriteSight,
     Key key,
   }) : super(key: key);
 
   final Sight sight;
-  final bool Function() isFavoriteSight;
-  final void Function() toggleFavoriteSight;
 
   Future<void> showSightDetails(BuildContext context) async {
     await showAppModalBottomSheet<SightDetailsScreen>(

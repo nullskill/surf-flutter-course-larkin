@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
 import 'package:places/data/model/place.dart';
 
 /// Парсит интересные места
@@ -10,8 +9,6 @@ List<Place> parsePlaces(String rawJson) {
       List<Map<String, dynamic>>.from(placeListJson);
   final List<Place> places =
       placeList.map((placeJson) => Place.fromJson(placeJson)).toList();
-
-  debugPrint(places.length.toString());
 
   return places;
 }
