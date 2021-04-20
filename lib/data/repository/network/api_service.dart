@@ -13,14 +13,20 @@ class ApiService {
         _throwException(e);
       },
       onRequest: (options, handler) {
-        debugPrint(
-            '>> [${options.method} ${options.path}]: ${options.data ?? ''}');
+        if (isVerboseApi) {
+          debugPrint(
+              '>> [${options.method} ${options.path}]: ${options.data ?? ''}');
+        }
+
         handler.next(options);
       },
       onResponse: (response, handler) {
-        final req = response.requestOptions;
-        debugPrint(
-            '<< ${response.statusCode} [${req.method} ${req.baseUrl}${req.path}]: ${response.data}');
+        if (isVerboseApi) {
+          final req = response.requestOptions;
+          debugPrint(
+              '<< ${response.statusCode} [${req.method} ${req.baseUrl}${req.path}]: ${response.data}');
+        }
+
         handler.next(response);
       },
     ));

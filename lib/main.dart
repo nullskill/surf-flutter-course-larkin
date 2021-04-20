@@ -1,12 +1,16 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/repository/place_repository.dart';
 import 'package:places/data/repository/search_repository.dart';
 import 'package:places/data/repository/visiting_repository.dart';
+import 'package:places/redux/middleware/sight_search_middleware.dart';
+import 'package:places/redux/reducer/reducer.dart';
+import 'package:places/redux/state/app_state.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/themes.dart';
@@ -18,18 +22,28 @@ import 'package:places/ui/screens/splash_screen.dart';
 import 'package:places/ui/screens/visiting/visiting_screen.dart';
 import 'package:places/util/consts.dart';
 import 'package:provider/provider.dart';
+import 'package:redux/redux.dart';
 
 void main() {
+  final store = Store<AppState>(reducer, initialState: AppState(), middleware: [
+    SightSearchMiddleware(SearchInteractor(SearchRepository())),
+  ]);
+
   if (isReleaseMode) {
     debugPrint = (message, {wrapWidth}) {};
   }
   runApp(
-    DevicePreview(enabled: !isReleaseMode, builder: (_) => const App()),
+    DevicePreview(
+      enabled: !isReleaseMode,
+      builder: (_) => App(store: store),
+    ),
   );
 }
 
 class App extends StatelessWidget {
-  const App({Key key}) : super(key: key);
+  const App({Key key, this.store}) : super(key: key);
+
+  final Store<AppState> store;
 
   @override
   Widget build(BuildContext context) {
@@ -59,15 +73,18 @@ class App extends StatelessWidget {
       ],
       child: Consumer<SettingsInteractor>(
         builder: (context, notifier, child) {
-          return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            locale: DevicePreview.locale(context),
-            builder: DevicePreview.appBuilder,
-            theme: lightTheme,
-            darkTheme: darkTheme,
-            themeMode: notifier.darkTheme ? ThemeMode.dark : ThemeMode.light,
-            title: appTitle,
-            routes: _routesMap,
+          return StoreProvider(
+            store: store,
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              locale: DevicePreview.locale(context),
+              builder: DevicePreview.appBuilder,
+              theme: lightTheme,
+              darkTheme: darkTheme,
+              themeMode: notifier.darkTheme ? ThemeMode.dark : ThemeMode.light,
+              title: appTitle,
+              routes: _routesMap,
+            ),
           );
         },
       ),

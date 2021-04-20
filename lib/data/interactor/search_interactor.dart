@@ -21,12 +21,8 @@ class SearchInteractor {
   /// Выбранные минимальный и максимальный радиус
   double selectedMinRadius = minRadius, selectedMaxRadius = maxRadius;
 
-  /// Максимальная длина истории
-  static const int maxHistoryLength = 5;
-
   final SearchRepository _repo;
   final List<Category> _categories = <Category>[...categories];
-  final List<String> _history = [];
 
   List<Sight> _sights = [];
   List<Sight> _filteredSights = [];
@@ -64,41 +60,9 @@ class SearchInteractor {
   List<SightType> get selectedTypes =>
       _categories.where((c) => c.selected).map((e) => e.type).toList();
 
-  /// История поиска
-  List<String> get history => _history.reversed
-      .toList()
-      .sublist(0, min(maxHistoryLength, _history.length));
-
-  /// Возвращает true, если история поиска пуста
-  bool get isHistoryEmpty => _history.isEmpty;
-
   /// Инициализирует полный список интересных мест
   // ignore: avoid_setters_without_getters
   set sights(List<Sight> sights) => _sights = sights;
-
-  /// Возвращает true, если элемент последний
-  bool isLastInHistory(String item) {
-    return _history.last == item;
-  }
-
-  /// Добавляет элемент в историю
-  void addToHistory(String item) {
-    deleteFromHistory(item);
-    _history.add(item);
-    if (_history.length > maxHistoryLength) _history.removeAt(0);
-  }
-
-  /// Удаляет элемент из истории
-  void deleteFromHistory(String item) {
-    final index = _history.indexOf(item);
-
-    if (!index.isNegative) _history.removeAt(index);
-  }
-
-  /// Очищает историю
-  void clearHistory() {
-    _history.clear();
-  }
 
   /// Сброс выбранных категорий
   void resetCategories() {
@@ -115,10 +79,12 @@ class SearchInteractor {
   }
 
   /// Получение списка найденных/отфильтрованных мест в репо
-  Future<void> searchPlaces(PlacesFilterDto filterDto) async {
+  Future<List<Sight>> searchPlaces(PlacesFilterDto filterDto) async {
     final List<Place> _places = await _repo.getFilteredPlaces(filterDto);
     _foundSights = _places.map((p) => Sight.fromPlace(p)).toList();
     _foundSights = getSortedSights(_foundSights);
+
+    return _foundSights;
   }
 
   /// Сортирует список моделей [Sight] по удаленности,

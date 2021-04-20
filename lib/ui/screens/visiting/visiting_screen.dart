@@ -58,7 +58,6 @@ class _VisitingScreenState extends State<VisitingScreen> {
             BlocBuilder<VisitingBloc, VisitingState>(
                 bloc: bloc,
                 builder: (_, state) {
-                  if (state is VisitingRemoveInProgress) {}
                   if (state is VisitingLoadInProgress) {
                     return Center(
                       child: CircularProgress(
@@ -79,7 +78,6 @@ class _VisitingScreenState extends State<VisitingScreen> {
             BlocBuilder<VisitingBloc, VisitingState>(
                 bloc: bloc,
                 builder: (_, state) {
-                  if (state is VisitingRemoveInProgress) {}
                   if (state is VisitingLoadInProgress) {
                     return Center(
                       child: CircularProgress(

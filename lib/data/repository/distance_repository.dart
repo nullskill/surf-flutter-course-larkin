@@ -4,6 +4,7 @@ import 'package:places/data/model/location.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/util/consts.dart';
 
+// Переделаю в Storage когда выберу архитектуру
 /// Репозиторий для опеределения дистанции до мест
 class DistanceRepository {
   /// Минимальный и максимальный радиус
