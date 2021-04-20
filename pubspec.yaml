@@ -38,8 +38,12 @@ dependencies:
   mobx: ^2.0.1
   # Support for inside scrollview + dragging down to close (showModalBottomSheet cannot)
   modal_bottom_sheet: ^2.0.0
+  # MVVM-inspired framework with respect for Clean Architecture
+  mwwm: ^1.0.2
   # State provider
   provider: ^5.0.0
+  # The stream representation of relations between entities and widget utilities
+  relation: ^1.0.0
   # Redux for Dart using generics for typed State
   redux: ^5.0.0
   # Wraps platform-specific persistent storage for simple data
