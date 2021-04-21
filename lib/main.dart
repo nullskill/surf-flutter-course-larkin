@@ -73,7 +73,7 @@ class App extends StatelessWidget {
         Provider<PlaceRepository>(create: initPlaceRepository),
         Provider<PlaceInteractor>(create: initPlaceInteractor),
         Provider<VisitingRepository>(create: initVisitingRepository),
-        Provider(create: initWmDependencies),
+        Provider<WidgetModelDependencies>(create: initWmDependencies),
         ChangeNotifierProvider<SettingsInteractor>(
             create: (_) => SettingsInteractor()),
       ],

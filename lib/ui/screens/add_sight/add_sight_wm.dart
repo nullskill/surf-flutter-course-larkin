@@ -62,7 +62,6 @@ class AddSightWidgetModel extends WidgetModel {
   /// Флаги действий указателя над карточкой картинки
   bool isPointerDownOnImg = false;
   bool isPointerMoveOnImg = false;
-  bool isPointerUpOnImg = false;
 
   /// Экземпляр формы
   SightForm sightForm = SightForm();
@@ -131,16 +130,22 @@ class AddSightWidgetModel extends WidgetModel {
 
   /// Listener для TextEditingController
   void controllerListener() {
-    bool _allDone = true;
+    final bool hasSelectedCategory = selectedCategory.value != null;
+    bool _allDone = false;
 
-    for (final controller in controllers) {
-      if (controller.text.isEmpty) {
-        _allDone = false;
-        break;
+    if (hasSelectedCategory) {
+      _allDone = true;
+      for (final controller in controllers) {
+        if (controller.text.isEmpty) {
+          _allDone = false;
+          break;
+        }
       }
     }
 
-    allDone.accept(_allDone && selectedCategory != null);
+    if (allDone.value != _allDone) {
+      allDone.accept(_allDone);
+    }
   }
 
   /// Возвращает флаг необходимости кнопки очистки поля
@@ -201,7 +206,6 @@ class AddSightWidgetModel extends WidgetModel {
     this.imgKey.accept(imgKey);
     isPointerDownOnImg = true;
     isPointerMoveOnImg = false;
-    isPointerUpOnImg = false;
   }
 
   /// При свайпе карточки картинки
@@ -209,7 +213,6 @@ class AddSightWidgetModel extends WidgetModel {
     this.imgKey.accept(imgKey);
     isPointerDownOnImg = false;
     isPointerMoveOnImg = true;
-    isPointerUpOnImg = false;
   }
 
   /// При окончании свайпа карточки картинки
@@ -217,7 +220,6 @@ class AddSightWidgetModel extends WidgetModel {
     this.imgKey.accept(imgKey);
     isPointerDownOnImg = false;
     isPointerMoveOnImg = false;
-    isPointerUpOnImg = true;
   }
 
   /// Возвращает тень для карточки картинки,
