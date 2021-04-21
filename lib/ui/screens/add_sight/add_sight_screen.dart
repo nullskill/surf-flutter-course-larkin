@@ -35,9 +35,7 @@ class _AddSightScreenState extends WidgetState<AddSightWidgetModel> {
       body: CustomScrollView(
         slivers: [
           _AddSightAppBar(wm: wm),
-          _AddSightBody(
-            wm: wm,
-          ),
+          _AddSightBody(wm: wm),
         ],
       ),
       bottomNavigationBar: Padding(
@@ -47,11 +45,15 @@ class _AddSightScreenState extends WidgetState<AddSightWidgetModel> {
           16.0,
           MediaQuery.of(context).padding.bottom + 8.0,
         ),
-        child: ActionButton(
-          label: addSightActionButtonLabel,
-          isDisabled: !wm.allDone,
-          onPressed: () => wm.onActionButtonPressed(context),
-        ),
+        child: StreamedStateBuilder<bool>(
+            streamedState: wm.allDone,
+            builder: (context, allDone) {
+              return ActionButton(
+                label: addSightActionButtonLabel,
+                isDisabled: !allDone,
+                onPressed: () => wm.onActionButtonPressed(context),
+              );
+            }),
       ),
     );
   }
@@ -206,7 +208,7 @@ class _ImageCard extends StatelessWidget {
         onPointerUp: (_) => wm.onPointerUpOnImageCard(imgUrl),
         child: StreamedStateBuilder<String>(
             streamedState: wm.imgKey,
-            builder: (context, snapshot) {
+            builder: (_, __) {
               return Container(
                 width: _cardSize,
                 height: _cardSize,
@@ -263,7 +265,7 @@ class _AddSightBody extends StatelessWidget {
                       builder: (context, category) {
                         return SettingsItem(
                           title: category?.name ?? addSightNoCategoryTitle,
-                          isGreyedOut: wm.selectedCategory == null,
+                          isGreyedOut: wm.selectedCategory.value == null,
                           onTap: () => wm.selectCategory(context),
                           trailing: SvgPicture.asset(
                             AppIcons.view,

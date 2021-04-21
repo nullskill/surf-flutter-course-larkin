@@ -56,6 +56,9 @@ class AddSightWidgetModel extends WidgetModel {
   /// Ключ "активной" карточки картинки
   final imgKey = StreamedState<String>();
 
+  /// Флаг заполнения всех полей
+  final allDone = StreamedState<bool>();
+
   /// Флаги действий указателя над карточкой картинки
   bool isPointerDownOnImg = false;
   bool isPointerMoveOnImg = false;
@@ -66,9 +69,6 @@ class AddSightWidgetModel extends WidgetModel {
 
   /// Глобальный ключ для формы
   GlobalKey<FormState> get formKey => _formKey;
-
-  /// Флаг заполнения всех полей
-  bool allDone = false;
 
   @override
   void onLoad() {
@@ -104,6 +104,7 @@ class AddSightWidgetModel extends WidgetModel {
     }
 
     imgUrls.accept([]);
+    allDone.accept(false);
 
     subscribeHandleError<BuildContext>(onAddImageTap.stream, selectImage);
     subscribe<void>(onCategoryTap.stream, (_) => selectCategory);
@@ -139,7 +140,7 @@ class AddSightWidgetModel extends WidgetModel {
       }
     }
 
-    allDone = _allDone && selectedCategory != null;
+    allDone.accept(_allDone && selectedCategory != null);
   }
 
   /// Возвращает флаг необходимости кнопки очистки поля
