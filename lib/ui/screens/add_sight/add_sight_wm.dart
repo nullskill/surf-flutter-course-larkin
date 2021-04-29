@@ -8,63 +8,85 @@ import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/screens/select_category_screen.dart';
 import 'package:places/ui/widgets/select_picture_dialog.dart';
 import 'package:places/util/consts.dart';
-import 'package:provider/provider.dart';
 import 'package:relation/relation.dart';
-
-/// Перечисление координат
-enum Coordinate { lat, lng }
 
 /// WM для AddSightScreen
 class AddSightWidgetModel extends WidgetModel {
-  AddSightWidgetModel(WidgetModelDependencies baseDependencies)
-      : super(baseDependencies);
+  AddSightWidgetModel(
+    WidgetModelDependencies baseDependencies, {
+    @required this.placeInteractor,
+    @required this.navigator,
+  }) : super(baseDependencies);
 
-  // ignore: prefer_constructors_over_static_methods
-  static AddSightWidgetModel builder(BuildContext context) {
-    return AddSightWidgetModel(context.read<WidgetModelDependencies>());
-  }
+  final PlaceInteractor placeInteractor;
+  final NavigatorState navigator;
 
-  GlobalKey<FormState> _formKey;
+  // Fields
 
-  /// При добавлении картинки
-  final Action<BuildContext> onAddImageTap = Action<BuildContext>();
-
-  /// При выборе категории
-  final Action onCategoryTap = Action<void>();
-
-  /// Контроллеры текстовых полей
-  final nameController = TextEditingController();
-  final latitudeController = TextEditingController();
-  final longitudeController = TextEditingController();
-  final descriptionController = TextEditingController();
-  List<TextEditingController> controllers;
+  /// Данные полей формы
+  List<FieldData> _fields;
 
   /// Фокус-ноды
-  final FocusNode nameFocusNode = FocusNode();
-  final FocusNode latitudeFocusNode = FocusNode();
-  final FocusNode longitudeFocusNode = FocusNode();
-  final FocusNode descriptionFocusNode = FocusNode();
-  List<FocusNode> focusNodes;
-  FocusNode currentFocusNode;
+  final nameFocusNode = FocusNode();
+  final latitudeFocusNode = FocusNode();
+  final longitudeFocusNode = FocusNode();
+  final descriptionFocusNode = FocusNode();
+
+  // Actions
+
+  /// Экшены контроллеров текстовых полей
+  final nameEditingAction = TextEditingAction();
+  final latitudeEditingAction = TextEditingAction();
+  final longitudeEditingAction = TextEditingAction();
+  final descriptionEditingAction = TextEditingAction();
+
+  /// При добавлении картинки
+  final addImageAction = Action<BuildContext>();
+
+  /// При удалении картинки
+  final removeImageAction = Action<String>();
+
+  /// При выборе категории
+  final selectCategoryAction = Action<BuildContext>();
+
+  /// При тапе на ActionButton
+  final actionButtonAction = Action<void>();
+
+  /// При тапе на кнопке Назад
+  final backButtonAction = Action<void>();
+
+  /// Перемещает фокус на следующий TextFormField
+  final moveFocusAction = Action<BuildContext>();
+
+  // StreamedStates
+
+  /// Стейт поля Name
+  final nameFieldState = StreamedState<FieldData>();
+
+  /// Стейт поля Latitude
+  final latitudeFieldState = StreamedState<FieldData>();
+
+  /// Стейт поля Longitude
+  final longitudeFieldState = StreamedState<FieldData>();
+
+  /// Стейт поля Description
+  final descriptionFieldState = StreamedState<FieldData>();
 
   /// Выбранная категория
-  final selectedCategory = StreamedState<Category>();
+  final selectedCategoryState = StreamedState<Category>();
 
   /// Список URL картинок места
-  final imgUrls = StreamedState<List<String>>();
-
-  /// Ключ "активной" карточки картинки
-  final imgKey = StreamedState<String>();
+  final imgUrlsState = StreamedState<List<String>>(const []);
 
   /// Флаг заполнения всех полей
-  final allDone = StreamedState<bool>();
+  final isAllDoneState = StreamedState<bool>(false);
 
-  /// Флаги действий указателя над карточкой картинки
-  bool isPointerDownOnImg = false;
-  bool isPointerMoveOnImg = false;
+  // FormState
 
   /// Экземпляр формы
   SightForm sightForm = SightForm();
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   /// Глобальный ключ для формы
   GlobalKey<FormState> get formKey => _formKey;
@@ -73,20 +95,35 @@ class AddSightWidgetModel extends WidgetModel {
   void onLoad() {
     super.onLoad();
 
-    _formKey = GlobalKey<FormState>();
-
-    focusNodes = <FocusNode>[
-      nameFocusNode,
-      latitudeFocusNode,
-      longitudeFocusNode,
-      descriptionFocusNode,
-    ];
-
-    controllers = <TextEditingController>[
-      nameController,
-      latitudeController,
-      longitudeController,
-      descriptionController,
+    _fields = <FieldData>[
+      FieldData(
+        field: Field.name,
+        focusNode: nameFocusNode,
+        action: nameEditingAction,
+        state: nameFieldState,
+        validator: (value) => value.isEmpty ? addSightIsEmptyName : null,
+      ),
+      FieldData(
+        field: Field.latitude,
+        focusNode: latitudeFocusNode,
+        action: latitudeEditingAction,
+        state: latitudeFieldState,
+        validator: (value) => _validateCoordinate(value, _Coordinate.lat),
+      ),
+      FieldData(
+        field: Field.longitude,
+        focusNode: longitudeFocusNode,
+        action: longitudeEditingAction,
+        state: longitudeFieldState,
+        validator: (value) => _validateCoordinate(value, _Coordinate.lng),
+      ),
+      FieldData(
+        field: Field.description,
+        focusNode: descriptionFocusNode,
+        action: descriptionEditingAction,
+        state: descriptionFieldState,
+        validator: (value) => value.isEmpty ? addSightIsEmptyDescription : null,
+      ),
     ];
   }
 
@@ -94,75 +131,85 @@ class AddSightWidgetModel extends WidgetModel {
   void onBind() {
     super.onBind();
 
-    for (final focusNode in focusNodes) {
-      focusNode.addListener(() => focusNodeListener(focusNode));
+    for (final field in _fields) {
+      field.focusNode.addListener(() => _focusNodeListener(field));
+      field.state.accept(field);
+      subscribe<String>(field.action.stream, (_) => _refreshFieldState(field));
     }
 
-    for (final controller in controllers) {
-      controller.addListener(controllerListener);
-    }
-
-    imgUrls.accept([]);
-    allDone.accept(false);
-
-    subscribeHandleError<BuildContext>(onAddImageTap.stream, selectImage);
-    subscribe<void>(onCategoryTap.stream, (_) => selectCategory);
+    subscribe<BuildContext>(addImageAction.stream, _addImage);
+    subscribe<String>(removeImageAction.stream, _removeImage);
+    subscribe<BuildContext>(selectCategoryAction.stream, _selectCategory);
+    subscribe<BuildContext>(moveFocusAction.stream, _moveFocus);
+    subscribe<void>(actionButtonAction.stream, (_) => _saveForm());
+    subscribe<void>(backButtonAction.stream, (_) => navigator.pop());
   }
 
   @override
   void dispose() {
-    for (final focusNode in focusNodes) {
-      focusNode.dispose();
-    }
-    for (final controller in controllers) {
-      controller.dispose();
+    for (final field in _fields) {
+      field.focusNode.dispose();
     }
 
     super.dispose();
   }
 
   /// Listener для FocusNode
-  void focusNodeListener(FocusNode focusNode) {
-    if (focusNode.hasFocus) {
-      currentFocusNode = focusNode;
-    }
+  void _focusNodeListener(FieldData field) {
+    field.hasFocus = field.focusNode.hasFocus;
+    _setFieldHasClearButton(field);
+    field.state.accept(field);
   }
 
-  /// Listener для TextEditingController
-  void controllerListener() {
-    final bool hasSelectedCategory = selectedCategory.value != null;
-    bool _allDone = false;
+  /// Обновляет состояния поля
+  void _refreshFieldState(FieldData field) {
+    final bool textIsNotEmpty = field.action.value.isNotEmpty;
+    if (field.hasText != textIsNotEmpty) {
+      field.hasText = textIsNotEmpty;
+      _setFieldHasClearButton(field);
+      field.state.accept(field);
+    }
+    _checkFormIsCompleted();
+  }
 
-    if (hasSelectedCategory) {
-      _allDone = true;
-      for (final controller in controllers) {
-        if (controller.text.isEmpty) {
-          _allDone = false;
-          break;
+  /// Проверка необходимости флага для кнопки очистки
+  void _setFieldHasClearButton(FieldData field) {
+    field.hasClearButton = field.hasFocus && field.hasText;
+  }
+
+  /// Проверка заполненности формы
+  void _checkFormIsCompleted() {
+    bool _isAllDone = selectedCategoryState.value != null;
+
+    if (_isAllDone) {
+      for (final field in _fields) {
+        if (!field.hasText) {
+          _isAllDone = false;
         }
       }
     }
 
-    if (allDone.value != _allDone) {
-      allDone.accept(_allDone);
+    if (isAllDoneState.value != _isAllDone) {
+      isAllDoneState.accept(_isAllDone);
     }
   }
 
-  /// Возвращает флаг необходимости кнопки очистки поля
-  bool hasClearButton(FocusNode focusNode, TextEditingController controller) =>
-      currentFocusNode == focusNode && controller.text.isNotEmpty;
-
   /// Валидация введенной координаты
-  String validateCoordinate(String value, Coordinate coordinate) {
+  String _validateCoordinate(String value, _Coordinate coordinate) {
     final lat = RegExp(r'^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$');
     final lng = RegExp(r'^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$');
 
-    if (value.isEmpty) return null;
+    if (value.isEmpty && coordinate == _Coordinate.lat) {
+      return addSightIsEmptyLatitude;
+    }
+    if (value.isEmpty && coordinate == _Coordinate.lng) {
+      return addSightIsEmptyLongitude;
+    }
     if (double.tryParse(value) == null) return addSightWrongEntry;
-    if (coordinate == Coordinate.lat && !lat.hasMatch(value)) {
+    if (coordinate == _Coordinate.lat && !lat.hasMatch(value)) {
       return addSightWrongEntry;
     }
-    if (coordinate == Coordinate.lng && !lng.hasMatch(value)) {
+    if (coordinate == _Coordinate.lng && !lng.hasMatch(value)) {
       return addSightWrongEntry;
     }
 
@@ -170,99 +217,24 @@ class AddSightWidgetModel extends WidgetModel {
   }
 
   /// Перемещает фокус на следующий TextFormField
-  void moveFocus(BuildContext context) {
+  void _moveFocus(BuildContext context) {
     if (nameFocusNode.hasFocus) {
-      latitudeFocusNode.requestFocus();
+      FocusScope.of(context).requestFocus(latitudeFocusNode);
     } else if (latitudeFocusNode.hasFocus) {
-      longitudeFocusNode.requestFocus();
+      FocusScope.of(context).requestFocus(longitudeFocusNode);
     } else if (longitudeFocusNode.hasFocus) {
-      descriptionFocusNode.requestFocus();
+      FocusScope.of(context).requestFocus(descriptionFocusNode);
     } else {
       FocusScope.of(context).unfocus();
     }
   }
 
-  /// Открывает выбор категории
-  Future<void> selectCategory(BuildContext context) async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute<Category>(
-        builder: (context) => SelectCategoryScreen(
-          selectedCategory: selectedCategory.value,
-        ),
-      ),
-    );
-    if (result != null) setSelectedCategory(result);
-  }
-
-  /// Устанавливает выбранную категорию в качестве текущей
-  void setSelectedCategory(Category selectedCategory) {
-    this.selectedCategory.accept(selectedCategory);
-    if (selectedCategory != null) nameFocusNode.requestFocus();
-  }
-
-  /// При тапе на карточке картинки
-  void onPointerDownOnImageCard(String imgKey) {
-    this.imgKey.accept(imgKey);
-    isPointerDownOnImg = true;
-    isPointerMoveOnImg = false;
-  }
-
-  /// При свайпе карточки картинки
-  void onPointerMoveOnImageCard(String imgKey) {
-    this.imgKey.accept(imgKey);
-    isPointerDownOnImg = false;
-    isPointerMoveOnImg = true;
-  }
-
-  /// При окончании свайпа карточки картинки
-  void onPointerUpOnImageCard(String imgKey) {
-    this.imgKey.accept(imgKey);
-    isPointerDownOnImg = false;
-    isPointerMoveOnImg = false;
-  }
-
-  /// Возвращает тень для карточки картинки,
-  /// в зависимости от состояния свайпа
-  List<BoxShadow> getBoxShadow(String imgKey) {
-    if (this.imgKey.value != imgKey) return [];
-
-    if (isPointerMoveOnImg) {
-      return const [
-        BoxShadow(
-          // ignore: prefer-trailing-comma
-          color: Color.fromRGBO(26, 26, 32, 0.16),
-          blurRadius: 16,
-          offset: Offset(0, 4), // changes position of shadow
-        ),
-      ];
-    }
-
-    if (isPointerDownOnImg) {
-      return const [
-        BoxShadow(
-          // ignore: prefer-trailing-comma
-          color: Color.fromRGBO(26, 26, 32, 0.16),
-          blurRadius: 8,
-          offset: Offset(0, 2), // changes position of shadow
-        ),
-      ];
-    }
-
-    return [];
-  }
-
-  /// При добавлении картинки (было)
-  Future<void> onAddImageCard() async {
-    await imgUrls
-        .accept([...imgUrls.value, (imgUrls.value.length + 2).toString()]);
-  }
-
-  /// При добавлении картинки (временная заглушка)
-  Future<void> selectImage(BuildContext context) async {
+  /// Добавляет новую картинку (временная реализация)
+  void _addImage(BuildContext context) {
     // TODO: В дальнейшем, после прохождения 16.1 сделать реализацию
     const barrierLabel = 'barrierLabel';
-    await showGeneralDialog(
+
+    final Future<void> selectPictureDialog = showGeneralDialog(
       barrierLabel: barrierLabel,
       barrierDismissible: true,
       barrierColor: Colors.black.withOpacity(0.5),
@@ -281,26 +253,92 @@ class AddSightWidgetModel extends WidgetModel {
         );
       },
     );
+
+    // Теоретически, возможны какие-то ошибки в процессе добавления картинки (в будущем)
+    doFutureHandleError<void>(selectPictureDialog, (_) {
+      imgUrlsState.accept(
+          [...imgUrlsState.value, (imgUrlsState.value.length + 2).toString()]);
+    }, onError: (e) {
+      debugPrint('Error while adding new picture: $e');
+    });
   }
 
-  /// При удалении карточки картинки
-  Future<void> onDeleteImageCard(String imgUrl) async {
-    await imgUrls.accept([...imgUrls.value.where((e) => e != imgUrl)]);
+  /// Удаляет картинку
+  void _removeImage(String imgUrl) {
+    imgUrlsState.accept([...imgUrlsState.value.where((e) => e != imgUrl)]);
   }
 
-  /// При нажатии на ActionButton
-  void onActionButtonPressed(BuildContext context) {
+  /// Открывает выбор категории
+  Future<void> _selectCategory(BuildContext context) async {
+    final result = await navigator.push(
+      MaterialPageRoute<Category>(
+        builder: (context) => SelectCategoryScreen(
+          selectedCategory: selectedCategoryState.value,
+        ),
+      ),
+    );
+    if (result != null) _setSelectedCategory(result);
+  }
+
+  /// Устанавливает выбранную категорию в качестве текущей
+  void _setSelectedCategory(Category selectedCategory) {
+    selectedCategoryState.accept(selectedCategory);
+    if (selectedCategory != null) nameFocusNode.requestFocus();
+  }
+
+  /// Сохранение данных формы
+  void _saveForm() {
     final FormState formState = _formKey.currentState;
 
     if (formState.validate()) {
-      formState.save();
-      sightForm
-        ..urls = [tempImgUrl]
-        ..type = selectedCategory.value.type;
-      context.read<PlaceInteractor>().addNewSight(Sight.fromForm(sightForm));
-      debugPrint('sightForm: $sightForm');
+      _saveFields();
+      placeInteractor.addNewSight(Sight.fromForm(sightForm));
+      debugPrint('Form successfully saved: $sightForm');
 
-      Navigator.pop(context);
+      navigator.pop();
+    } else {
+      debugPrint('Form is not validated!');
     }
   }
+
+  /// Сохраняет значения полей в [sightForm]
+  void _saveFields() {
+    sightForm
+      ..name = nameEditingAction.value
+      ..lat = double.tryParse(latitudeEditingAction.value)
+      ..lng = double.tryParse(longitudeEditingAction.value)
+      ..details = descriptionEditingAction.value
+      ..urls = [tempImgUrl]
+      ..type = selectedCategoryState.value.type;
+  }
+}
+
+/// Перечисление координат
+enum _Coordinate { lat, lng }
+
+/// Перечисление полей формы
+enum Field { name, latitude, longitude, description }
+
+/// Данные поля формы
+class FieldData {
+  FieldData({
+    @required this.field,
+    @required this.focusNode,
+    @required this.action,
+    @required this.state,
+    this.validator,
+    this.hasFocus = false,
+    this.hasText = false,
+    this.hasClearButton = false,
+  });
+
+  final Field field;
+  final FocusNode focusNode;
+  final TextEditingAction action;
+  final StreamedState<FieldData> state;
+  // Don't know how to change validator to Action -> StreamedState
+  final String Function(String) validator;
+  bool hasFocus;
+  bool hasText;
+  bool hasClearButton;
 }

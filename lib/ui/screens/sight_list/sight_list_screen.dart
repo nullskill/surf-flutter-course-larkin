@@ -1,56 +1,42 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/data/interactor/search_interactor.dart';
-import 'package:places/data/repository/place_repository.dart';
+import 'package:mwwm/mwwm.dart';
 import 'package:places/domain/sight.dart';
-import 'package:places/store/sight_list/sight_list_store.dart';
-import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/screens/add_sight/add_sight_screen.dart';
-import 'package:places/ui/screens/filters/filters_screen.dart';
-import 'package:places/ui/screens/sight_search/sight_search_screen.dart';
+import 'package:places/ui/screens/sight_list/sight_list_wm.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_floating_action_button.dart';
 import 'package:places/ui/widgets/circular_progress.dart';
 import 'package:places/ui/widgets/search_bar.dart';
 import 'package:places/ui/widgets/sight_card/sight_card.dart';
-import 'package:provider/provider.dart';
+import 'package:relation/relation.dart';
 import 'package:sized_context/sized_context.dart';
 
 /// Экран списка карточек интересных мест.
-class SightListScreen extends StatefulWidget {
-  const SightListScreen({Key key}) : super(key: key);
+class SightListScreen extends CoreMwwmWidget {
+  const SightListScreen({
+    @required WidgetModelBuilder wmBuilder,
+    Key key,
+  })  : assert(wmBuilder != null),
+        super(widgetModelBuilder: wmBuilder, key: key);
 
   @override
   _SightListScreenState createState() => _SightListScreenState();
 }
 
-class _SightListScreenState extends State<SightListScreen> {
+class _SightListScreenState extends WidgetState<SightListWidgetModel> {
   final ScrollController controller = ScrollController();
-  SightListStore store;
-
   // expanded height = 196 + status bar height
   double get maxHeight =>
       context.isLandscape ? 140 : 196 + context.mq.padding.top;
 
   // global constant kToolbarHeight from material + status bar height
   double get minHeight => kToolbarHeight + context.mq.padding.top;
-
-  @override
-  void initState() {
-    super.initState();
-
-    store = SightListStore(
-        context.read<PlaceRepository>(), context.read<SearchInteractor>());
-    refreshSights();
-  }
 
   @override
   void dispose() {
@@ -79,88 +65,48 @@ class _SightListScreenState extends State<SightListScreen> {
     }
   }
 
-  /// При тапе на поле SearchBar переход на SightSearchScreen
-  void onTapSearchBar() {
-    Navigator.of(context).push(
-      MaterialPageRoute<SightSearchScreen>(
-        builder: (context) => const SightSearchScreen(),
-      ),
-    );
-  }
-
-  /// При нажатии кнопки фильтров в поле SearchBar переход на FiltersScreen
-  Future<void> onFilterSearchBar() async {
-    await Navigator.of(context).push(
-      MaterialPageRoute<FiltersScreen>(
-        builder: (context) => const FiltersScreen(),
-      ),
-    );
-    await refreshSights();
-  }
-
-  /// При нажатии FAB кнопки "Новое место" переход на AddSightScreen
-  Future<void> onPressedFab() async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute<AddSightScreen>(
-        builder: (context) => const AddSightScreen(),
-      ),
-    );
-    await refreshSights();
-  }
-
-  Future<void> refreshSights() async {
-    await store.loadSights();
-    if (store.hasError) {
-      await Navigator.pushNamed(context, AppRoutes.error);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Provider(
-      create: (_) => store,
-      child: Scaffold(
-        body: NotificationListener<ScrollEndNotification>(
-          onNotification: (_) {
-            snapAppBar();
-            return false;
-          },
-          child: CustomScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            controller: controller,
-            slivers: [
-              SliverAppBar(
-                pinned: true,
-                stretch: true,
-                elevation: 0,
-                automaticallyImplyLeading: false,
-                flexibleSpace: _Header(
-                  maxHeight: maxHeight,
-                  minHeight: minHeight,
-                  onTap: onTapSearchBar,
-                  onFilter: onFilterSearchBar,
-                ),
-                expandedHeight: maxHeight - context.mq.padding.top,
+    return Scaffold(
+      body: NotificationListener<ScrollEndNotification>(
+        onNotification: (_) {
+          snapAppBar();
+          return false;
+        },
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          controller: controller,
+          slivers: [
+            SliverAppBar(
+              pinned: true,
+              stretch: true,
+              elevation: 0,
+              automaticallyImplyLeading: false,
+              flexibleSpace: _Header(
+                maxHeight: maxHeight,
+                minHeight: minHeight,
+                onTap: wm.searchBarTapAction,
+                onFilter: wm.searchBarFilterTapAction,
               ),
-              const _CardColumn(),
-            ],
-          ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: AppFloatingActionButton(
-          icon: SvgPicture.asset(AppIcons.plus, color: whiteColor),
-          label: Text(
-            sightListFabLabel.toUpperCase(),
-            style: textBold14.copyWith(
-              color: whiteColor,
-              height: lineHeight1_3,
+              expandedHeight: maxHeight - context.mq.padding.top,
             ),
-          ),
-          onPressed: onPressedFab,
+            _CardColumn(wm: wm),
+          ],
         ),
-        bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 0),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: AppFloatingActionButton(
+        icon: SvgPicture.asset(AppIcons.plus, color: whiteColor),
+        label: Text(
+          sightListFabLabel.toUpperCase(),
+          style: textBold14.copyWith(
+            color: whiteColor,
+            height: lineHeight1_3,
+          ),
+        ),
+        onPressed: wm.addSightButtonTapAction,
+      ),
+      bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 0),
     );
   }
 }
@@ -276,60 +222,66 @@ class _Header extends StatelessWidget {
 }
 
 class _CardColumn extends StatelessWidget {
-  const _CardColumn({Key key}) : super(key: key);
+  const _CardColumn({
+    @required this.wm,
+    Key key,
+  }) : super(key: key);
+
+  final SightListWidgetModel wm;
 
   @override
   Widget build(BuildContext context) {
     final _topPadding = context.isLandscape ? 14.0 : 0.0;
     final _restPadding = context.isLandscape ? 34.0 : 16.0;
-    return Observer(builder: (context) {
-      final SightListStore store = context.read<SightListStore>();
-      return store.isLoading
-          ? SliverFillRemaining(
-              child: FractionallySizedBox(
-                alignment: Alignment.topCenter,
-                heightFactor: .8,
-                child: Center(
-                  child: CircularProgress(
-                    size: 40.0,
-                    primaryColor: secondaryColor2,
-                    secondaryColor: Theme.of(context).backgroundColor,
-                  ),
-                ),
-              ),
-            )
-          : SliverPadding(
-              padding: EdgeInsets.fromLTRB(
-                _restPadding,
-                _topPadding,
-                _restPadding,
-                _restPadding,
-              ),
-              sliver: context.isLandscape
-                  ? _SliverGrid(store: store)
-                  : _SliverList(store: store),
-            );
-    });
+    return EntityStateBuilder<List<Sight>>(
+      streamedState: wm.sightsState,
+      child: (context, sights) {
+        return SliverPadding(
+          padding: EdgeInsets.fromLTRB(
+            _restPadding,
+            _topPadding,
+            _restPadding,
+            _restPadding,
+          ),
+          sliver: context.isLandscape
+              ? _SliverGrid(sights: sights)
+              : _SliverList(sights: sights),
+        );
+      },
+      loadingChild: SliverFillRemaining(
+        child: FractionallySizedBox(
+          alignment: Alignment.topCenter,
+          heightFactor: .8,
+          child: Center(
+            child: CircularProgress(
+              size: 40.0,
+              primaryColor: secondaryColor2,
+              secondaryColor: Theme.of(context).backgroundColor,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
 class _SliverGrid extends StatelessWidget {
-  const _SliverGrid({this.store, Key key}) : super(key: key);
+  const _SliverGrid({this.sights, Key key}) : super(key: key);
 
-  final SightListStore store;
+  final List<Sight> sights;
 
   @override
   Widget build(BuildContext context) {
     return SliverGrid(
       delegate: SliverChildBuilderDelegate(
         (_, index) {
-          final Sight sight = store.sights[index];
+          final Sight sight = sights[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
             child: SightCard(sight: sight),
           );
         },
-        childCount: store.sights.length,
+        childCount: sights.length,
       ),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -342,22 +294,25 @@ class _SliverGrid extends StatelessWidget {
 }
 
 class _SliverList extends StatelessWidget {
-  const _SliverList({this.store, Key key}) : super(key: key);
+  const _SliverList({this.sights, Key key}) : super(key: key);
 
-  final SightListStore store;
+  final List<Sight> sights;
 
   @override
   Widget build(BuildContext context) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (_, index) {
-          final Sight sight = store.sights[index];
+          final Sight sight = sights[index];
           return Padding(
             padding: const EdgeInsets.only(bottom: 24.0),
-            child: SightCard(sight: sight),
+            child: SightCard(
+              sight: sight,
+              key: ValueKey(sight.id),
+            ),
           );
         },
-        childCount: store.sights.length,
+        childCount: sights.length,
       ),
     );
   }

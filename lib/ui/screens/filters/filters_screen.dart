@@ -1,87 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/data/interactor/place_interactor.dart';
-import 'package:places/data/interactor/search_interactor.dart';
+import 'package:mwwm/mwwm.dart';
 import 'package:places/domain/category.dart';
 import 'package:places/ui/res/app_color_scheme.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
+import 'package:places/ui/screens/filters/filters_screen_wm.dart';
 import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/ui/widgets/app_back_button.dart';
 import 'package:places/ui/widgets/app_range_slider/app_range_slider.dart';
 import 'package:places/ui/widgets/subtitle.dart';
-import 'package:provider/provider.dart';
+import 'package:relation/relation.dart';
 import 'package:sized_context/sized_context.dart';
 
 /// Экран фильтров
-class FiltersScreen extends StatefulWidget {
-  const FiltersScreen({Key key}) : super(key: key);
+class FiltersScreen extends CoreMwwmWidget {
+  const FiltersScreen({
+    @required WidgetModelBuilder wmBuilder,
+    Key key,
+  })  : assert(wmBuilder != null),
+        super(widgetModelBuilder: wmBuilder, key: key);
 
   @override
   _FiltersScreenState createState() => _FiltersScreenState();
 }
 
-class _FiltersScreenState extends State<FiltersScreen> {
-  RangeValues rangeValues;
-  PlaceInteractor placeInteractor;
-  SearchInteractor searchInteractor;
-
-  @override
-  void initState() {
-    super.initState();
-    placeInteractor = context.read<PlaceInteractor>();
-    searchInteractor = context.read<SearchInteractor>();
-    rangeValues = RangeValues(
-      searchInteractor.selectedMinRadius,
-      searchInteractor.selectedMaxRadius,
-    );
-  }
-
-  /// Установка выбранного диапазона радиуса
-  /// и фильтрация интересных мест
-  void setRangeValues(RangeValues newValues) {
-    setState(() {
-      rangeValues = newValues;
-      searchInteractor.setRadius(rangeValues);
-      placeInteractor.getSights();
-      searchInteractor.filterSights();
-    });
-  }
-
-  /// Сброс всех настроек
-  void resetAllSettings() => setState(() {
-        searchInteractor.resetCategories();
-        resetRangeValues();
-      });
-
-  /// Изменение признака выбранности категории
-  /// и фильтрация интересных мест
-  void toggleCategory(Category category) => setState(() {
-        category.toggle();
-        placeInteractor.getSights();
-        searchInteractor.filterSights();
-      });
-
-  /// Сброс выбранного диапазона радиуса
-  void resetRangeValues() {
-    rangeValues = const RangeValues(
-      SearchInteractor.minRadius,
-      SearchInteractor.maxRadius,
-    );
-    searchInteractor.setRadius(rangeValues);
-  }
-
+class _FiltersScreenState extends WidgetState<FiltersWidgetModel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _FiltersAppBar(resetAllSettings: resetAllSettings),
-      body: _FiltersBody(
-        currentRangeValues: rangeValues,
-        categories: searchInteractor.getCategories,
-        toggleCategory: toggleCategory,
-        setRangeValues: setRangeValues,
-      ),
+      appBar: _FiltersAppBar(resetAllSettings: wm.resetAllSettingsAction),
+      body: _FiltersBody(wm: wm),
       bottomNavigationBar: Padding(
         padding: EdgeInsets.fromLTRB(
           16.0,
@@ -89,12 +39,15 @@ class _FiltersScreenState extends State<FiltersScreen> {
           16.0,
           context.mq.padding.bottom + 8.0,
         ),
-        child: ActionButton(
-          label:
-              '$filtersActionButtonLabel (${searchInteractor.filteredNumber})',
-          isDisabled: searchInteractor.filteredNumber == 0,
-          onPressed: () => Navigator.pop(context),
-        ),
+        child: StreamedStateBuilder<int>(
+            streamedState: wm.filteredNumberState,
+            builder: (context, filteredNumber) {
+              return ActionButton(
+                label: '$filtersActionButtonLabel ($filteredNumber)',
+                isDisabled: filteredNumber == 0,
+                onPressed: wm.actionButtonAction,
+              );
+            }),
       ),
     );
   }
@@ -150,17 +103,11 @@ class _ClearButton extends StatelessWidget {
 
 class _FiltersBody extends StatelessWidget {
   const _FiltersBody({
-    @required this.categories,
-    @required this.currentRangeValues,
-    @required this.toggleCategory,
-    @required this.setRangeValues,
+    @required this.wm,
     Key key,
   }) : super(key: key);
 
-  final List<Category> categories;
-  final RangeValues currentRangeValues;
-  final void Function(Category) toggleCategory;
-  final void Function(RangeValues) setRangeValues;
+  final FiltersWidgetModel wm;
 
   @override
   Widget build(BuildContext context) {
@@ -181,15 +128,23 @@ class _FiltersBody extends StatelessWidget {
             _horizontalPadding,
             56,
           ),
-          child: _Categories(
-            categories: categories,
-            toggleCategory: toggleCategory,
-          ),
+          child: StreamedStateBuilder<List<Category>>(
+              streamedState: wm.categoriesState,
+              builder: (context, categories) {
+                return _Categories(
+                  categories: categories,
+                  toggleCategory: wm.toggleCategoryAction,
+                );
+              }),
         ),
-        AppRangeSlider(
-          currentRangeValues: currentRangeValues,
-          setRangeValues: setRangeValues,
-        ),
+        StreamedStateBuilder<RangeValues>(
+            streamedState: wm.rangeValuesState,
+            builder: (context, rangeValues) {
+              return AppRangeSlider(
+                currentRangeValues: rangeValues,
+                setRangeValues: wm.setRangeValuesAction,
+              );
+            }),
       ],
     );
   }

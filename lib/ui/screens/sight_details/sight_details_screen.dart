@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/bloc/sight_card/sight_card_bloc.dart';
-import 'package:places/bloc/sight_card/sight_card_event.dart';
-import 'package:places/bloc/sight_card/sight_card_state.dart';
-import 'package:places/data/repository/visiting_repository.dart';
+import 'package:mwwm/mwwm.dart';
 import 'package:places/domain/categories.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/res/app_color_scheme.dart';
@@ -13,33 +9,44 @@ import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
+import 'package:places/ui/screens/sight_details/sight_details_wm.dart';
 import 'package:places/ui/widgets/action_button.dart';
+import 'package:relation/relation.dart';
 import 'package:sized_context/sized_context.dart';
 
 /// Экран отображения подробной информации о посещаемом месте.
-class SightDetailsScreen extends StatelessWidget {
-  const SightDetailsScreen({
+class SightDetailsScreen extends CoreMwwmWidget {
+  SightDetailsScreen({
     @required this.sight,
     Key key,
-  }) : super(key: key);
+  }) : super(
+            widgetModelBuilder: (context) =>
+                createSightDetailsWm(context, sight),
+            key: key);
 
   final Sight sight;
 
   @override
+  _SightDetailsScreenState createState() => _SightDetailsScreenState();
+}
+
+class _SightDetailsScreenState extends WidgetState<SightDetailsWidgetModel> {
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider<SightCardBloc>(
-      create: (context) =>
-          SightCardBloc(context.read<VisitingRepository>(), sight)
-            ..add(SightCardCheckIsFavoriteEvent()),
-      child: Scaffold(
-        backgroundColor: transparentColor,
-        body: CustomScrollView(
-          slivers: [
-            _SightDetailsAppBar(sight: sight),
-            _SightDetailsBody(sight: sight),
-          ],
-        ),
-      ),
+    return EntityStateBuilder<Sight>(
+      streamedState: wm.sightDetailsState,
+      child: (context, sight) {
+        return Scaffold(
+          backgroundColor: transparentColor,
+          body: CustomScrollView(
+            slivers: [
+              _SightDetailsAppBar(sight: sight),
+              _SightDetailsBody(sight: sight, wm: wm),
+            ],
+          ),
+        );
+      },
+      loadingChild: const SizedBox.shrink(),
     );
   }
 }
@@ -168,15 +175,15 @@ class _GalleryState extends State<_Gallery> {
 class _SightDetailsBody extends StatelessWidget {
   const _SightDetailsBody({
     @required this.sight,
+    @required this.wm,
     Key key,
   }) : super(key: key);
 
   final Sight sight;
+  final SightDetailsWidgetModel wm;
 
   @override
   Widget build(BuildContext context) {
-    final SightCardBloc bloc = context.read<SightCardBloc>();
-
     return SliverFillRemaining(
       child: Container(
         width: double.infinity,
@@ -206,12 +213,11 @@ class _SightDetailsBody extends StatelessWidget {
               },
             ),
             const SizedBox(height: 24.0),
-            BlocBuilder<SightCardBloc, SightCardState>(
-              builder: (_, state) => _CardMenu(
-                  isFavoriteSight:
-                      state is SightCardLoadSuccess && state.isFavoriteSight,
-                  addToFavorites: () =>
-                      bloc.add(SightCardToggleFavoriteEvent())),
+            StreamedStateBuilder<bool>(
+              streamedState: wm.isFavoriteSightState,
+              builder: (context, isFavoriteSight) => _CardMenu(
+                  isFavoriteSight: isFavoriteSight,
+                  addToFavorites: wm.toggleFavoriteSightAction),
             ),
           ],
         ),
@@ -265,7 +271,7 @@ class _CardLabel extends StatelessWidget {
   }
 }
 
-class _CardMenu extends StatefulWidget {
+class _CardMenu extends StatelessWidget {
   const _CardMenu({
     @required this.isFavoriteSight,
     @required this.addToFavorites,
@@ -274,17 +280,6 @@ class _CardMenu extends StatefulWidget {
 
   final bool isFavoriteSight;
   final void Function() addToFavorites;
-
-  @override
-  _CardMenuState createState() => _CardMenuState();
-}
-
-class _CardMenuState extends State<_CardMenu> {
-  void addToFavorites() {
-    setState(() {
-      widget.addToFavorites();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -301,8 +296,7 @@ class _CardMenuState extends State<_CardMenu> {
             ),
             _ExpandedButton(
               title: sightDetailsAddToFavorites,
-              iconName:
-                  widget.isFavoriteSight ? AppIcons.heartFull : AppIcons.heart,
+              iconName: isFavoriteSight ? AppIcons.heartFull : AppIcons.heart,
               selected: true,
               onPressed: addToFavorites,
             ),
