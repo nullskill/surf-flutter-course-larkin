@@ -13,7 +13,7 @@ class ApiService {
         _throwException(e);
       },
       onRequest: (options, handler) {
-        if (isVerboseApi) {
+        if (loudApi) {
           debugPrint(
               '>> [${options.method} ${options.path}]: ${options.data ?? ''}');
         }
@@ -21,7 +21,7 @@ class ApiService {
         handler.next(options);
       },
       onResponse: (response, handler) {
-        if (isVerboseApi) {
+        if (loudApi) {
           final req = response.requestOptions;
           debugPrint(
               '<< ${response.statusCode} [${req.method} ${req.baseUrl}${req.path}]: ${response.data}');

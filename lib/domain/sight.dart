@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:places/data/model/place.dart';
+import 'package:places/domain/sight_form.dart';
 import 'package:places/domain/sight_type.dart';
 
 /// Класс интересного места
@@ -15,6 +16,14 @@ class Sight extends Equatable {
     this.type,
     this.distance,
   });
+
+  Sight.fromForm(SightForm sightForm)
+      : lat = sightForm.lat,
+        lng = sightForm.lng,
+        name = sightForm.name,
+        urls = sightForm.urls,
+        type = sightForm.type,
+        details = sightForm.details;
 
   Sight.fromPlace(Place place)
       : id = place.id,

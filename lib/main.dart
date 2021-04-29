@@ -2,6 +2,8 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:mwwm/mwwm.dart';
+import 'package:places/common/error/error_handler.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
@@ -61,6 +63,9 @@ class App extends StatelessWidget {
     VisitingRepository initVisitingRepository(BuildContext context) =>
         VisitingRepository();
 
+    WidgetModelDependencies initWmDependencies(BuildContext context) =>
+        WidgetModelDependencies(errorHandler: DefaultErrorHandler());
+
     return MultiProvider(
       providers: [
         Provider<SearchRepository>(create: initSearchRepository),
@@ -68,6 +73,7 @@ class App extends StatelessWidget {
         Provider<PlaceRepository>(create: initPlaceRepository),
         Provider<PlaceInteractor>(create: initPlaceInteractor),
         Provider<VisitingRepository>(create: initVisitingRepository),
+        Provider<WidgetModelDependencies>(create: initWmDependencies),
         ChangeNotifierProvider<SettingsInteractor>(
             create: (_) => SettingsInteractor()),
       ],
