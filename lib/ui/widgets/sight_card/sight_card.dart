@@ -5,13 +5,9 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:places/bloc/sight_card/sight_card_bloc.dart';
-import 'package:places/bloc/sight_card/sight_card_event.dart';
-import 'package:places/bloc/sight_card/sight_card_state.dart';
-import 'package:places/data/interactor/place_interactor.dart';
-import 'package:places/data/repository/visiting_repository.dart';
+import 'package:intl/intl.dart';
+import 'package:mwwm/mwwm.dart';
 import 'package:places/domain/categories.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/ui/res/assets.dart';
@@ -19,56 +15,38 @@ import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/screens/sight_details_screen.dart';
+import 'package:places/ui/screens/sight_details/sight_details_screen.dart';
 import 'package:places/ui/widgets/app_modal_bottom_sheet.dart';
-import 'package:places/ui/widgets/sight_card/sight_card_helper.dart';
-import 'package:provider/provider.dart';
+import 'package:places/ui/widgets/sight_card/sight_card_wm.dart';
+import 'package:relation/relation.dart';
+import 'package:sized_context/sized_context.dart';
 
 /// Виджет карточки интересного места.
-class SightCard extends StatefulWidget {
-  const SightCard({
+class SightCard extends CoreMwwmWidget {
+  SightCard({
     @required this.sight,
-    this.onRemoveCard,
     Key key,
-  }) : super(key: key);
+  }) : super(
+          widgetModelBuilder: (context) => createSightCardWm(context, sight),
+          key: key,
+        );
 
   final Sight sight;
-  final void Function() onRemoveCard;
 
   @override
   _SightCardState createState() => _SightCardState();
 }
 
-class _SightCardState extends State<SightCard> {
-  PlaceInteractor placeInteractor;
-  SightCardHelper helper;
-  SightCardBloc bloc;
-
+class _SightCardState extends WidgetState<SightCardWidgetModel> {
   TimeOfDay selectedTime = TimeOfDay.now();
 
-  @override
-  void initState() {
-    super.initState();
-
-    placeInteractor = context.read<PlaceInteractor>();
-    helper = SightCardHelper(sight: widget.sight);
-    bloc = SightCardBloc(context.read<VisitingRepository>(), widget.sight)
-      ..add(SightCardCheckIsFavoriteEvent());
-  }
-
-  /// Добавление в стрим признака избранного
-  void addToFavorites() {
-    bloc.add(SightCardToggleFavoriteEvent());
-  }
-
   /// Показать модальный bottom sheet с детальной инфой
-  Future<void> showSightDetails(BuildContext context) async {
-    final Sight sight = await placeInteractor.getSightDetails(widget.sight.id);
+  Future<void> showSightDetails(BuildContext context, Sight sight) async {
     await showAppModalBottomSheet<SightDetailsScreen>(
       context: context,
       builder: (_) => SightDetailsScreen(sight: sight),
     );
-    bloc.add(SightCardCheckIsFavoriteEvent());
+    await wm.checkIsFavoriteSightAction();
   }
 
   /// Диалог выбора времени
@@ -98,11 +76,14 @@ class _SightCardState extends State<SightCard> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SightCardBloc, SightCardState>(
-      bloc: bloc,
+    return StreamedStateBuilder<SightData>(
+      streamedState: wm.sightState,
       builder: (context, state) {
         return AspectRatio(
-          aspectRatio: helper.getAspectRatio(context),
+          aspectRatio: _getAspectRatio(
+            context,
+            isSightCard: state.isSightCard,
+          ),
           child: ClipRRect(
             borderRadius: allBorderRadius16,
             child: Container(
@@ -111,40 +92,45 @@ class _SightCardState extends State<SightCard> {
                 children: [
                   Column(
                     children: [
-                      _CardTop(sight: widget.sight),
-                      _CardBottom(sight: widget.sight, helper: helper),
+                      _CardTop(sight: state.sight),
+                      _CardBottom(sightData: state),
                     ],
                   ),
                   Positioned.fill(
                     child: Material(
                       type: MaterialType.transparency,
                       child: InkWell(
-                        onTap: () => showSightDetails(context),
+                        onTap: () => showSightDetails(context, state.sight),
                       ),
                     ),
                   ),
                   Positioned(
                     top: 16,
                     right: 16,
-                    child: _CardIcon(
-                      iconName: helper.isMainListCard
-                          ? (state is SightCardLoadSuccess &&
-                                  state.isFavoriteSight)
-                              ? AppIcons.heartFull
-                              : AppIcons.heart
-                          : AppIcons.close,
-                      onTap: helper.isMainListCard
-                          ? addToFavorites
-                          : widget.onRemoveCard,
-                    ),
+                    child: state.isSightCard
+                        ? StreamedStateBuilder<bool>(
+                            streamedState: wm.isFavoriteSightState,
+                            builder: (context, isFavoriteSight) {
+                              return _CardIcon(
+                                  iconName: isFavoriteSight
+                                      ? AppIcons.heartFull
+                                      : AppIcons.heart,
+                                  onTap: wm.toggleFavoriteSightAction);
+                            })
+                        : _CardIcon(
+                            iconName: AppIcons.close,
+                            onTap: state.isFavoriteCard
+                                ? wm.removeFavoriteSightAction
+                                : wm.removeVisitedSightAction,
+                          ),
                   ),
                   //Показываем различные иконки, в зависимости от типа карточки
-                  helper.isVisitingCard
+                  state.isVisitingCard
                       ? Positioned(
                           top: 16,
                           right: 56,
                           child: _CardIcon(
-                            iconName: helper.isFavoriteCard
+                            iconName: state.isFavoriteCard
                                 ? AppIcons.calendar
                                 : AppIcons.share,
                             onTap: () => selectTime(context),
@@ -338,17 +324,15 @@ class _CupertinoTimerPickerState extends State<_CupertinoTimerPicker> {
 
 class _CardBottom extends StatelessWidget {
   const _CardBottom({
-    @required this.sight,
-    @required this.helper,
+    @required this.sightData,
     Key key,
   }) : super(key: key);
 
-  final Sight sight;
-  final SightCardHelper helper;
+  final SightData sightData;
 
   @override
   Widget build(BuildContext context) {
-    final openHours = helper.getOpenHours();
+    final openHours = _getOpenHours(sightData);
     return Padding(
       padding: const EdgeInsets.only(
         top: 16.0,
@@ -361,7 +345,7 @@ class _CardBottom extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              sight.name,
+              sightData.sight.name,
               maxLines: 1,
               softWrap: false,
               overflow: TextOverflow.fade,
@@ -371,7 +355,7 @@ class _CardBottom extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 2.0),
-            _getDescriptionText(context, sight, helper),
+            _getDescriptionText(context, sightData),
             const SizedBox(height: 2.0),
             openHours == ''
                 ? const SizedBox.shrink()
@@ -389,26 +373,52 @@ class _CardBottom extends StatelessWidget {
   }
 }
 
-Widget _getDescriptionText<T extends Sight>(
-  BuildContext context,
-  T sight,
-  SightCardHelper helper,
-) {
-  final int maxLines = helper.getMaxLines(context);
+/// Получить соотношение ширины и высоты карточки
+double _getAspectRatio(BuildContext context, {bool isSightCard}) {
+  if (isSightCard) {
+    if (context.diagonalInches > 7) {
+      if (context.widthPx > 500) {
+        return 21 / 9;
+      } else {
+        return 2;
+      }
+    }
+    if (context.diagonalInches > 5) {
+      if (context.heightPx > 700) {
+        return 3 / 2;
+      } else {
+        return 5 / 3;
+      }
+    }
+    return 4 / 3;
+  } else {
+    if (context.diagonalInches > 7) {
+      return 5 / 2;
+    }
+    if (context.diagonalInches > 5) {
+      return 16 / 9;
+    }
+    return 4 / 3;
+  }
+}
 
-  if (helper.isVisitingCard) {
+/// Получить виджет с описанием
+Widget _getDescriptionText(BuildContext context, SightData sightData) {
+  final int maxLines = _getMaxLines(context);
+
+  if (sightData.isVisitingCard) {
     return Text(
-      helper.getVisitingDate(),
+      _getVisitingDate(sightData),
       style: textRegular14.copyWith(
         height: lineHeight1_3,
-        color: helper.isFavoriteCard
+        color: sightData.isFavoriteCard
             ? Theme.of(context).buttonColor
             : secondaryColor2,
       ),
     );
   }
   return AutoSizeText(
-    sight.details,
+    sightData.sight.details,
     minFontSize: 14,
     maxLines: maxLines,
     overflow: TextOverflow.ellipsis,
@@ -417,4 +427,34 @@ Widget _getDescriptionText<T extends Sight>(
       color: secondaryColor2,
     ),
   );
+}
+
+/// Получить максимальное число строк описания
+int _getMaxLines(BuildContext context) {
+  if (context.diagonalInches > 7) {
+    return 5;
+  }
+  if (context.diagonalInches > 4) {
+    return 4;
+  }
+  if (context.diagonalInches > 3) {
+    return 3;
+  }
+  return 2;
+}
+
+/// Получить дату посещения
+String _getVisitingDate(SightData sightData) {
+  if (sightData.isFavoriteCard) {
+    return '$sightCardPlanned ${DateFormat.yMMMd().format(sightData.plannedDate)}';
+  }
+  return '$sightCardVisited ${DateFormat.yMMMd().format(sightData.visitedDate)}';
+}
+
+/// Получить часы открытия
+String _getOpenHours(SightData sightData) {
+  if (sightData.isVisitingCard) {
+    return '$sightDetailsOpenHours ${DateFormat.Hm().format(sightData.openHour)}';
+  }
+  return '';
 }

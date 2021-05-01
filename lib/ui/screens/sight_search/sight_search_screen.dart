@@ -1,20 +1,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mwwm/mwwm.dart';
 import 'package:places/domain/categories.dart';
 import 'package:places/domain/sight.dart';
-import 'package:places/redux/action/sight_search_action.dart';
-import 'package:places/redux/action/sight_search_history_action.dart';
-import 'package:places/redux/state/app_state.dart';
-import 'package:places/redux/state/sight_search_state.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/border_radiuses.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
-import 'package:places/ui/screens/sight_details_screen.dart';
+import 'package:places/ui/screens/sight_details/sight_details_screen.dart';
+import 'package:places/ui/screens/sight_search/sight_search_wm.dart';
 import 'package:places/ui/widgets/app_back_button.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_modal_bottom_sheet.dart';
@@ -24,151 +21,61 @@ import 'package:places/ui/widgets/message_box.dart';
 import 'package:places/ui/widgets/search_bar.dart';
 import 'package:places/ui/widgets/settings_item.dart';
 import 'package:places/ui/widgets/subtitle.dart';
+import 'package:relation/relation.dart';
 
-class SightSearchScreen extends StatefulWidget {
-  const SightSearchScreen({Key key}) : super(key: key);
+/// Экран поиска
+class SightSearchScreen extends CoreMwwmWidget {
+  const SightSearchScreen({
+    @required WidgetModelBuilder wmBuilder,
+    Key key,
+  })  : assert(wmBuilder != null),
+        super(widgetModelBuilder: wmBuilder, key: key);
 
   @override
   _SightSearchScreenState createState() => _SightSearchScreenState();
 }
 
-class _SightSearchScreenState extends State<SightSearchScreen> {
-  static const debounceDelay = 2000;
-
-  TextEditingController searchController;
-  FocusNode searchFocusNode;
-  Timer debounce;
-  String prevSearchText = '';
-  bool hasClearButton = false;
-
-  @override
-  void initState() {
-    super.initState();
-
-    searchController = TextEditingController();
-    searchFocusNode = FocusNode();
-    searchController.addListener(searchControllerListener);
-  }
-
-  @override
-  void dispose() {
-    debounce?.cancel();
-    searchController.dispose();
-
-    super.dispose();
-  }
-
-  /// Listener изменений [searchController]
-  void searchControllerListener() {
-    if (prevSearchText != searchController.text) {
-      setState(() {
-        hasClearButton = searchController.text.isNotEmpty;
-      });
-      search();
-      prevSearchText = searchController.text;
-    }
-  }
-
-  /// При окончании редактирования поля поиска
-  void onEditingComplete() {
-    removeSearchFocus();
-    search();
-  }
-
-  /// Добавление элемента истории
-  void addToHistory(String item) {
-    if (item.isNotEmpty) {
-      StoreProvider.of<AppState>(context).dispatch(AddToHistoryAction(item));
-    }
-  }
-
-  /// При тапе на элементе истории
-  void onTapOnHistory(String item) {
-    searchController.text = item;
-    search();
-  }
-
-  /// При удалении элемента истории
-  void onDeleteFromHistory(String item) {
-    StoreProvider.of<AppState>(context).dispatch(DeleteFromHistoryAction(item));
-  }
-
-  /// При очистке истории
-  void onClearHistory() {
-    StoreProvider.of<AppState>(context).dispatch(ClearHistoryAction());
-    FocusScope.of(context).requestFocus(searchFocusNode);
-  }
-
-  /// Для снятия фокуса с поля поиска
-  void removeSearchFocus() {
-    searchFocusNode.unfocus();
-  }
-
-  /// Диспатчит начало поиска
-  void dispatchSearchAction() {
-    StoreProvider.of<AppState>(context)
-        .dispatch(StartSearchAction(searchController.text));
-    addToHistory(searchController.text);
-  }
-
-  /// Осуществляет поиск
-  Future<void> search() async {
-    if (debounce?.isActive ?? false) debounce.cancel();
-
-    debounce = Timer(
-      Duration(milliseconds: searchController.text.isEmpty ? 0 : debounceDelay),
-      dispatchSearchAction,
-    );
-  }
-
+class _SightSearchScreenState extends WidgetState<SightSearchWidgetModel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _AppBar(
-        hasClearButton: hasClearButton,
-        searchController: searchController,
-        searchFocusNode: searchFocusNode,
-        onEditingComplete: onEditingComplete,
-      ),
-      body: StoreConnector<AppState, SightSearchState>(
-        converter: (store) => store.state.sightSearchState,
-        builder: (context, vm) {
-          if (vm is SearchLoadingState) {
-            return const _SearchIndicator();
-          } else if (vm is SearchDataState) {
-            if (vm.hasError) {
-              return _MessageBox(
-                hasError: true,
-                onTap: removeSearchFocus,
-              );
-            }
-            if (vm.foundSights.isEmpty) {
-              return _MessageBox(
-                onTap: removeSearchFocus,
-              );
-            }
-            return _SearchResultsList(
-              sights: vm.foundSights,
-              removeSearchFocus: removeSearchFocus,
-            );
-          } else if (vm is SearchInitialState) {
-            final historyState = StoreProvider.of<AppState>(context)
-                .state
-                .sightSearchHistoryState;
-            return historyState.isHistoryEmpty
-                ? const SizedBox()
-                : _SearchHistoryList(
-                    history: historyState.reversedHistory,
-                    isLastInHistory: historyState.isLastInHistory,
-                    onTapOnHistory: onTapOnHistory,
-                    onClearHistory: onClearHistory,
-                    onDeleteFromHistory: onDeleteFromHistory,
-                  );
-          }
-
-          throw ArgumentError('No view for state $vm');
-        },
-      ),
+      appBar: _AppBar(wm: wm),
+      body: StreamedStateBuilder<bool>(
+          streamedState: wm.isSearchingState,
+          builder: (context, isSearching) {
+            return isSearching
+                ? EntityStateBuilder<List<Sight>>(
+                    streamedState: wm.foundSights,
+                    child: (context, sights) {
+                      return sights.isEmpty
+                          ? _MessageBox(
+                              onTap: wm.removeSearchFocusAction,
+                            )
+                          : _SearchResultsList(
+                              sights: sights,
+                              removeSearchFocus: wm.removeSearchFocusAction,
+                            );
+                    },
+                    loadingChild: const _SearchIndicator(),
+                    errorChild: _MessageBox(
+                      hasError: true,
+                      onTap: wm.removeSearchFocusAction,
+                    ),
+                  )
+                : StreamedStateBuilder<List<String>>(
+                    streamedState: wm.historyState,
+                    builder: (context, history) {
+                      return history.isEmpty
+                          ? const SizedBox()
+                          : _SearchHistoryList(
+                              history: history,
+                              onTapOnHistory: wm.historyTapAction,
+                              onClearHistory: () =>
+                                  wm.clearHistoryAction(context),
+                              onDeleteFromHistory: wm.deleteFromHistoryAction,
+                            );
+                    });
+          }),
       bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 0),
     );
   }
@@ -176,17 +83,11 @@ class _SightSearchScreenState extends State<SightSearchScreen> {
 
 class _AppBar extends StatelessWidget implements PreferredSizeWidget {
   const _AppBar({
-    @required this.hasClearButton,
-    @required this.searchController,
-    @required this.searchFocusNode,
-    @required this.onEditingComplete,
+    @required this.wm,
     Key key,
   }) : super(key: key);
 
-  final bool hasClearButton;
-  final TextEditingController searchController;
-  final FocusNode searchFocusNode;
-  final void Function() onEditingComplete;
+  final SightSearchWidgetModel wm;
 
   @override
   Size get preferredSize => const Size.fromHeight(108.0);
@@ -205,13 +106,17 @@ class _AppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(52.0),
-        child: SearchBar(
-          autofocus: true,
-          hasClearButton: hasClearButton,
-          searchController: searchController,
-          searchFocusNode: searchFocusNode,
-          onEditingComplete: onEditingComplete,
-        ),
+        child: StreamedStateBuilder<bool>(
+            streamedState: wm.hasClearButtonState,
+            builder: (context, hasClearButton) {
+              return SearchBar(
+                autofocus: true,
+                hasClearButton: hasClearButton,
+                searchController: wm.searchEditingAction.controller,
+                searchFocusNode: wm.searchFocusNode,
+                onEditingComplete: wm.searchEditingCompleteAction,
+              );
+            }),
       ),
     );
   }
@@ -340,7 +245,6 @@ class _MessageBox extends StatelessWidget {
 class _SearchHistoryList extends StatelessWidget {
   const _SearchHistoryList({
     @required this.history,
-    @required this.isLastInHistory,
     @required this.onTapOnHistory,
     @required this.onDeleteFromHistory,
     @required this.onClearHistory,
@@ -348,7 +252,6 @@ class _SearchHistoryList extends StatelessWidget {
   }) : super(key: key);
 
   final List<String> history;
-  final bool Function(String) isLastInHistory;
   final Function onTapOnHistory;
   final Function onDeleteFromHistory;
   final void Function() onClearHistory;
@@ -358,7 +261,6 @@ class _SearchHistoryList extends StatelessWidget {
     return Column(
       children: [
         const Padding(
-          // ignore: prefer-trailing-comma
           padding: EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 4.0),
           child: Subtitle(
             subtitle: sightSearchHistoryTitle,
@@ -372,7 +274,7 @@ class _SearchHistoryList extends StatelessWidget {
                 SettingsItem(
                   title: item,
                   isGreyedOut: true,
-                  isLast: isLastInHistory(item),
+                  isLast: history.last == item,
                   onTap: () => onTapOnHistory(item),
                   trailing: GestureDetector(
                     onTap: () => onDeleteFromHistory(item),

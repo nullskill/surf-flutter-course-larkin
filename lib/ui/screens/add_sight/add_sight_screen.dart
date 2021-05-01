@@ -18,11 +18,10 @@ import 'package:relation/relation.dart';
 /// Экран добавления нового места.
 class AddSightScreen extends CoreMwwmWidget {
   const AddSightScreen({
-    WidgetModelBuilder wmBuilder,
+    @required WidgetModelBuilder wmBuilder,
     Key key,
-  }) : super(
-            widgetModelBuilder: wmBuilder ?? AddSightWidgetModel.builder,
-            key: key);
+  })  : assert(wmBuilder != null),
+        super(widgetModelBuilder: wmBuilder, key: key);
 
   @override
   _AddSightScreenState createState() => _AddSightScreenState();
@@ -46,12 +45,12 @@ class _AddSightScreenState extends WidgetState<AddSightWidgetModel> {
           MediaQuery.of(context).padding.bottom + 8.0,
         ),
         child: StreamedStateBuilder<bool>(
-            streamedState: wm.allDone,
-            builder: (context, allDone) {
+            streamedState: wm.isAllDoneState,
+            builder: (context, isAllDone) {
               return ActionButton(
                 label: addSightActionButtonLabel,
-                isDisabled: !allDone,
-                onPressed: () => wm.onActionButtonPressed(context),
+                isDisabled: !isAllDone,
+                onPressed: wm.actionButtonAction,
               );
             }),
       ),
@@ -76,9 +75,7 @@ class _AddSightAppBar extends StatelessWidget {
           vertical: 10.0,
         ),
         child: TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: wm.backButtonAction,
           child: Text(
             cancelButtonLabel,
             softWrap: false,
@@ -122,7 +119,7 @@ class _ImageCards extends StatelessWidget {
     return SizedBox(
       height: 96.0,
       child: StreamedStateBuilder<List<String>>(
-          streamedState: wm.imgUrls,
+          streamedState: wm.imgUrlsState,
           builder: (context, imgUrls) {
             return ListView(
               scrollDirection: Axis.horizontal,
@@ -134,7 +131,7 @@ class _ImageCards extends StatelessWidget {
               ),
               children: [
                 _AddImageCard(
-                  onAddImageCard: () => wm.selectImage(context),
+                  onAddImageCard: () => wm.addImageAction(context),
                 ),
                 for (final imgUrl in imgUrls)
                   _ImageCard(imgUrl: imgUrl, wm: wm),
@@ -185,7 +182,7 @@ class _AddImageCard extends StatelessWidget {
   }
 }
 
-class _ImageCard extends StatelessWidget {
+class _ImageCard extends StatefulWidget {
   const _ImageCard({
     @required this.imgUrl,
     @required this.wm,
@@ -197,39 +194,98 @@ class _ImageCard extends StatelessWidget {
   final AddSightWidgetModel wm;
 
   @override
+  _ImageCardState createState() => _ImageCardState();
+}
+
+class _ImageCardState extends State<_ImageCard> {
+  bool isPointerDownOnImg;
+  bool isPointerMoveOnImg;
+
+  @override
+  void initState() {
+    super.initState();
+
+    isPointerDownOnImg = false;
+    isPointerMoveOnImg = false;
+  }
+
+  /// При тапе на карточке картинки
+  void onPointerDownOnImageCard() {
+    isPointerDownOnImg = true;
+    isPointerMoveOnImg = false;
+    setState(() {});
+  }
+
+  /// При свайпе карточки картинки
+  void onPointerMoveOnImageCard() {
+    isPointerDownOnImg = false;
+    isPointerMoveOnImg = true;
+    setState(() {});
+  }
+
+  /// При окончании свайпа карточки картинки
+  void onPointerUpOnImageCard() {
+    isPointerDownOnImg = false;
+    isPointerMoveOnImg = false;
+    setState(() {});
+  }
+
+  /// Возвращает тень для карточки картинки,
+  /// в зависимости от состояния свайпа
+  List<BoxShadow> getBoxShadow() {
+    if (isPointerMoveOnImg) {
+      return const [
+        BoxShadow(
+          color: Color.fromRGBO(26, 26, 32, 0.16),
+          blurRadius: 16,
+          offset: Offset(0, 4), // changes position of shadow
+        ),
+      ];
+    }
+
+    if (isPointerDownOnImg) {
+      return const [
+        BoxShadow(
+          color: Color.fromRGBO(26, 26, 32, 0.16),
+          blurRadius: 8,
+          offset: Offset(0, 2), // changes position of shadow
+        ),
+      ];
+    }
+
+    return [];
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: ValueKey(imgUrl),
+      key: ValueKey(widget.imgUrl),
       direction: DismissDirection.up,
-      onDismissed: (_) => wm.onDeleteImageCard(imgUrl),
+      onDismissed: (_) => widget.wm.removeImageAction(widget.imgUrl),
       child: Listener(
-        onPointerDown: (_) => wm.onPointerDownOnImageCard(imgUrl),
-        onPointerMove: (_) => wm.onPointerMoveOnImageCard(imgUrl),
-        onPointerUp: (_) => wm.onPointerUpOnImageCard(imgUrl),
-        child: StreamedStateBuilder<String>(
-            streamedState: wm.imgKey,
-            builder: (_, __) {
-              return Container(
-                width: _cardSize,
-                height: _cardSize,
-                margin: const EdgeInsets.only(left: 16.0),
-                decoration: BoxDecoration(
-                  color: placeholderColor,
-                  borderRadius: allBorderRadius12,
-                  boxShadow: wm.getBoxShadow(imgUrl),
-                ),
-                child: Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: ClearButton(
-                      isDeletion: true,
-                      onTap: () => wm.onDeleteImageCard(imgUrl),
-                    ),
-                  ),
-                ),
-              );
-            }),
+        onPointerDown: (_) => onPointerDownOnImageCard(),
+        onPointerMove: (_) => onPointerMoveOnImageCard(),
+        onPointerUp: (_) => onPointerUpOnImageCard(),
+        child: Container(
+          width: _ImageCard._cardSize,
+          height: _ImageCard._cardSize,
+          margin: const EdgeInsets.only(left: 16.0),
+          decoration: BoxDecoration(
+            color: placeholderColor,
+            borderRadius: allBorderRadius12,
+            boxShadow: getBoxShadow(),
+          ),
+          child: Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: ClearButton(
+                isDeletion: true,
+                onTap: () => widget.wm.removeImageAction(widget.imgUrl),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -261,12 +317,12 @@ class _AddSightBody extends StatelessWidget {
                 children: [
                   const Subtitle(subtitle: addSightCategoryTitle),
                   StreamedStateBuilder<Category>(
-                      streamedState: wm.selectedCategory,
+                      streamedState: wm.selectedCategoryState,
                       builder: (context, category) {
                         return SettingsItem(
                           title: category?.name ?? addSightNoCategoryTitle,
-                          isGreyedOut: wm.selectedCategory.value == null,
-                          onTap: () => wm.selectCategory(context),
+                          isGreyedOut: category == null,
+                          onTap: () => wm.selectCategoryAction(context),
                           trailing: SvgPicture.asset(
                             AppIcons.view,
                             width: 24.0,
@@ -276,64 +332,34 @@ class _AddSightBody extends StatelessWidget {
                         );
                       }),
                   _AddSightTextField(
+                    wm: wm,
+                    state: wm.nameFieldState,
                     title: addSightNameTitle,
-                    hasClearButton: wm.hasClearButton(
-                      wm.nameFocusNode,
-                      wm.nameController,
-                    ),
-                    controller: wm.nameController,
-                    focusNode: wm.nameFocusNode,
-                    moveFocus: () => wm.moveFocus(context),
-                    validator: (value) =>
-                        value.isEmpty ? addSightIsEmptyName : null,
-                    onSaved: (value) => wm.sightForm.name = value,
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: _AddSightTextField(
+                          wm: wm,
+                          state: wm.latitudeFieldState,
                           title: addSightLatitudeTitle,
-                          hasClearButton: wm.hasClearButton(
-                            wm.latitudeFocusNode,
-                            wm.latitudeController,
-                          ),
-                          controller: wm.latitudeController,
-                          focusNode: wm.latitudeFocusNode,
-                          moveFocus: () => wm.moveFocus(context),
                           keyboardType: const TextInputType.numberWithOptions(
                             signed: true,
                             decimal: true,
                           ),
-                          validator: (value) => wm.validateCoordinate(
-                            value,
-                            Coordinate.lat,
-                          ),
-                          onSaved: (value) =>
-                              wm.sightForm.lat = double.tryParse(value),
                         ),
                       ),
                       const SizedBox(width: 16.0),
                       Expanded(
                         child: _AddSightTextField(
+                          wm: wm,
+                          state: wm.longitudeFieldState,
                           title: addSightLongitudeTitle,
-                          hasClearButton: wm.hasClearButton(
-                            wm.longitudeFocusNode,
-                            wm.longitudeController,
-                          ),
-                          controller: wm.longitudeController,
-                          focusNode: wm.longitudeFocusNode,
-                          moveFocus: () => wm.moveFocus(context),
                           keyboardType: const TextInputType.numberWithOptions(
                             signed: true,
                             decimal: true,
                           ),
-                          validator: (value) => wm.validateCoordinate(
-                            value,
-                            Coordinate.lng,
-                          ),
-                          onSaved: (value) =>
-                              wm.sightForm.lng = double.tryParse(value),
                         ),
                       ),
                     ],
@@ -345,20 +371,12 @@ class _AddSightBody extends StatelessWidget {
                     },
                   ),
                   _AddSightTextField(
+                    wm: wm,
+                    state: wm.descriptionFieldState,
                     title: addSightDescriptionTitle,
                     hintText: addSightDescriptionHintText,
                     maxLines: 4,
                     isLastField: true,
-                    hasClearButton: wm.hasClearButton(
-                      wm.descriptionFocusNode,
-                      wm.descriptionController,
-                    ),
-                    controller: wm.descriptionController,
-                    focusNode: wm.descriptionFocusNode,
-                    moveFocus: () => wm.moveFocus(context),
-                    validator: (value) =>
-                        value.isEmpty ? addSightIsEmptyDescription : null,
-                    onSaved: (value) => wm.sightForm.details = value,
                   ),
                 ],
               ),
@@ -372,31 +390,23 @@ class _AddSightBody extends StatelessWidget {
 
 class _AddSightTextField extends StatelessWidget {
   const _AddSightTextField({
+    @required this.wm,
+    @required this.state,
     @required this.title,
-    @required this.controller,
-    @required this.focusNode,
-    @required this.moveFocus,
-    @required this.onSaved,
-    this.maxLines,
     this.hintText,
-    this.isLastField = false,
-    this.hasClearButton = false,
+    this.maxLines,
     this.keyboardType,
-    this.validator,
+    this.isLastField = false,
     Key key,
   }) : super(key: key);
 
-  final int maxLines;
   final String title;
   final String hintText;
+  final int maxLines;
   final bool isLastField;
-  final bool hasClearButton;
   final TextInputType keyboardType;
-  final TextEditingController controller;
-  final FocusNode focusNode;
-  final void Function() moveFocus;
-  final void Function(String) onSaved;
-  final String Function(String) validator;
+  final AddSightWidgetModel wm;
+  final StreamedState<FieldData> state;
 
   @override
   Widget build(BuildContext context) {
@@ -408,47 +418,48 @@ class _AddSightTextField extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(top: 12.0),
-          child: TextFormField(
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: validator,
-            scrollPadding: const EdgeInsets.all(100.0),
-            maxLines: maxLines ?? 1,
-            controller: controller,
-            focusNode: focusNode,
-            keyboardType: keyboardType,
-            textCapitalization: TextCapitalization.sentences,
-            textInputAction:
-                isLastField ? TextInputAction.done : TextInputAction.next,
-            cursorColor: Theme.of(context).primaryColor,
-            cursorHeight: 24.0,
-            cursorWidth: 1,
-            style: textRegular16.copyWith(
-              color: Theme.of(context).primaryColor,
-              height: lineHeight1_25,
-            ),
-            decoration: InputDecoration(
-              hintText: hintText,
-              enabledBorder: controller.text.isEmpty
-                  ? Theme.of(context).inputDecorationTheme.border
-                  : Theme.of(context).inputDecorationTheme.enabledBorder,
-              suffixIcon: !hasClearButton
-                  ? null
-                  : Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: ClearButton(
-                        onTap: () {
-                          controller.clear();
-                        },
-                      ),
+          child: StreamedStateBuilder<FieldData>(
+              streamedState: state,
+              builder: (context, field) {
+                return TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: field.validator,
+                  scrollPadding: const EdgeInsets.all(100.0),
+                  maxLines: maxLines ?? 1,
+                  controller: field.action.controller,
+                  focusNode: field.focusNode,
+                  keyboardType: keyboardType,
+                  textCapitalization: TextCapitalization.sentences,
+                  textInputAction:
+                      isLastField ? TextInputAction.done : TextInputAction.next,
+                  cursorColor: Theme.of(context).primaryColor,
+                  cursorHeight: 24.0,
+                  cursorWidth: 1,
+                  style: textRegular16.copyWith(
+                    color: Theme.of(context).primaryColor,
+                    height: lineHeight1_25,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: hintText,
+                    enabledBorder: !field.hasText
+                        ? Theme.of(context).inputDecorationTheme.border
+                        : Theme.of(context).inputDecorationTheme.enabledBorder,
+                    suffixIcon: field.hasClearButton
+                        ? Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: ClearButton(
+                              onTap: field.action.controller.clear,
+                            ),
+                          )
+                        : null,
+                    suffixIconConstraints: const BoxConstraints(
+                      maxHeight: 40.0,
+                      maxWidth: 40.0,
                     ),
-              suffixIconConstraints: const BoxConstraints(
-                maxHeight: 40.0,
-                maxWidth: 40.0,
-              ),
-            ),
-            onEditingComplete: moveFocus,
-            onSaved: onSaved,
-          ),
+                  ),
+                  onEditingComplete: () => wm.moveFocusAction(context),
+                );
+              }),
         ),
       ],
     );

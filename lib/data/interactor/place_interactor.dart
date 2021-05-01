@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/repository/place_repository.dart';
@@ -15,6 +17,12 @@ class PlaceInteractor {
   List<Sight> _sights = [];
   List<FavoriteSight> _favoriteSights = [];
   final List<VisitedSight> _visitedSights = [];
+
+  final StreamController<List<FavoriteSight>> _favoriteSightsController =
+      StreamController.broadcast();
+
+  Stream<List<FavoriteSight>> get favoriteSightsStream =>
+      _favoriteSightsController.stream;
 
   /// Отсортированный список мест
   List<Sight> get sights {
@@ -73,6 +81,7 @@ class PlaceInteractor {
   void addToFavorites(FavoriteSight favoriteSight) {
     _favoriteSights.add(favoriteSight);
     _sortFavorites();
+    _favoriteSightsController.add(_favoriteSights);
   }
 
   /// Добавление места в посещенные
@@ -81,13 +90,20 @@ class PlaceInteractor {
         .add(VisitedSight.fromSight(sight: sight, visitedDate: DateTime.now()));
   }
 
-  /// Удаление места из избранного или из посещенных
-  /// в зависимости от переданного типа [sight]
-  void removeFromFavorites<T extends Sight>(T sight) {
-    if (sight is VisitedSight) {
-      _visitedSights.remove(sight);
-    }
+  /// Удаление места из избранного
+  void removeFromFavorites(FavoriteSight sight) {
     _favoriteSights.remove(sight);
+    _favoriteSightsController.add(_favoriteSights);
+  }
+
+  /// Удаление места из посещенных
+  void removeFromVisited(VisitedSight sight) {
+    _visitedSights.remove(sight);
+  }
+
+  /// Закрывает все, что необходимо закрыть
+  void dispose() {
+    _favoriteSightsController.close();
   }
 
   /// Сортирует список моделей [Sight] по удаленности
