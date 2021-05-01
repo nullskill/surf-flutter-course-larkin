@@ -43,7 +43,7 @@ class SightListWidgetModel extends WidgetModel {
   void onLoad() {
     super.onLoad();
 
-    _refreshSights();
+    _reloadSights();
   }
 
   @override
@@ -60,23 +60,23 @@ class SightListWidgetModel extends WidgetModel {
   /// При тапе на поле SearchBar переход на SightSearchScreen
   void _showSearchScreen() {
     doFuture<void>(
-        navigator.push(SightSearchScreenRoute()), (_) => _refreshSights());
+        navigator.push(SightSearchScreenRoute()), (_) => _reloadSights());
   }
 
   /// При тапе кнопки фильтров переход на FiltersScreen
   void _showFiltersScreen() {
     doFuture<void>(
-        navigator.push(FiltersScreenRoute()), (_) => _refreshSights());
+        navigator.push(FiltersScreenRoute()), (_) => _reloadSights());
   }
 
   /// При тапе кнопки создания нового места переход на AddSightScreen
   void _showAddSightScreen() {
     doFuture<void>(
-        navigator.push(AddSightScreenRoute()), (_) => _refreshSights());
+        navigator.push(AddSightScreenRoute()), (_) => _reloadSights());
   }
 
   /// Получение списка всех мест (с учетом фильтров)
-  void _refreshSights() {
+  void _reloadSights() {
     sightsState.loading();
 
     doFutureHandleError<void>(

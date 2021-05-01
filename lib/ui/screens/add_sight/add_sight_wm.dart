@@ -283,7 +283,7 @@ class AddSightWidgetModel extends WidgetModel {
   /// Устанавливает выбранную категорию в качестве текущей
   void _setSelectedCategory(Category selectedCategory) {
     selectedCategoryState.accept(selectedCategory);
-    if (selectedCategory != null) nameFocusNode.requestFocus();
+    nameFocusNode.requestFocus();
   }
 
   /// Сохранение данных формы

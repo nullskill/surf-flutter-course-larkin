@@ -50,16 +50,16 @@ class VisitingWidgetModel extends WidgetModel {
   void onLoad() {
     super.onLoad();
 
-    _loadFavorites();
+    _reloadFavorites();
   }
 
   @override
   void onBind() {
     super.onBind();
 
-    subscribe<void>(loadVisitedSightsAction.stream, (_) => _loadVisited());
+    subscribe<void>(loadVisitedSightsAction.stream, (_) => _reloadVisited());
     subscribe<void>(
-        placeInteractor.favoriteSightsStream, (_) => _loadFavorites());
+        placeInteractor.favoriteSightsStream, (_) => _reloadFavorites());
     subscribe<Sight>(removeFromVisitingAction.stream, removeFromVisiting);
     subscribe<FavoriteSight>(
         removeFavoriteSightAction.stream, _removeFromFavorites);
@@ -75,7 +75,7 @@ class VisitingWidgetModel extends WidgetModel {
   }
 
   /// Загружает список избранных мест
-  void _loadFavorites() {
+  void _reloadFavorites() {
     if (favoritesFirstLoadState.value) favoriteSightsState.loading();
 
     // Delay imitation
@@ -88,7 +88,7 @@ class VisitingWidgetModel extends WidgetModel {
   }
 
   /// Загружает список посещенных мест
-  void _loadVisited() {
+  void _reloadVisited() {
     if (visitedFirstLoadState.value) visitedSightsState.loading();
 
     // Delay imitation

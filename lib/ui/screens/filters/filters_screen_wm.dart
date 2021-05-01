@@ -37,7 +37,7 @@ class FiltersWidgetModel extends WidgetModel {
   /// Стейт списка категорий
   final categoriesState = StreamedState<List<Category>>();
 
-  /// Выбранный диапазона расстояния
+  /// Выбранный диапазон расстояния
   final rangeValuesState = StreamedState<RangeValues>();
 
   /// Количество отфильтрованных мест
