@@ -308,7 +308,7 @@ class _SliverList extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 24.0),
             child: SightCard(
               sight: sight,
-              key: ValueKey(sight.id),
+              key: ValueKey<int>(sight.id),
             ),
           );
         },

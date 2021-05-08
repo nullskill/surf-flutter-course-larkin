@@ -33,9 +33,7 @@ class _CircularProgress extends State<CircularProgress>
 
     controller = AnimationController(
       vsync: this,
-      duration: Duration(
-        milliseconds: widget.lapDuration,
-      ),
+      duration: Duration(milliseconds: widget.lapDuration),
     )..repeat();
   }
 

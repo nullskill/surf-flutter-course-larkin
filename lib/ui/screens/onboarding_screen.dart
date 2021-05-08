@@ -20,6 +20,12 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   int currentPage = 0;
 
+  void onPageChanged(int value) {
+    setState(() {
+      currentPage = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final isLastFrame = currentPage == tutorialFrames.length - 1;
@@ -30,11 +36,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         children: [
           Expanded(
             child: PageView.builder(
-              onPageChanged: _onPageChanged,
+              onPageChanged: onPageChanged,
               itemCount: tutorialFrames.length,
               itemBuilder: (context, index) {
                 final TutorialFrame frame = tutorialFrames[index];
                 return _Frame(
+                  isActiveFrame: currentPage == index,
                   iconName: frame.iconName,
                   title: frame.title,
                   message: frame.message,
@@ -48,8 +55,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
               tutorialFrames.length,
-              (index) =>
-                  _FrameIndicator(currentPage: currentPage, index: index),
+              (index) => _FrameIndicator(isActiveFrame: currentPage == index),
             ),
           ),
           const SizedBox(height: 24),
@@ -57,12 +63,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       ),
       bottomNavigationBar: _BottomNavigationBar(isLastFrame: isLastFrame),
     );
-  }
-
-  void _onPageChanged(int value) {
-    setState(() {
-      currentPage = value;
-    });
   }
 }
 
@@ -117,8 +117,9 @@ class _SkipButton extends StatelessWidget {
   }
 }
 
-class _Frame extends StatelessWidget {
+class _Frame extends StatefulWidget {
   const _Frame({
+    @required this.isActiveFrame,
     @required this.title,
     @required this.iconName,
     @required this.message,
@@ -127,8 +128,78 @@ class _Frame extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
+  final bool isActiveFrame;
   final String title, iconName, message;
   final int index, length;
+
+  @override
+  _FrameState createState() => _FrameState();
+}
+
+class _FrameState extends State<_Frame> with TickerProviderStateMixin {
+  AnimationController controller;
+  Animation<double> opacity;
+  Animation<double> width;
+  Animation<double> height;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller = AnimationController(
+      duration: const Duration(milliseconds: 350),
+      vsync: this,
+    );
+
+    opacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: controller, curve: Curves.easeIn),
+    );
+
+    width = Tween<double>(begin: 0.0, end: 104.0).animate(
+      CurvedAnimation(parent: controller, curve: Curves.easeIn),
+    );
+
+    height = Tween<double>(begin: 0.0, end: 104.0).animate(
+      CurvedAnimation(parent: controller, curve: Curves.easeIn),
+    );
+    playAnimation();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(_Frame oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.isActiveFrame != oldWidget.isActiveFrame) {
+      if (widget.isActiveFrame) {
+        playAnimation();
+      } else {
+        reverseAnimation();
+      }
+    }
+  }
+
+  Future<void> playAnimation() async {
+    await Future<void>.delayed(const Duration(milliseconds: 2));
+    try {
+      await controller.forward().orCancel;
+    } on TickerCanceled {
+      // the animation got canceled, probably because we were disposed
+    }
+  }
+
+  Future<void> reverseAnimation() async {
+    try {
+      await controller.reverse().orCancel;
+    } on TickerCanceled {
+      // the animation got canceled, probably because we were disposed
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,15 +207,23 @@ class _Frame extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SvgPicture.asset(
-            iconName,
-            width: 104.0,
-            height: 104.0,
-            color: Theme.of(context).primaryColor,
+          AnimatedBuilder(
+            animation: controller,
+            builder: (context, child) {
+              return Opacity(
+                opacity: opacity.value,
+                child: SvgPicture.asset(
+                  widget.iconName,
+                  width: width.value,
+                  height: height.value,
+                  color: Theme.of(context).primaryColor,
+                ),
+              );
+            },
           ),
           const SizedBox(height: 40.0),
           Text(
-            title,
+            widget.title,
             style: textBold24.copyWith(
               color: Theme.of(context).primaryColor,
               height: lineHeight1_2,
@@ -157,7 +236,7 @@ class _Frame extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  message,
+                  widget.message,
                   style: textRegular14.copyWith(
                     color: secondaryColor2,
                     height: lineHeight1_3,
@@ -175,12 +254,11 @@ class _Frame extends StatelessWidget {
 
 class _FrameIndicator extends StatelessWidget {
   const _FrameIndicator({
-    @required this.index,
-    @required this.currentPage,
+    @required this.isActiveFrame,
     Key key,
   }) : super(key: key);
 
-  final int index, currentPage;
+  final bool isActiveFrame;
 
   @override
   Widget build(BuildContext context) {
@@ -188,11 +266,9 @@ class _FrameIndicator extends StatelessWidget {
       duration: const Duration(milliseconds: 200),
       margin: const EdgeInsets.only(right: 5),
       height: 6,
-      width: currentPage == index ? 20 : 6,
+      width: isActiveFrame ? 20 : 6,
       decoration: BoxDecoration(
-        color: currentPage == index
-            ? Theme.of(context).buttonColor
-            : inactiveColor,
+        color: isActiveFrame ? Theme.of(context).buttonColor : inactiveColor,
         borderRadius: BorderRadius.circular(3),
       ),
     );
