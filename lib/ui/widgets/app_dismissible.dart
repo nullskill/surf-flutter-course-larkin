@@ -558,8 +558,8 @@ class _AppDismissibleState extends State<AppDismissible>
         sizeFactor: _resizeAnimation,
         axis: _directionIsXAxis ? Axis.vertical : Axis.horizontal,
         child: SizedBox(
-          width: _sizePriorToCollapse.width,
-          height: _sizePriorToCollapse.height,
+          width: _sizePriorToCollapse.width - 1,
+          height: _sizePriorToCollapse.height - 1,
           child: background,
         ),
       );

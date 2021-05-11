@@ -12,6 +12,7 @@ import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screens/visiting/visiting_wm.dart';
 import 'package:places/ui/widgets/app_bottom_navigation_bar.dart';
 import 'package:places/ui/widgets/app_dismissible.dart';
+import 'package:places/ui/widgets/app_tab_bar.dart';
 import 'package:places/ui/widgets/circular_progress.dart';
 import 'package:places/ui/widgets/message_box.dart';
 import 'package:places/ui/widgets/sight_card/sight_card.dart';
@@ -29,52 +30,84 @@ class VisitingScreen extends CoreMwwmWidget {
   _VisitingScreenState createState() => _VisitingScreenState();
 }
 
-class _VisitingScreenState extends WidgetState<VisitingWidgetModel> {
+class _VisitingScreenState extends WidgetState<VisitingWidgetModel>
+    with SingleTickerProviderStateMixin {
+  static const tabDelay = Duration(milliseconds: 350);
+  static const linearCurve = Interval(.003, 1.0);
+
+  AppTabController tabController;
+  List<Tab> visitingTabs;
+
+  @override
+  void initState() {
+    super.initState();
+
+    visitingTabs = <Tab>[
+      const Tab(text: visitingWishToVisitTabText),
+      const Tab(text: visitingVisitedTabText),
+    ];
+    tabController = AppTabController(
+      vsync: this,
+      length: visitingTabs.length,
+      duration: tabDelay,
+      curve: linearCurve,
+    );
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: _VisitingScreenAppBar(wm: wm),
-        body: TabBarView(
-          children: [
-            EntityStateBuilder<List<FavoriteSight>>(
-              streamedState: wm.favoriteSightsState,
-              child: (context, favoriteSights) {
-                return _VisitingScreenList(
-                  sights: favoriteSights,
-                  onRemoveCard: wm.removeFromVisitingAction,
-                );
-              },
-              loadingChild: Center(
-                child: CircularProgress(
-                  size: 40.0,
-                  primaryColor: secondaryColor2,
-                  secondaryColor: Theme.of(context).backgroundColor,
-                ),
-              ),
-            ),
-            EntityStateBuilder<List<VisitedSight>>(
-              streamedState: wm.visitedSightsState,
-              child: (context, visitedSights) {
-                return _VisitingScreenList(
-                  sights: visitedSights,
-                  hasVisited: true,
-                  onRemoveCard: wm.removeFromVisitingAction,
-                );
-              },
-              loadingChild: Center(
-                child: CircularProgress(
-                  size: 40.0,
-                  primaryColor: secondaryColor2,
-                  secondaryColor: Theme.of(context).backgroundColor,
-                ),
-              ),
-            ),
-          ],
-        ),
-        bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 2),
+    return Scaffold(
+      appBar: _VisitingScreenAppBar(
+        tabs: visitingTabs,
+        tabController: tabController,
+        wm: wm,
       ),
+      body: AppTabBarView(
+        controller: tabController,
+        children: [
+          EntityStateBuilder<List<FavoriteSight>>(
+            streamedState: wm.favoriteSightsState,
+            child: (context, favoriteSights) {
+              return _VisitingScreenList(
+                sights: favoriteSights,
+                onRemoveCard: wm.removeFromVisitingAction,
+              );
+            },
+            loadingChild: Center(
+              child: CircularProgress(
+                size: 40.0,
+                primaryColor: secondaryColor2,
+                secondaryColor: Theme.of(context).backgroundColor,
+              ),
+            ),
+          ),
+          EntityStateBuilder<List<VisitedSight>>(
+            streamedState: wm.visitedSightsState,
+            child: (context, visitedSights) {
+              return _VisitingScreenList(
+                sights: visitedSights,
+                hasVisited: true,
+                onRemoveCard: wm.removeFromVisitingAction,
+              );
+            },
+            loadingChild: Center(
+              child: CircularProgress(
+                size: 40.0,
+                primaryColor: secondaryColor2,
+                secondaryColor: Theme.of(context).backgroundColor,
+              ),
+            ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: const AppBottomNavigationBar(currentIndex: 2),
     );
   }
 }
@@ -82,10 +115,14 @@ class _VisitingScreenState extends WidgetState<VisitingWidgetModel> {
 class _VisitingScreenAppBar extends StatelessWidget
     implements PreferredSizeWidget {
   const _VisitingScreenAppBar({
+    @required this.tabs,
+    @required this.tabController,
     @required this.wm,
     Key key,
   }) : super(key: key);
 
+  final List<Tab> tabs;
+  final TabController tabController;
   final VisitingWidgetModel wm;
 
   @override
@@ -103,17 +140,25 @@ class _VisitingScreenAppBar extends StatelessWidget
           height: lineHeight1_3,
         ),
       ),
-      bottom: _AppBarBottom(wm: wm),
+      bottom: _AppBarBottom(
+        tabs: tabs,
+        tabController: tabController,
+        wm: wm,
+      ),
     );
   }
 }
 
 class _AppBarBottom extends StatelessWidget implements PreferredSizeWidget {
   const _AppBarBottom({
+    @required this.tabs,
+    @required this.tabController,
     @required this.wm,
     Key key,
   }) : super(key: key);
 
+  final List<Tab> tabs;
+  final TabController tabController;
   final VisitingWidgetModel wm;
 
   @override
@@ -137,10 +182,8 @@ class _AppBarBottom extends StatelessWidget implements PreferredSizeWidget {
           highlightColor: Colors.transparent,
         ),
         child: TabBar(
-          tabs: const [
-            Tab(text: visitingWishToVisitTabText),
-            Tab(text: visitingVisitedTabText),
-          ],
+          controller: tabController,
+          tabs: tabs,
           onTap: (index) {
             if (index == 1) {
               wm.loadVisitedSightsAction();
@@ -247,7 +290,7 @@ class _CardBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: allBorderRadius16,
+      borderRadius: allBorderRadius18,
       child: Container(
         color: Theme.of(context).errorColor,
         child: Align(
