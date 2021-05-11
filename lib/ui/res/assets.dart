@@ -64,6 +64,7 @@ class AppIcons {
   static const String go = '$_otherPath/go.svg';
   static const String info = '$_otherPath/info.svg';
   static const String photo = '$_otherPath/photo.svg';
+  static const String placeholder = '$_otherPath/placeholder.png';
   static const String plus = '$_otherPath/plus.svg';
   static const String refresh = '$_otherPath/refresh';
   static const String search = '$_otherPath/search.svg';

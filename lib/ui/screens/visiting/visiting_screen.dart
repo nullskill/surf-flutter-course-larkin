@@ -52,6 +52,7 @@ class _VisitingScreenState extends WidgetState<VisitingWidgetModel>
       duration: tabDelay,
       curve: linearCurve,
     );
+    tabController.addListener(_handleTabSelection);
   }
 
   @override
@@ -59,6 +60,12 @@ class _VisitingScreenState extends WidgetState<VisitingWidgetModel>
     tabController.dispose();
 
     super.dispose();
+  }
+
+  void _handleTabSelection() {
+    if (tabController.index == 1) {
+      wm.loadVisitedSightsAction();
+    }
   }
 
   @override
@@ -82,7 +89,6 @@ class _VisitingScreenState extends WidgetState<VisitingWidgetModel>
             },
             loadingChild: Center(
               child: CircularProgress(
-                size: 40.0,
                 primaryColor: secondaryColor2,
                 secondaryColor: Theme.of(context).backgroundColor,
               ),
@@ -99,7 +105,6 @@ class _VisitingScreenState extends WidgetState<VisitingWidgetModel>
             },
             loadingChild: Center(
               child: CircularProgress(
-                size: 40.0,
                 primaryColor: secondaryColor2,
                 secondaryColor: Theme.of(context).backgroundColor,
               ),
@@ -181,15 +186,7 @@ class _AppBarBottom extends StatelessWidget implements PreferredSizeWidget {
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
         ),
-        child: TabBar(
-          controller: tabController,
-          tabs: tabs,
-          onTap: (index) {
-            if (index == 1) {
-              wm.loadVisitedSightsAction();
-            }
-          },
-        ),
+        child: TabBar(controller: tabController, tabs: tabs),
       ),
     );
   }
@@ -253,7 +250,7 @@ class _VisitingScreenList extends StatelessWidget {
   }
 }
 
-class _DismissibleCard extends StatelessWidget {
+class _DismissibleCard extends StatefulWidget {
   const _DismissibleCard({
     @required this.sight,
     @required this.hasVisited,
@@ -261,20 +258,44 @@ class _DismissibleCard extends StatelessWidget {
     Key key,
   }) : super(key: key);
 
+  static const Duration resizeDuration = Duration(milliseconds: 350);
+
   final Sight sight;
   final bool hasVisited;
   final void Function(Sight) onRemoveCard;
+
+  @override
+  _DismissibleCardState createState() => _DismissibleCardState();
+}
+
+class _DismissibleCardState extends State<_DismissibleCard> {
+  double resizeValue;
+
+  @override
+  void initState() {
+    super.initState();
+
+    resizeValue = 1.0;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         AppDismissible(
-          key: key,
+          key: widget.key,
           direction: AppDismissDirection.endToStart,
-          onDismissed: (_) => onRemoveCard(sight),
-          background: const _CardBackground(),
-          child: SightCard(sight: sight),
+          onResize: (value) {
+            setState(() {
+              resizeValue = value;
+            });
+          },
+          onDismissed: (_) => widget.onRemoveCard(widget.sight),
+          background: _CardBackground(
+            resizeValue: resizeValue,
+            duration: _DismissibleCard.resizeDuration,
+          ),
+          child: SightCard(sight: widget.sight),
         ),
         const SizedBox(height: 24.0),
       ],
@@ -284,39 +305,49 @@ class _DismissibleCard extends StatelessWidget {
 
 class _CardBackground extends StatelessWidget {
   const _CardBackground({
+    @required this.resizeValue,
+    @required this.duration,
     Key key,
   }) : super(key: key);
 
+  final double resizeValue;
+  final Duration duration;
+
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: allBorderRadius18,
-      child: Container(
+    return AnimatedContainer(
+      decoration: BoxDecoration(
         color: Theme.of(context).errorColor,
-        child: Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SvgPicture.asset(
-                  AppIcons.bucket,
-                  color: whiteColor,
-                ),
-                const SizedBox(height: 10.0),
-                Text(
-                  visitingDeleteCardLabel,
-                  style: textMedium12.copyWith(
-                    color: whiteColor,
-                    height: lineHeight1_3,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
+        borderRadius: resizeValue == 1.0
+            ? allBorderRadius18
+            : allBorderRadius18 * (resizeValue - .3),
       ),
+      duration: duration,
+      child: resizeValue < .5
+          ? const SizedBox.shrink()
+          : Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SvgPicture.asset(
+                      AppIcons.bucket,
+                      color: whiteColor,
+                    ),
+                    const SizedBox(height: 10.0),
+                    Text(
+                      visitingDeleteCardLabel,
+                      style: textMedium12.copyWith(
+                        color: whiteColor,
+                        height: lineHeight1_3,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }

@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 /// Виджет для отображения кругового лоадера с градиентом
 class CircularProgress extends StatefulWidget {
   const CircularProgress({
-    @required this.size,
     @required this.secondaryColor,
     @required this.primaryColor,
+    this.size = 32.0,
     this.strokeWidth = 6.0,
-    this.lapDuration = 1000,
+    this.lapDuration = 700,
     Key key,
   }) : super(key: key);
 
@@ -47,8 +47,8 @@ class _CircularProgress extends State<CircularProgress>
   Widget build(BuildContext context) {
     return RotationTransition(
       turns: Tween(
-        begin: 0.0,
-        end: 1.0,
+        begin: 1.0,
+        end: 0.0,
       ).animate(controller),
       child: CustomPaint(
         painter: CirclePaint(
@@ -70,20 +70,18 @@ class CirclePaint extends CustomPainter {
     this.strokeWidth = 15,
   });
 
-  static const zero = 0.0, two = 2, degree270 = 270.0, degree360 = 360.0;
+  static const zero = 0.0, two = 2, startDegree = -90.0, endDegree = 320.0;
   final Color secondaryColor;
   final Color primaryColor;
   final double strokeWidth;
-
-  double _degreeToRad(double degree) => degree * pi / 180;
 
   @override
   void paint(Canvas canvas, Size size) {
     final double centerPoint = size.height / two;
     final double scapSize = strokeWidth * 0.7;
     final double scapToDegree = scapSize / centerPoint;
-    final double startAngle = _degreeToRad(degree270) + scapToDegree;
-    final double sweepAngle = _degreeToRad(degree360) - (two * scapToDegree);
+    final double startAngle = _degreeToRad(startDegree) + scapToDegree;
+    final double sweepAngle = _degreeToRad(endDegree) - (two * scapToDegree);
 
     final Paint paint = Paint()
       ..color = primaryColor
@@ -93,10 +91,10 @@ class CirclePaint extends CustomPainter {
 
     // ignore: cascade_invocations
     paint.shader = SweepGradient(
-      colors: [secondaryColor, primaryColor],
+      colors: [primaryColor, primaryColor, secondaryColor],
       tileMode: TileMode.repeated,
-      startAngle: _degreeToRad(degree270),
-      endAngle: _degreeToRad(degree270 + degree360),
+      startAngle: _degreeToRad(startDegree),
+      endAngle: _degreeToRad(startDegree + endDegree),
     ).createShader(
       Rect.fromCircle(
         center: Offset(centerPoint, centerPoint),
@@ -109,9 +107,11 @@ class CirclePaint extends CustomPainter {
       startAngle,
       sweepAngle,
       false,
-      paint..color = primaryColor,
+      paint..color = secondaryColor,
     );
   }
+
+  double _degreeToRad(double degree) => degree * pi / 180;
 
   @override
   bool shouldRepaint(CirclePaint oldDelegate) {

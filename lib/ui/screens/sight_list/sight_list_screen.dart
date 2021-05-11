@@ -254,7 +254,6 @@ class _CardColumn extends StatelessWidget {
           heightFactor: .8,
           child: Center(
             child: CircularProgress(
-              size: 40.0,
               primaryColor: secondaryColor2,
               secondaryColor: Theme.of(context).backgroundColor,
             ),

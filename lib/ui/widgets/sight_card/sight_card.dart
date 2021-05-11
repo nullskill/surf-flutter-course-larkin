@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -111,11 +112,20 @@ class _SightCardState extends WidgetState<SightCardWidgetModel> {
                         ? StreamedStateBuilder<bool>(
                             streamedState: wm.isFavoriteSightState,
                             builder: (context, isFavoriteSight) {
-                              return _CardIcon(
-                                  iconName: isFavoriteSight
-                                      ? AppIcons.heartFull
-                                      : AppIcons.heart,
-                                  onTap: wm.toggleFavoriteSightAction);
+                              return AnimatedCrossFade(
+                                duration: const Duration(milliseconds: 250),
+                                firstCurve: Curves.easeIn,
+                                firstChild: _CardIcon(
+                                    iconName: AppIcons.heart,
+                                    onTap: wm.toggleFavoriteSightAction),
+                                secondCurve: Curves.easeOut,
+                                secondChild: _CardIcon(
+                                    iconName: AppIcons.heartFull,
+                                    onTap: wm.toggleFavoriteSightAction),
+                                crossFadeState: isFavoriteSight
+                                    ? CrossFadeState.showSecond
+                                    : CrossFadeState.showFirst,
+                              );
                             })
                         : _CardIcon(
                             iconName: AppIcons.close,
@@ -164,6 +174,9 @@ class _CardTop extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
+          Image.asset(
+            AppIcons.placeholder,
+          ),
           _CardImage(imgUrl: sight.urls.first),
           Container(
             decoration: BoxDecoration(
@@ -202,24 +215,12 @@ class _CardImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.network(
-      imgUrl,
+    return CachedNetworkImage(
+      placeholder: (context, url) =>
+          const Center(child: CircularProgressIndicator()),
+      imageUrl: imgUrl,
+      fadeInDuration: const Duration(milliseconds: 350),
       fit: BoxFit.cover,
-      loadingBuilder: (
-        context,
-        child,
-        loadingProgress,
-      ) {
-        if (loadingProgress == null) return child;
-        return Center(
-          child: CircularProgressIndicator(
-            value: loadingProgress.expectedTotalBytes != null
-                ? loadingProgress.cumulativeBytesLoaded /
-                    loadingProgress.expectedTotalBytes
-                : null,
-          ),
-        );
-      },
     );
   }
 }

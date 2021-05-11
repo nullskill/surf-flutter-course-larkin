@@ -126,39 +126,40 @@ class _GalleryState extends State<_Gallery> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        PageView.builder(
+        PageView(
           onPageChanged: (index) {
             setState(() {
               currentIndex = index;
             });
           },
-          itemCount: widget.imgUrls.length,
-          itemBuilder: (context, index) {
-            return Image.network(
-              widget.imgUrls[currentIndex],
-              fit: BoxFit.cover,
-              loadingBuilder: (
-                context,
-                child,
-                loadingProgress,
-              ) {
-                if (loadingProgress == null) return child;
-                return Center(
-                  child: CircularProgressIndicator(
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                            loadingProgress.expectedTotalBytes
-                        : null,
-                  ),
-                );
-              },
-            );
-          },
+          children: [
+            for (final imgUrl in widget.imgUrls)
+              Image.network(
+                imgUrl,
+                fit: BoxFit.cover,
+                loadingBuilder: (
+                  context,
+                  child,
+                  loadingProgress,
+                ) {
+                  if (loadingProgress == null) return child;
+                  return Center(
+                    child: CircularProgressIndicator(
+                      value: loadingProgress.expectedTotalBytes != null
+                          ? loadingProgress.cumulativeBytesLoaded /
+                              loadingProgress.expectedTotalBytes
+                          : null,
+                    ),
+                  );
+                },
+              )
+          ],
         ),
         Positioned(
           left: 0,
           bottom: 0,
-          child: Container(
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 150),
             height: 8.0,
             width: context.widthPx / widget.imgUrls.length * (currentIndex + 1),
             decoration: BoxDecoration(

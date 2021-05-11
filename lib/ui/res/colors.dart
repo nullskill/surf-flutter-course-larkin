@@ -7,8 +7,8 @@ const whiteColor = Colors.white,
     secondaryColor = Color(0xFF3B3E5B),
     secondaryColor2 = Color(0xFF7C7E92),
     inactiveColor = Color.fromRGBO(124, 126, 146, 0.56),
-    placeholderColor = Colors.purple,
-    backgroundColor = Color(0xFFF5F5F5);
+    backgroundColor = Color(0xFFF5F5F5),
+    placeholderColor = secondaryColor2;
 
 /// Класс цветовых констант для светлой темы
 class LightMode {
