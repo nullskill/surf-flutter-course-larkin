@@ -1,8 +1,10 @@
-/// Custom version of standard dismissible widget.
-/// The only reason for this is to keep border-radius clipped on child widget
-/// and avoid hacky methods of doing this.
-/// Lines commented: 585 - 591.
+// Custom version of standard dismissible widget.
+// The only reason for this is to keep border-radius clipped on child widget
+// and avoid hacky methods of doing this.
+// Lines commented: 585 - 591.
+
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/automatic_keep_alive.dart';
 import 'package:flutter/src/widgets/basic.dart';
 import 'package:flutter/src/widgets/debug.dart';
@@ -16,6 +18,10 @@ const double _kMinFlingVelocity = 700.0;
 const double _kMinFlingVelocityDelta = 400.0;
 const double _kFlingVelocityScale = 1.0 / 300.0;
 const double _kDismissThreshold = 0.4;
+
+/// Signature used by [AppDismissible] to give the application an opportunity to
+/// use the resize animation value.
+typedef AppResizeCallback = void Function(double resizeValue);
 
 /// Signature used by [Dismissible] to indicate that it has been dismissed in
 /// the given `direction`.
@@ -125,7 +131,7 @@ class AppDismissible extends StatefulWidget {
   final ConfirmDismissCallback confirmDismiss;
 
   /// Called when the widget changes size (i.e., when contracting before being dismissed).
-  final VoidCallback onResize;
+  final AppResizeCallback onResize;
 
   /// Called when the widget has been dismissed, after finishing resizing.
   final AppDismissDirectionCallback onDismissed;
@@ -520,7 +526,9 @@ class _AppDismissibleState extends State<AppDismissible>
         widget.onDismissed(direction);
       }
     } else {
-      if (widget.onResize != null) widget.onResize();
+      if (!_resizeAnimation.isCompleted) {
+        if (widget.onResize != null) widget.onResize(_resizeAnimation.value);
+      }
     }
   }
 
@@ -554,14 +562,26 @@ class _AppDismissibleState extends State<AppDismissible>
         return true;
       }());
 
-      return SizeTransition(
-        sizeFactor: _resizeAnimation,
-        axis: _directionIsXAxis ? Axis.vertical : Axis.horizontal,
-        child: SizedBox(
-          width: _sizePriorToCollapse.width - 1,
-          height: _sizePriorToCollapse.height - 1,
-          child: background,
-        ),
+      // return SizeTransition(
+      //   sizeFactor: _resizeAnimation,
+      //   axis: _directionIsXAxis ? Axis.vertical : Axis.horizontal,
+      //   child: SizedBox(
+      //     width: _sizePriorToCollapse.width - 1,
+      //     height: _sizePriorToCollapse.height - 1,
+      //     child: background,
+      //   ),
+      // );
+
+      return AnimatedBuilder(
+        animation: _resizeController,
+        builder: (_, __) {
+          final height = _resizeAnimation.value * _sizePriorToCollapse.height;
+          return SizedBox(
+            width: _sizePriorToCollapse.width - 2,
+            height: height - 2 < 0 ? height : height - 2,
+            child: background,
+          );
+        },
       );
     }
 
@@ -574,6 +594,10 @@ class _AppDismissibleState extends State<AppDismissible>
       content = Stack(children: <Widget>[
         if (!_moveAnimation.isDismissed)
           Positioned.fill(
+            left: 1,
+            top: 1,
+            right: 1,
+            bottom: 1,
             child: ClipRect(
               // Comment out the clipper property
               // to keep border-radius clipped on child widget.

@@ -134,7 +134,6 @@ class _SearchIndicator extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(top: 10.0),
         child: CircularProgress(
-          size: 40.0,
           primaryColor: secondaryColor2,
           secondaryColor: Theme.of(context).backgroundColor,
         ),

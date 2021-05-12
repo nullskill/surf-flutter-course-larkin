@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _navigateToNext() async {
-    await Future<void>.delayed(const Duration(seconds: 5));
+    await Future<void>.delayed(const Duration(seconds: 4));
     if (await _isInitialized) {
       await Navigator.of(context).pushNamedAndRemoveUntil(
         _appInit.isFirstRun ? AppRoutes.onboarding : AppRoutes.start,

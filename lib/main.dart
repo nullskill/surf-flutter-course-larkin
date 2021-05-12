@@ -84,7 +84,7 @@ final _routesMap = <String, Widget Function(BuildContext)>{
   AppRoutes.map: (_) => const Scaffold(),
   AppRoutes.settings: (_) => const SettingsScreen(),
   AppRoutes.onboarding: (_) => const OnboardingScreen(),
-  AppRoutes.error: (_) => ErrorScreen(), // analyzer breaks with const
+  AppRoutes.error: (_) => ErrorScreen(),
 };
 
 Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {

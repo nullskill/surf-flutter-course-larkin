@@ -9,7 +9,7 @@ class MessageBox extends StatelessWidget {
     @required this.title,
     @required this.iconName,
     @required this.message,
-    this.link,
+    this.link = const <String, String>{},
     Key key,
   }) : super(key: key);
 

@@ -16,6 +16,8 @@ dependencies:
   async: ^2.5.0
   # Widget that automatically resizes text to fit perfectly within its bounds
   auto_size_text: ^3.0.0-nullsafety.0
+  # A library to show images from the internet and keep them in the cache directory
+  cached_network_image: ^3.0.0
   # Cupertino icons
   cupertino_icons: ^1.0.2
   # Approximate how the app looks and performs on another device
