@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:places/data/interactor/onboarding_interactor.dart';
 import 'package:places/domain/tutorial_frame.dart';
 import 'package:places/domain/tutorial_frames.dart';
 import 'package:places/ui/res/app_routes.dart';
@@ -7,7 +8,7 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/widgets/action_button.dart';
-import 'package:places/util/app_init.dart';
+import 'package:provider/provider.dart';
 
 /// Экран, обучающий работе с приложением
 class OnboardingScreen extends StatefulWidget {
@@ -305,7 +306,7 @@ class _BottomNavigationBar extends StatelessWidget {
 }
 
 void _startApp(BuildContext context) {
-  AppInitialization().tutorialFinished();
+  context.read<OnboardingInteractor>().tutorialFinished();
   Navigator.of(context).pushNamedAndRemoveUntil(
     AppRoutes.start,
     (_) => false,
