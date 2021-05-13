@@ -41,12 +41,23 @@ class SightCard extends CoreMwwmWidget {
 class _SightCardState extends WidgetState<SightCardWidgetModel> {
   TimeOfDay selectedTime = TimeOfDay.now();
 
-  /// Показать модальный bottom sheet с детальной инфой
+  /// Показать детальную инфу через модальный bottom sheet (для iOS),
+  /// либо на отдельном экране (для Android)
   Future<void> showSightDetails(BuildContext context, Sight sight) async {
-    await showAppModalBottomSheet<SightDetailsScreen>(
-      context: context,
-      builder: (_) => SightDetailsScreen(sight: sight),
-    );
+    if (Theme.of(context).platform == TargetPlatform.iOS) {
+      await showAppModalBottomSheet<SightDetailsScreen>(
+        context: context,
+        builder: (_) => SightDetailsScreen(sight: sight),
+      );
+    } else {
+      await Navigator.push<SightDetailsScreen>(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              SafeArea(child: SightDetailsScreen(sight: sight)),
+        ),
+      );
+    }
     await wm.checkIsFavoriteSightAction();
   }
 
@@ -174,9 +185,6 @@ class _CardTop extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            AppIcons.placeholder,
-          ),
           _CardImage(imgUrl: sight.urls.first),
           Container(
             decoration: BoxDecoration(
@@ -215,12 +223,26 @@ class _CardImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CachedNetworkImage(
-      placeholder: (context, url) =>
-          const Center(child: CircularProgressIndicator()),
-      imageUrl: imgUrl,
-      fadeInDuration: const Duration(milliseconds: 350),
-      fit: BoxFit.cover,
+    return Hero(
+      tag: 'img$imgUrl',
+      child: CachedNetworkImage(
+        imageUrl: imgUrl,
+        progressIndicatorBuilder: (context, url, downloadProgress) {
+          return Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(AppIcons.placeholder),
+              ),
+            ),
+            child: Center(
+              child:
+                  CircularProgressIndicator(value: downloadProgress.progress),
+            ),
+          );
+        },
+        fadeInDuration: const Duration(milliseconds: 350),
+        fit: BoxFit.cover,
+      ),
     );
   }
 }

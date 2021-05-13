@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mwwm/mwwm.dart';
@@ -11,6 +12,7 @@ import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/text_styles.dart';
 import 'package:places/ui/screens/sight_details/sight_details_wm.dart';
 import 'package:places/ui/widgets/action_button.dart';
+import 'package:places/ui/widgets/app_back_button.dart';
 import 'package:relation/relation.dart';
 import 'package:sized_context/sized_context.dart';
 
@@ -73,32 +75,39 @@ class _SightDetailsAppBar extends StatelessWidget {
               imgUrls: sight.urls,
             ),
           ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 12.0),
-              child: Container(
-                height: 4.0,
-                width: 40.0,
-                decoration: BoxDecoration(
-                  color: whiteColor,
-                  borderRadius: allBorderRadius8,
+          if (Theme.of(context).platform == TargetPlatform.iOS) ...[
+            Align(
+              alignment: Alignment.topCenter,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 12.0),
+                child: Container(
+                  height: 4.0,
+                  width: 40.0,
+                  decoration: BoxDecoration(
+                    color: whiteColor,
+                    borderRadius: allBorderRadius8,
+                  ),
                 ),
               ),
             ),
-          ),
-          Positioned(
-            top: 16.0,
-            right: 16.0,
-            child: GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: SvgPicture.asset(
-                AppIcons.cardClose,
-                width: 40.0,
-                height: 40.0,
+            Positioned(
+              top: 16.0,
+              right: 16.0,
+              child: GestureDetector(
+                onTap: () => Navigator.pop(context),
+                child: SvgPicture.asset(
+                  AppIcons.cardClose,
+                  width: 40.0,
+                  height: 40.0,
+                ),
               ),
             ),
-          ),
+          ] else
+            const Positioned(
+              top: 16.0,
+              left: 16.0,
+              child: AppBackButton(),
+            ),
         ],
       ),
       expandedHeight: 360.0,
@@ -124,51 +133,54 @@ class _GalleryState extends State<_Gallery> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        PageView(
-          onPageChanged: (index) {
-            setState(() {
-              currentIndex = index;
-            });
-          },
-          children: [
-            for (final imgUrl in widget.imgUrls)
-              Image.network(
-                imgUrl,
-                fit: BoxFit.cover,
-                loadingBuilder: (
-                  context,
-                  child,
-                  loadingProgress,
-                ) {
-                  if (loadingProgress == null) return child;
-                  return Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes
-                          : null,
-                    ),
-                  );
-                },
-              )
-          ],
-        ),
-        Positioned(
-          left: 0,
-          bottom: 0,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 150),
-            height: 8.0,
-            width: context.widthPx / widget.imgUrls.length * (currentIndex + 1),
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-              borderRadius: rightBorderRadius8,
+    return Hero(
+      tag: 'img${widget.imgUrls.first}',
+      child: Stack(
+        children: [
+          PageView(
+            onPageChanged: (index) {
+              setState(() {
+                currentIndex = index;
+              });
+            },
+            children: [
+              for (final imgUrl in widget.imgUrls)
+                CachedNetworkImage(
+                  imageUrl: imgUrl,
+                  progressIndicatorBuilder: (context, url, downloadProgress) {
+                    return Container(
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage(AppIcons.placeholder),
+                        ),
+                      ),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                            value: downloadProgress.progress),
+                      ),
+                    );
+                  },
+                  fadeInDuration: const Duration(milliseconds: 350),
+                  fit: BoxFit.cover,
+                ),
+            ],
+          ),
+          Positioned(
+            left: 0,
+            bottom: 0,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 150),
+              height: 8.0,
+              width:
+                  context.widthPx / widget.imgUrls.length * (currentIndex + 1),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: rightBorderRadius8,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
