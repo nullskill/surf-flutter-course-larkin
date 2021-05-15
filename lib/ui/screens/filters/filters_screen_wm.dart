@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart' hide Action;
 import 'package:mwwm/mwwm.dart';
+import 'package:places/data/interactor/filters_interactor.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/domain/category.dart';
+import 'package:places/domain/sight_filter.dart';
+import 'package:places/ui/res/app_routes.dart';
 import 'package:relation/relation.dart';
+import 'package:rxdart/rxdart.dart';
 
 /// WM для FiltersScreen
 class FiltersWidgetModel extends WidgetModel {
@@ -11,11 +15,16 @@ class FiltersWidgetModel extends WidgetModel {
     WidgetModelDependencies baseDependencies, {
     @required this.placeInteractor,
     @required this.searchInteractor,
+    @required this.filtersInteractor,
     @required this.navigator,
   }) : super(baseDependencies);
 
+  /// Задержка перед началом изменения диапазона
+  static const debounceDelay = 500;
+
   final PlaceInteractor placeInteractor;
   final SearchInteractor searchInteractor;
+  final FiltersInteractor filtersInteractor;
   final NavigatorState navigator;
 
   // Actions
@@ -43,9 +52,19 @@ class FiltersWidgetModel extends WidgetModel {
   /// Количество отфильтрованных мест
   final filteredNumberState = StreamedState<int>();
 
+  // Rx
+
+  /// Стрим на входе диапазона радиуса
+  final _rangeValuesSubject = BehaviorSubject<RangeValues>();
+
+  /// Стрим на выходе диапазона радиуса
+  Stream<RangeValues> _rangeValuesStream;
+
   @override
   void onLoad() {
     super.onLoad();
+
+    _initRangeValuesStream();
 
     final rangeValues = RangeValues(
       searchInteractor.selectedMinRadius,
@@ -64,38 +83,67 @@ class FiltersWidgetModel extends WidgetModel {
     subscribe<Category>(toggleCategoryAction.stream, _toggleCategory);
     subscribe<void>(resetAllSettingsAction.stream, (_) => _resetAllSettings());
     subscribe<RangeValues>(setRangeValuesAction.stream, _setRangeValues);
+    subscribe<RangeValues>(_rangeValuesStream, (_) => _filterSights());
     subscribe<void>(actionButtonAction.stream, navigator.pop);
+  }
+
+  @override
+  void dispose() {
+    _rangeValuesSubject.close();
+    _saveFilters();
+
+    super.dispose();
+  }
+
+  /// Инициализация стрима для выбранного диапазона
+  void _initRangeValuesStream() {
+    _rangeValuesStream = _rangeValuesSubject.debounce(
+      (newValues) {
+        return TimerStream<bool>(
+          true,
+          const Duration(milliseconds: debounceDelay),
+        );
+      },
+    ).switchMap((newValues) async* {
+      yield newValues;
+    });
   }
 
   /// Сброс всех настроек
   void _resetAllSettings() {
     searchInteractor.resetCategories();
-    resetRangeValues();
     categoriesState.accept(searchInteractor.getCategories);
+    _resetRangeValues();
   }
 
   /// Изменение признака выбранности категории
-  /// и фильтрация интересных мест
   void _toggleCategory(Category category) {
     category.toggle();
-    placeInteractor.getSights();
-    searchInteractor.filterSights();
     categoriesState.accept(searchInteractor.getCategories);
-    filteredNumberState.accept(searchInteractor.filteredNumber);
+
+    _filterSights();
   }
 
   /// Установка выбранного диапазона радиуса
-  /// и фильтрация интересных мест
   void _setRangeValues(RangeValues newValues) {
     rangeValuesState.accept(newValues);
     searchInteractor.setRadius(newValues);
-    placeInteractor.getSights();
-    searchInteractor.filterSights();
-    filteredNumberState.accept(searchInteractor.filteredNumber);
+    _rangeValuesSubject.add(newValues);
+  }
+
+  /// Фильтрация интересных мест
+  Future<void> _filterSights() async {
+    try {
+      await placeInteractor.getSights();
+      searchInteractor.filterSights();
+      await filteredNumberState.accept(searchInteractor.filteredNumber);
+    } on Object catch (_, __) {
+      await navigator.pushNamed(AppRoutes.error);
+    }
   }
 
   /// Сброс выбранного диапазона радиуса
-  void resetRangeValues() {
+  void _resetRangeValues() {
     const rangeValues = RangeValues(
       SearchInteractor.minRadius,
       SearchInteractor.maxRadius,
@@ -103,5 +151,18 @@ class FiltersWidgetModel extends WidgetModel {
     rangeValuesState.accept(rangeValues);
     searchInteractor.setRadius(rangeValues);
     filteredNumberState.accept(searchInteractor.filteredNumber);
+  }
+
+  /// Сохранение фильтров в storage
+  void _saveFilters() {
+    final SightFilter filters = SightFilter(
+      minRadius: rangeValuesState.value.start,
+      maxRadius: rangeValuesState.value.end,
+      types: categoriesState.value
+          .where((e) => e.selected)
+          .map((e) => e.type)
+          .toList(),
+    );
+    filtersInteractor.saveFilters(filters);
   }
 }

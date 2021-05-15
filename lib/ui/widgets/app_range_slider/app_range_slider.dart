@@ -40,11 +40,12 @@ class AppRangeSlider extends StatelessWidget {
         ),
         const SizedBox(height: 24.0),
         RangeSlider(
-            divisions: AppRangeSliderHelper.divisions,
-            min: AppRangeSliderHelper.minValue,
-            max: AppRangeSliderHelper.maxValue,
-            values: currentRangeValues,
-            onChanged: setRangeValues),
+          divisions: AppRangeSliderHelper.divisions,
+          min: AppRangeSliderHelper.minValue,
+          max: AppRangeSliderHelper.maxValue,
+          values: currentRangeValues,
+          onChanged: setRangeValues,
+        ),
       ],
     );
   }

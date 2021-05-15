@@ -1,37 +1,24 @@
 import 'package:flutter/foundation.dart';
-import 'package:places/util/consts.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:places/data/storage/app_storage.dart';
 
-/// Класс провайдера выбранной темы
+/// Класс интерактора настроек
 class SettingsInteractor extends ChangeNotifier {
   SettingsInteractor() {
-    _darkTheme = true;
-    _loadFromPrefs();
+    _darkTheme = AppStorage.getBool(_themeKey) ?? true;
+    notifyListeners();
   }
 
-  SharedPreferences _prefs;
+  static const _themeKey = 'theme';
+
   bool _darkTheme;
 
+  /// Возвращает сохраненную тему
   bool get darkTheme => _darkTheme;
 
+  /// Переключает тему приложения и сохраняет выбранное значение
   void toggleTheme() {
     _darkTheme = !_darkTheme;
-    _saveToPrefs();
+    AppStorage.setBool(_themeKey, _darkTheme);
     notifyListeners();
-  }
-
-  Future<void> _loadFromPrefs() async {
-    await _initPrefs();
-    _darkTheme = _prefs.getBool(themeKey) ?? true;
-    notifyListeners();
-  }
-
-  Future<void> _saveToPrefs() async {
-    await _initPrefs();
-    await _prefs.setBool(themeKey, _darkTheme);
-  }
-
-  Future<void> _initPrefs() async {
-    _prefs ??= await SharedPreferences.getInstance();
   }
 }

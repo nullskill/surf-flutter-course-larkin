@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:places/data/interactor/filters_interactor.dart';
 import 'package:places/data/model/location.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/places_filter_dto.dart';
@@ -13,7 +14,7 @@ import 'package:places/util/consts.dart';
 
 /// Интерактор поиска и фильтрации интересных мест
 class SearchInteractor {
-  SearchInteractor(this._repo);
+  SearchInteractor(this._repo, this._filtersInteractor);
 
   /// Минимальный и максимальный радиус
   static const double minRadius = 100.0, maxRadius = 5000.0;
@@ -22,6 +23,7 @@ class SearchInteractor {
   double selectedMinRadius = minRadius, selectedMaxRadius = maxRadius;
 
   final SearchRepository _repo;
+  final FiltersInteractor _filtersInteractor;
   final List<Category> _categories = <Category>[...categories];
 
   List<Sight> _sights = [];
@@ -63,6 +65,24 @@ class SearchInteractor {
   /// Инициализирует полный список интересных мест
   // ignore: avoid_setters_without_getters
   set sights(List<Sight> sights) => _sights = sights;
+
+  /// Инициализация выбранных фильтров
+  void initSelectedFilters() {
+    final filters = _filtersInteractor.filters;
+
+    if (filters != null) {
+      selectedMinRadius = filters.minRadius;
+      selectedMaxRadius = filters.maxRadius;
+
+      for (final category in _categories) {
+        for (final type in filters.types) {
+          if (category.type == type) {
+            category.selected = true;
+          }
+        }
+      }
+    }
+  }
 
   /// Сброс выбранных категорий
   void resetCategories() {
