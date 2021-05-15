@@ -5,20 +5,17 @@ import 'package:places/domain/sight_filter.dart';
 
 /// Класс интерактора критериев поиска
 class FiltersInteractor {
-  FiltersInteractor() {
+  static const _filtersKey = 'filters';
+
+  /// Возвращает критерии поиска
+  SightFilter get filters {
     final String filterString = AppStorage.getString(_filtersKey);
     if (filterString.isNotEmpty) {
       final filtersJson = jsonDecode(filterString) as Map<String, dynamic>;
-      _filters = SightFilter.fromJson(filtersJson);
+      return SightFilter.fromJson(filtersJson);
     }
+    return SightFilter();
   }
-
-  static const _filtersKey = 'filters';
-
-  SightFilter _filters;
-
-  /// Возвращает критерии поиска
-  SightFilter get filters => _filters;
 
   /// Сохраняет критерии поиска
   void saveFilters(SightFilter value) {

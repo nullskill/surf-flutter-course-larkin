@@ -70,16 +70,16 @@ class SightSearchWidgetModel extends WidgetModel {
   // Rx
 
   /// Стрим на входе поиска
-  final _searchTerms = BehaviorSubject<String>();
+  final _searchSubject = BehaviorSubject<String>();
 
   /// Стрим на выходе поиска
-  Stream<List<Sight>> _foundSights;
+  Stream<List<Sight>> _foundSightsStream;
 
   @override
   void onLoad() {
     super.onLoad();
 
-    _setSearchStream();
+    _initSearchStream();
   }
 
   @override
@@ -91,7 +91,7 @@ class SightSearchWidgetModel extends WidgetModel {
     subscribe<String>(searchEditingAction.stream, _onSearchTextChange);
     subscribe<void>(
         searchEditingCompleteAction.stream, (_) => _onEditingComplete());
-    subscribeHandleError<List<Sight>>(_foundSights, _onSearchResults,
+    subscribeHandleError<List<Sight>>(_foundSightsStream, _onSearchResults,
         onError: _onSearchError);
     subscribe<String>(addToHistoryAction.stream, _addToHistory);
     subscribe<String>(deleteFromHistoryAction.stream, _deleteFromHistory);
@@ -102,14 +102,14 @@ class SightSearchWidgetModel extends WidgetModel {
   @override
   void dispose() {
     searchFocusNode.dispose();
-    _searchTerms.close();
+    _searchSubject.close();
 
     super.dispose();
   }
 
   /// Инициализация стрима, осуществляющего поиск
-  void _setSearchStream() {
-    _foundSights = _searchTerms
+  void _initSearchStream() {
+    _foundSightsStream = _searchSubject
         .debounce(
       (_) => TimerStream<bool>(
         true,
@@ -143,7 +143,7 @@ class SightSearchWidgetModel extends WidgetModel {
 
     if (text.isNotEmpty) {
       foundSights.loading();
-      _searchTerms.add(text);
+      _searchSubject.add(text);
     }
   }
 

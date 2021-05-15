@@ -44,8 +44,6 @@ class PlaceInteractor {
 
   /// Получение списка всех мест
   Future<void> getSights() async {
-    if (_searchInteractor.filteredNumber > 0) return;
-
     final List<Place> _places = await _repo.getPlaces();
     _sights = _places.map((p) => Sight.fromPlace(p)).toList();
     _sortSights();

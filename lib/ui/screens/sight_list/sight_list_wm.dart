@@ -43,6 +43,8 @@ class SightListWidgetModel extends WidgetModel {
   void onLoad() {
     super.onLoad();
 
+    searchInteractor.initSelectedFilters();
+
     _reloadSights();
   }
 
@@ -76,14 +78,15 @@ class SightListWidgetModel extends WidgetModel {
   }
 
   /// Получение списка всех мест (с учетом фильтров)
-  void _reloadSights() {
-    sightsState.loading();
+  Future<void> _reloadSights() async {
+    await sightsState.loading();
 
-    doFutureHandleError<void>(
-      placeInteractor.getSights(),
-      (_) => sightsState.content(placeInteractor.sights),
-      // ignore: avoid_types_on_closure_parameters
-      onError: (Object e) => navigator.pushNamed(AppRoutes.error),
-    );
+    try {
+      await placeInteractor.getSights();
+      searchInteractor.filterSights();
+      await sightsState.content(placeInteractor.sights);
+    } on Object catch (_, __) {
+      await navigator.pushNamed(AppRoutes.error);
+    }
   }
 }

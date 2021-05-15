@@ -43,10 +43,17 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    OnboardingInteractor initOnboardingInteractor(BuildContext context) =>
+        OnboardingInteractor();
+
+    FiltersInteractor initFiltersInteractor(BuildContext context) =>
+        FiltersInteractor();
+
     SearchRepository initSearchRepository(BuildContext context) =>
         SearchRepository();
     SearchInteractor initSearchInteractor(BuildContext context) =>
-        SearchInteractor(context.read<SearchRepository>());
+        SearchInteractor(context.read<SearchRepository>(),
+            context.read<FiltersInteractor>());
 
     PlaceRepository initPlaceRepository(BuildContext context) =>
         PlaceRepository();
@@ -54,23 +61,17 @@ class App extends StatelessWidget {
         PlaceInteractor(
             context.read<PlaceRepository>(), context.read<SearchInteractor>());
 
-    OnboardingInteractor initOnboardingInteractor(BuildContext context) =>
-        OnboardingInteractor();
-
-    FiltersInteractor initFiltersInteractor(BuildContext context) =>
-        FiltersInteractor();
-
     WidgetModelDependencies initWmDependencies(BuildContext context) =>
         WidgetModelDependencies(errorHandler: DefaultErrorHandler());
 
     return MultiProvider(
       providers: [
+        Provider<OnboardingInteractor>(create: initOnboardingInteractor),
+        Provider<FiltersInteractor>(create: initFiltersInteractor),
         Provider<SearchRepository>(create: initSearchRepository),
         Provider<SearchInteractor>(create: initSearchInteractor),
         Provider<PlaceRepository>(create: initPlaceRepository),
         Provider<PlaceInteractor>(create: initPlaceInteractor),
-        Provider<OnboardingInteractor>(create: initOnboardingInteractor),
-        Provider<FiltersInteractor>(create: initFiltersInteractor),
         Provider<WidgetModelDependencies>(create: initWmDependencies),
         ChangeNotifierProvider<SettingsInteractor>(
             create: (_) => SettingsInteractor()),
