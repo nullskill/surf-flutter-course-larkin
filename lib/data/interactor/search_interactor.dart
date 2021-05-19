@@ -6,6 +6,7 @@ import 'package:places/data/model/location.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/places_filter_dto.dart';
 import 'package:places/data/repository/search_repository.dart';
+import 'package:places/data/repository/search_requests_repository.dart';
 import 'package:places/domain/categories.dart';
 import 'package:places/domain/category.dart';
 import 'package:places/domain/sight.dart';
@@ -14,7 +15,11 @@ import 'package:places/util/consts.dart';
 
 /// Интерактор поиска и фильтрации интересных мест
 class SearchInteractor {
-  SearchInteractor(this._repo, this._filtersInteractor);
+  SearchInteractor(
+    this._searchRepo,
+    this._searchRequestsRepo,
+    this._filtersInteractor,
+  );
 
   /// Минимальный и максимальный радиус
   static const double minRadius = 100.0, maxRadius = 5000.0;
@@ -22,7 +27,8 @@ class SearchInteractor {
   /// Выбранные минимальный и максимальный радиус
   double selectedMinRadius = minRadius, selectedMaxRadius = maxRadius;
 
-  final SearchRepository _repo;
+  final SearchRepository _searchRepo;
+  final SearchRequestsRepository _searchRequestsRepo;
   final FiltersInteractor _filtersInteractor;
   final List<Category> _categories = <Category>[...categories];
 
@@ -46,17 +52,17 @@ class SearchInteractor {
   /// Дефолтная локация (временно)
   Location get location => _location;
 
+  /// Категории мест
+  List<Category> get getCategories => _categories;
+
   /// Отфильтрованные интересные места
   List<Sight> get filteredSights => _filteredSights;
-
-  /// Найденные интересные места
-  List<Sight> get foundSights => _foundSights;
 
   /// Кол-во найденных интересных мест
   int get filteredNumber => _filteredSights.length;
 
-  /// Категории мест
-  List<Category> get getCategories => _categories;
+  /// Найденные интересные места
+  List<Sight> get foundSights => _foundSights;
 
   /// Выбранные типы категорий
   List<SightType> get selectedTypes =>
@@ -67,7 +73,7 @@ class SearchInteractor {
   set sights(List<Sight> sights) => _sights = sights;
 
   /// Инициализация выбранных фильтров
-  void initSelectedFilters() {
+  Future<void> initSelectedFilters() async {
     final filters = _filtersInteractor.filters;
 
     if (filters != null) {
@@ -75,6 +81,7 @@ class SearchInteractor {
       selectedMaxRadius = filters.maxRadius;
 
       for (final category in _categories) {
+        category.selected = false;
         for (final type in filters.types) {
           if (category.type == type) {
             category.selected = true;
@@ -100,7 +107,7 @@ class SearchInteractor {
 
   /// Получение списка найденных/отфильтрованных мест в репо
   Future<List<Sight>> searchPlaces(PlacesFilterDto filterDto) async {
-    final List<Place> _places = await _repo.getFilteredPlaces(filterDto);
+    final List<Place> _places = await _searchRepo.getFilteredPlaces(filterDto);
     _foundSights = _places.map((p) => Sight.fromPlace(p)).toList();
     _foundSights = getSortedSights(_foundSights);
 
@@ -140,4 +147,29 @@ class SearchInteractor {
   /// в интервале радиуса от [minDistance] до [maxDistance]
   bool _isSightNear(Sight sight) =>
       sight.distance >= minDistance && sight.distance <= maxDistance;
+
+  // History
+
+  /// Получает всю историю и возвращает [maxSearchHistoryLength] элементов
+  Future<List<String>> getHistory() async {
+    final allRequests = await _searchRequestsRepo.allRequests();
+
+    return allRequests.sublist(
+        0, min(maxSearchHistoryLength, allRequests.length));
+  }
+
+  /// Добавляет элемент истории
+  Future<int> addToHistory(String item) {
+    return _searchRequestsRepo.addRequest(item);
+  }
+
+  /// Удаляет элемент истории
+  Future<int> deleteFromHistory(String item) {
+    return _searchRequestsRepo.removeRequest(item);
+  }
+
+  /// Очистка истории
+  Future<int> clearHistory() {
+    return _searchRequestsRepo.emptyRequests();
+  }
 }

@@ -60,14 +60,14 @@ class SightDetailsWidgetModel extends WidgetModel {
 
   /// Добавляет/удаляет место в/из избранное
   /// и проверяет принадлежность избранному
-  void _toggleFavoriteSight() {
-    placeInteractor.toggleFavoriteSight(sight);
-    _checkIsFavoriteSight();
+  Future<void> _toggleFavoriteSight() async {
+    await placeInteractor.toggleFavorite(sight);
+    await _checkIsFavoriteSight();
   }
 
   /// Передает в [isFavoriteSightState] флаг принадлежности избранному
-  void _checkIsFavoriteSight() {
-    isFavoriteSightState.accept(placeInteractor.isFavoriteSight(sight));
+  Future<void> _checkIsFavoriteSight() async {
+    await isFavoriteSightState.accept(await placeInteractor.isFavorite(sight));
   }
 }
 

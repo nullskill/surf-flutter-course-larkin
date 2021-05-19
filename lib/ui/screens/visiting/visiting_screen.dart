@@ -80,10 +80,10 @@ class _VisitingScreenState extends WidgetState<VisitingWidgetModel>
         controller: tabController,
         children: [
           EntityStateBuilder<List<FavoriteSight>>(
-            streamedState: wm.favoriteSightsState,
-            child: (context, favoriteSights) {
+            streamedState: wm.favoritesState,
+            child: (context, favorites) {
               return _VisitingScreenList(
-                sights: favoriteSights,
+                sights: favorites,
                 onRemoveCard: wm.removeFromVisitingAction,
               );
             },
@@ -95,10 +95,10 @@ class _VisitingScreenState extends WidgetState<VisitingWidgetModel>
             ),
           ),
           EntityStateBuilder<List<VisitedSight>>(
-            streamedState: wm.visitedSightsState,
-            child: (context, visitedSights) {
+            streamedState: wm.visitedState,
+            child: (context, visited) {
               return _VisitingScreenList(
-                sights: visitedSights,
+                sights: visited,
                 hasVisited: true,
                 onRemoveCard: wm.removeFromVisitingAction,
               );

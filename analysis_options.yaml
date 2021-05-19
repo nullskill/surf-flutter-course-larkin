@@ -7,4 +7,5 @@ linter:
 analyzer:
   exclude:
     - lib/ui/widgets/app_dismissible.dart
+    - lib/data/repository/database/app_database.g.dart
     - test/*

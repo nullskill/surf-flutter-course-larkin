@@ -29,25 +29,31 @@ class FiltersScreen extends CoreMwwmWidget {
 class _FiltersScreenState extends WidgetState<FiltersWidgetModel> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _FiltersAppBar(resetAllSettings: wm.resetAllSettingsAction),
-      body: _FiltersBody(wm: wm),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.fromLTRB(
-          16.0,
-          8.0,
-          16.0,
-          context.mq.padding.bottom + 8.0,
+    return WillPopScope(
+      onWillPop: () async {
+        await wm.popAction();
+        return false;
+      },
+      child: Scaffold(
+        appBar: _FiltersAppBar(wm: wm),
+        body: _FiltersBody(wm: wm),
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.fromLTRB(
+            16.0,
+            8.0,
+            16.0,
+            context.mq.padding.bottom + 8.0,
+          ),
+          child: StreamedStateBuilder<int>(
+              streamedState: wm.filteredNumberState,
+              builder: (context, filteredNumber) {
+                return ActionButton(
+                  label: '$filtersActionButtonLabel ($filteredNumber)',
+                  isDisabled: filteredNumber == 0,
+                  onPressed: wm.actionButtonAction,
+                );
+              }),
         ),
-        child: StreamedStateBuilder<int>(
-            streamedState: wm.filteredNumberState,
-            builder: (context, filteredNumber) {
-              return ActionButton(
-                label: '$filtersActionButtonLabel ($filteredNumber)',
-                isDisabled: filteredNumber == 0,
-                onPressed: wm.actionButtonAction,
-              );
-            }),
       ),
     );
   }
@@ -55,11 +61,11 @@ class _FiltersScreenState extends WidgetState<FiltersWidgetModel> {
 
 class _FiltersAppBar extends StatelessWidget implements PreferredSizeWidget {
   const _FiltersAppBar({
-    @required this.resetAllSettings,
+    @required this.wm,
     Key key,
   }) : super(key: key);
 
-  final void Function() resetAllSettings;
+  final FiltersWidgetModel wm;
 
   @override
   Size get preferredSize => const Size.fromHeight(56.0);
@@ -67,11 +73,11 @@ class _FiltersAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: const AppBackButton(),
+      leading: AppBackButton(onPressed: wm.popAction),
       actions: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-          child: _ClearButton(resetAllSettings: resetAllSettings),
+          child: _ClearButton(resetAllSettings: wm.resetAllSettingsAction),
         ),
       ],
     );

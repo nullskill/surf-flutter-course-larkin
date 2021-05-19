@@ -41,6 +41,9 @@ class FiltersWidgetModel extends WidgetModel {
   /// При тапе кнопки Показать
   final actionButtonAction = Action<void>();
 
+  /// При возвращении с экрана
+  final popAction = Action<void>();
+
   // StreamedStates
 
   /// Стейт списка категорий
@@ -51,6 +54,9 @@ class FiltersWidgetModel extends WidgetModel {
 
   /// Количество отфильтрованных мест
   final filteredNumberState = StreamedState<int>();
+
+  /// Флаг необходимости применения фильтров
+  final shouldFilterState = StreamedState<bool>(false);
 
   // Rx
 
@@ -65,6 +71,10 @@ class FiltersWidgetModel extends WidgetModel {
     super.onLoad();
 
     _initRangeValuesStream();
+
+    searchInteractor
+      ..initSelectedFilters()
+      ..filterSights();
 
     final rangeValues = RangeValues(
       searchInteractor.selectedMinRadius,
@@ -84,13 +94,13 @@ class FiltersWidgetModel extends WidgetModel {
     subscribe<void>(resetAllSettingsAction.stream, (_) => _resetAllSettings());
     subscribe<RangeValues>(setRangeValuesAction.stream, _setRangeValues);
     subscribe<RangeValues>(_rangeValuesStream, (_) => _filterSights());
-    subscribe<void>(actionButtonAction.stream, navigator.pop);
+    subscribe<void>(actionButtonAction.stream, (_) => _saveFiltersAndPop());
+    subscribe<void>(popAction.stream, (_) => _checkFiltersAndPop());
   }
 
   @override
   void dispose() {
     _rangeValuesSubject.close();
-    _saveFilters();
 
     super.dispose();
   }
@@ -113,6 +123,7 @@ class FiltersWidgetModel extends WidgetModel {
   void _resetAllSettings() {
     searchInteractor.resetCategories();
     categoriesState.accept(searchInteractor.getCategories);
+    shouldFilterState.accept(true);
     _resetRangeValues();
   }
 
@@ -134,7 +145,7 @@ class FiltersWidgetModel extends WidgetModel {
   /// Фильтрация интересных мест
   Future<void> _filterSights() async {
     try {
-      await placeInteractor.getSights();
+      await placeInteractor.loadSights();
       searchInteractor.filterSights();
       await filteredNumberState.accept(searchInteractor.filteredNumber);
     } on Object catch (_, __) {
@@ -151,6 +162,25 @@ class FiltersWidgetModel extends WidgetModel {
     rangeValuesState.accept(rangeValues);
     searchInteractor.setRadius(rangeValues);
     filteredNumberState.accept(searchInteractor.filteredNumber);
+  }
+
+  /// Сохранение фильтров в storage с выходом
+  void _saveFiltersAndPop() {
+    _saveFilters();
+
+    navigator.pop(true);
+  }
+
+  /// Проверка необходимости сохранения/сброса фильтров с выходом
+  void _checkFiltersAndPop() {
+    if (shouldFilterState.value) {
+      _saveFilters();
+    } else {
+      searchInteractor
+        ..initSelectedFilters()
+        ..filterSights();
+    }
+    navigator.pop(shouldFilterState.value);
   }
 
   /// Сохранение фильтров в storage

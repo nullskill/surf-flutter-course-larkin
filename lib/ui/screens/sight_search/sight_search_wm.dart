@@ -1,11 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart' hide Action;
 import 'package:mwwm/mwwm.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/model/places_filter_dto.dart';
 import 'package:places/domain/sight.dart';
-import 'package:places/util/consts.dart';
 import 'package:relation/relation.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -76,10 +73,12 @@ class SightSearchWidgetModel extends WidgetModel {
   Stream<List<Sight>> _foundSightsStream;
 
   @override
-  void onLoad() {
+  Future<void> onLoad() async {
     super.onLoad();
 
     _initSearchStream();
+
+    await historyState.accept(await searchInteractor.getHistory());
   }
 
   @override
@@ -166,24 +165,26 @@ class SightSearchWidgetModel extends WidgetModel {
     searchFocusNode.unfocus();
   }
 
-  /// Добавляет элемент истории
-  void _addToHistory(String item) {
-    if (item.isNotEmpty) {
-      final newHistory = [item, ...historyState.value.where((i) => i != item)];
+  // History
 
-      historyState.accept(newHistory.sublist(
-          0, min(maxSearchHistoryLength, newHistory.length)));
+  /// Добавляет элемент истории
+  Future<void> _addToHistory(String item) async {
+    if (item.isNotEmpty) {
+      await searchInteractor.addToHistory(item);
+      await historyState.accept(await searchInteractor.getHistory());
     }
   }
 
   /// Удаляет элемент истории
-  void _deleteFromHistory(String item) {
-    historyState.accept([...historyState.value.where((i) => i != item)]);
+  Future<void> _deleteFromHistory(String item) async {
+    await searchInteractor.deleteFromHistory(item);
+    await historyState.accept(await searchInteractor.getHistory());
   }
 
   /// Очистка истории
-  void _clearHistory(BuildContext context) {
-    historyState.accept(const []);
+  Future<void> _clearHistory(BuildContext context) async {
+    await searchInteractor.clearHistory();
+    await historyState.accept(const []);
     FocusScope.of(context).requestFocus(searchFocusNode);
   }
 
