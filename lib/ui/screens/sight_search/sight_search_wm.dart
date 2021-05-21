@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' hide Action;
+import 'package:flutter/material.dart' hide Action, TextEditingAction;
 import 'package:mwwm/mwwm.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/model/places_filter_dto.dart';

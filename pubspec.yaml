@@ -28,6 +28,8 @@ dependencies:
   equatable: ^2.0.0
   # SVG image
   flutter_svg: ^0.21.0-nullsafety.0
+  # A Flutter plugin for iOS and Android for picking images
+  image_picker: ^0.7.5+2
   # Package provides internationalization and localization facilities
   intl: ^0.17.0
   # Support for inside scrollview + dragging down to close (showModalBottomSheet cannot)
@@ -35,7 +37,7 @@ dependencies:
   # A reactive persistence library for Flutter and Dart, built on top of sqlite
   moor: ^4.3.0
   # MVVM-inspired framework with respect for Clean Architecture
-  mwwm: ^1.0.2
+  mwwm: ^1.1.0
   # A string-based path manipulation library
   path: ^1.8.0
   # Plugin for getting commonly used locations on host platform file systems
