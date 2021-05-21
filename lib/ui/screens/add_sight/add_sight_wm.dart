@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart' hide Action, TextEditingAction;
+import 'package:image_picker/image_picker.dart';
 import 'package:mwwm/mwwm.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/domain/category.dart';
@@ -20,6 +23,8 @@ class AddSightWidgetModel extends WidgetModel {
 
   final PlaceInteractor placeInteractor;
   final NavigatorState navigator;
+
+  final imagePicker = ImagePicker();
 
   // Fields
 
@@ -57,6 +62,12 @@ class AddSightWidgetModel extends WidgetModel {
 
   /// Перемещает фокус на следующий TextFormField
   final moveFocusAction = Action<BuildContext>();
+
+  /// При тапе на п. "Камера" в диалоге выбора фото
+  final getCameraImageAction = Action<void>();
+
+  /// При тапе на п. "Фотография" в диалоге выбора фото
+  final getGalleryImageAction = Action<void>();
 
   // StreamedStates
 
@@ -143,6 +154,10 @@ class AddSightWidgetModel extends WidgetModel {
     subscribe<BuildContext>(moveFocusAction.stream, _moveFocus);
     subscribe<void>(actionButtonAction.stream, (_) => _saveForm());
     subscribe<void>(backButtonAction.stream, (_) => navigator.pop());
+    subscribe<void>(
+        getCameraImageAction.stream, (_) => _getImage(ImageSource.camera));
+    subscribe<void>(
+        getCameraImageAction.stream, (_) => _getImage(ImageSource.gallery));
   }
 
   @override
@@ -241,7 +256,10 @@ class AddSightWidgetModel extends WidgetModel {
       transitionDuration: const Duration(milliseconds: 250),
       context: context,
       pageBuilder: (context, anim1, anim2) {
-        return const SelectPictureDialog();
+        return SelectPictureDialog(
+          getCameraImageAction: getCameraImageAction,
+          getGalleryImageAction: getGalleryImageAction,
+        );
       },
       transitionBuilder: (context, anim1, anim2, child) {
         return SlideTransition(
@@ -261,6 +279,12 @@ class AddSightWidgetModel extends WidgetModel {
     }, onError: (e) {
       debugPrint('Error while adding new picture: $e');
     });
+  }
+
+  /// Получает фото с камеры или из галереи
+  Future<void> _getImage(ImageSource imageSource) async {
+    final image = await imagePicker.getImage(source: imageSource);
+    navigator.pop(File(image?.path));
   }
 
   /// Удаляет картинку

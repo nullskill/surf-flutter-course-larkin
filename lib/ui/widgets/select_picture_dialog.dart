@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Action;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/ui/res/app_color_scheme.dart';
 import 'package:places/ui/res/assets.dart';
@@ -7,10 +7,18 @@ import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/widgets/action_button.dart';
 import 'package:places/ui/widgets/settings_item.dart';
+import 'package:relation/relation.dart';
 
 /// Диалог выбора картинки
 class SelectPictureDialog extends StatelessWidget {
-  const SelectPictureDialog({Key key}) : super(key: key);
+  const SelectPictureDialog({
+    @required this.getCameraImageAction,
+    @required this.getGalleryImageAction,
+    Key key,
+  }) : super(key: key);
+
+  final Action getCameraImageAction;
+  final Action getGalleryImageAction;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +53,7 @@ class SelectPictureDialog extends StatelessWidget {
                       title: addSightCamera,
                       isDialog: true,
                       paddingValue: 12.0,
+                      onTap: getCameraImageAction,
                     ),
                     SettingsItem(
                       leading: SvgPicture.asset(
@@ -57,6 +66,7 @@ class SelectPictureDialog extends StatelessWidget {
                       title: addSightPicture,
                       isDialog: true,
                       paddingValue: 12.0,
+                      onTap: getGalleryImageAction,
                     ),
                     SettingsItem(
                       leading: SvgPicture.asset(
