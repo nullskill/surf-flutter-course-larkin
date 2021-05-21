@@ -8,7 +8,7 @@ import 'package:places/ui/screens/filters/filters_screen_wm.dart';
 import 'package:provider/provider.dart';
 
 /// Роут для FiltersScreen
-class FiltersScreenRoute extends MaterialPageRoute<FiltersScreen> {
+class FiltersScreenRoute extends MaterialPageRoute<bool> {
   FiltersScreenRoute()
       : super(
           builder: (context) =>

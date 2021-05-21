@@ -66,9 +66,8 @@ class SightListWidgetModel extends WidgetModel {
   }
 
   /// При тапе кнопки фильтров переход на FiltersScreen
-  void _showFiltersScreen() {
-    doFuture<void>(
-        navigator.push(FiltersScreenRoute()), (_) => _reloadSights());
+  Future<void> _showFiltersScreen() async {
+    doFuture<bool>(navigator.push(FiltersScreenRoute()), _reloadSights);
   }
 
   /// При тапе кнопки создания нового места переход на AddSightScreen
@@ -78,11 +77,13 @@ class SightListWidgetModel extends WidgetModel {
   }
 
   /// Получение списка всех мест (с учетом фильтров)
-  Future<void> _reloadSights() async {
+  Future<void> _reloadSights([bool shouldFilter = true]) async {
+    if (!shouldFilter) return;
+
     await sightsState.loading();
 
     try {
-      await placeInteractor.getSights();
+      await placeInteractor.loadSights();
       searchInteractor.filterSights();
       await sightsState.content(placeInteractor.sights);
     } on Object catch (_, __) {

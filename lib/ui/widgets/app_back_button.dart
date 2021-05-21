@@ -6,8 +6,11 @@ import 'package:places/ui/res/border_radiuses.dart';
 /// Виджет AppActionButton предоставляет кнопку возврата на предыдущий экран
 class AppBackButton extends StatelessWidget {
   const AppBackButton({
+    this.onPressed,
     Key key,
   }) : super(key: key);
+
+  final void Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +29,10 @@ class AppBackButton extends StatelessWidget {
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shape: RoundedRectangleBorder(borderRadius: allBorderRadius10),
         ),
-        onPressed: () {
-          Navigator.pop(context);
-        },
+        onPressed: onPressed ??
+            () {
+              Navigator.pop(context);
+            },
         child: SvgPicture.asset(
           AppIcons.arrow,
           width: 24.0,

@@ -18,7 +18,21 @@ class VisitedSight extends Sight implements VisitingSight {
           type: sight.type,
         );
 
+  VisitedSight.fromJson(Map<String, dynamic> json)
+      : visitedDate = json['visitedDate'] as DateTime,
+        openHour = json['openHour'] as DateTime,
+        super.fromJson(json);
+
   DateTime visitedDate;
   @override
   DateTime openHour;
+
+  @override
+  Map<String, dynamic> toJson() {
+    final map = super.toJson();
+    map['visitedDate'] = visitedDate.toString();
+    map['openHour'] = openHour.toString();
+
+    return map;
+  }
 }

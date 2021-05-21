@@ -39,14 +39,20 @@ class SightCardWidgetModel extends WidgetModel {
   final sightState = StreamedState<SightData>();
 
   /// Возвращает флаг наличия места в избранном
-  final isFavoriteSightState = StreamedState<bool>();
+  final isFavoriteSightState = StreamedState<bool>(false);
+
+  @override
+  void onLoad() {
+    super.onLoad();
+
+    sightState.accept(SightData(sight));
+    doFuture<bool>(
+        placeInteractor.isFavorite(sight), isFavoriteSightState.accept);
+  }
 
   @override
   void onBind() {
     super.onBind();
-
-    sightState.accept(SightData(sight));
-    isFavoriteSightState.accept(placeInteractor.isFavoriteSight(sight));
 
     subscribe<void>(
         toggleFavoriteSightAction.stream, (_) => _toggleFavoriteSight());
@@ -60,21 +66,22 @@ class SightCardWidgetModel extends WidgetModel {
 
   /// Добавляет/удаляет место в/из избранное
   /// и проверяет принадлежность избранному
-  void _toggleFavoriteSight() {
-    placeInteractor.toggleFavoriteSight(sight);
-    _checkIsFavoriteSight();
+  Future<void> _toggleFavoriteSight() async {
+    await placeInteractor.toggleFavorite(sight);
+    await _checkIsFavoriteSight();
   }
 
   /// Удаляет место из избранного
   /// и проверяет принадлежность избранному
-  void _removeFromFavorites() {
-    placeInteractor.removeFromFavorites(sight as FavoriteSight);
-    _checkIsFavoriteSight();
+  Future<void> _removeFromFavorites() async {
+    await placeInteractor.removeFromFavorites(sight);
+    await _checkIsFavoriteSight();
   }
 
   /// Передает в [isFavoriteSightState] флаг принадлежности избранному
-  void _checkIsFavoriteSight() {
-    isFavoriteSightState.accept(placeInteractor.isFavoriteSight(sight));
+  Future<void> _checkIsFavoriteSight() async {
+    final isFavorite = await placeInteractor.isFavorite(sight);
+    await isFavoriteSightState.accept(isFavorite);
   }
 
   /// Удаляет место из посещенных

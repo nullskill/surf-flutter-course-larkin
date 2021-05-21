@@ -35,6 +35,16 @@ class Sight extends Equatable {
             (el) => el.toString().split('.').last == place.placeType),
         details = place.description;
 
+  Sight.fromJson(Map<String, dynamic> json)
+      : id = json['id'] as int,
+        lat = json['lat'] as double,
+        lng = json['lng'] as double,
+        name = json['name'] as String,
+        urls = List<String>.from(json['urls'] as List<dynamic>),
+        type = SightType.values.firstWhere(
+            (t) => t.toString().split('.').last == (json['type'] as String)),
+        details = json['description'] as String;
+
   int id;
   final String name, details;
   final List<String> urls;
@@ -44,4 +54,18 @@ class Sight extends Equatable {
 
   @override
   List<Object> get props => [id];
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{
+      'id': id,
+      'lat': lat,
+      'lng': lng,
+      'name': name,
+      'urls': urls,
+      'type': type.toString().split('.').last,
+      'details': details,
+    };
+
+    return map;
+  }
 }

@@ -32,8 +32,14 @@ dependencies:
   intl: ^0.17.0
   # Support for inside scrollview + dragging down to close (showModalBottomSheet cannot)
   modal_bottom_sheet: ^2.0.0
+  # A reactive persistence library for Flutter and Dart, built on top of sqlite
+  moor: ^4.3.0
   # MVVM-inspired framework with respect for Clean Architecture
   mwwm: ^1.0.2
+  # A string-based path manipulation library
+  path: ^1.8.0
+  # Plugin for getting commonly used locations on host platform file systems
+  path_provider: ^2.0.1
   # State provider
   provider: ^5.0.0
   # The stream representation of relations between entities and widget utilities
@@ -44,6 +50,8 @@ dependencies:
   shared_preferences: ^2.0.5
   # Extension package for easy access the MediaQuery sizing info on the build context
   sized_context: ^0.2.1+1
+  # Flutter apps depending on this package will contain native sqlite3 libraries
+  sqlite3_flutter_libs: ^0.4.1
 
 dev_dependencies:
   flutter_test:
@@ -51,6 +59,8 @@ dev_dependencies:
 
   # Provides a concrete way of generating files
   build_runner: ^1.12.2
+  # Generates table and dataclasses together with the moor package
+  moor_generator: ^4.3.0
   # linter rules
   surf_lint_rules: any
 

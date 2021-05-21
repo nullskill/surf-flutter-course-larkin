@@ -35,13 +35,13 @@ class VisitingWidgetModel extends WidgetModel {
   // StreamedStates
 
   /// Список избранных мест
-  final favoriteSightsState = EntityStreamedState<List<FavoriteSight>>();
+  final favoritesState = EntityStreamedState<List<FavoriteSight>>();
 
   /// Флаг первой загрузки списка избранных мест
   final favoritesFirstLoadState = StreamedState<bool>(true);
 
   /// Список посещенных мест
-  final visitedSightsState = EntityStreamedState<List<VisitedSight>>();
+  final visitedState = EntityStreamedState<List<VisitedSight>>();
 
   /// Флаг первой загрузки списка посещенных мест
   final visitedFirstLoadState = StreamedState<bool>(true);
@@ -58,8 +58,7 @@ class VisitingWidgetModel extends WidgetModel {
     super.onBind();
 
     subscribe<void>(loadVisitedSightsAction.stream, (_) => _reloadVisited());
-    subscribe<void>(
-        placeInteractor.favoriteSightsStream, (_) => _reloadFavorites());
+    subscribe<void>(placeInteractor.favoritesStream, (_) => _reloadFavorites());
     subscribe<Sight>(removeFromVisitingAction.stream, removeFromVisiting);
     subscribe<FavoriteSight>(
         removeFavoriteSightAction.stream, _removeFromFavorites);
@@ -76,46 +75,40 @@ class VisitingWidgetModel extends WidgetModel {
 
   /// Загружает список избранных мест
   void _reloadFavorites() {
-    if (favoritesFirstLoadState.value) favoriteSightsState.loading();
+    if (favoritesFirstLoadState.value) favoritesState.loading();
 
-    // Delay imitation
-    final Future<List<FavoriteSight>> future = Future.delayed(
-        const Duration(milliseconds: loadDelay),
-        () => placeInteractor.favoriteSights);
-
-    doFutureHandleError(future, favoriteSightsState.content);
+    doFutureHandleError(placeInteractor.getFavorites(), favoritesState.content);
     favoritesFirstLoadState.accept(false);
   }
 
   /// Загружает список посещенных мест
   void _reloadVisited() {
-    if (visitedFirstLoadState.value) visitedSightsState.loading();
+    if (visitedFirstLoadState.value) visitedState.loading();
 
-    // Delay imitation
-    final Future<List<VisitedSight>> future = Future.delayed(
-        const Duration(milliseconds: loadDelay),
-        () => placeInteractor.visitedSights);
-
-    doFutureHandleError(future, visitedSightsState.content);
+    doFutureHandleError(placeInteractor.getVisited(), visitedState.content);
     visitedFirstLoadState.accept(false);
   }
 
   /// Удаляет карточку из списка избранных/посещенных мест
   void removeFromVisiting(Sight sight) {
     if (sight is FavoriteSight) {
-      removeFavoriteSightAction(sight);
+      removeFavoriteSightAction.accept(sight);
     } else if (sight is VisitedSight) {
-      removeVisitedSightAction(sight);
+      removeVisitedSightAction.accept(sight);
     }
   }
 
   /// Удаляет место из избранного
-  void _removeFromFavorites(FavoriteSight sight) {
-    placeInteractor.removeFromFavorites(sight);
+  Future<void> _removeFromFavorites(FavoriteSight sight) async {
+    await placeInteractor.removeFromFavorites(sight);
+    doFutureHandleError<List<FavoriteSight>>(
+        placeInteractor.getFavorites(), favoritesState.content);
   }
 
   /// Удаляет место из посещенных
-  void _removeFromVisited(VisitedSight sight) {
-    placeInteractor.removeFromVisited(sight);
+  Future<void> _removeFromVisited(VisitedSight sight) async {
+    await placeInteractor.removeFromVisited(sight);
+    doFutureHandleError<List<VisitedSight>>(
+        placeInteractor.getVisited(), visitedState.content);
   }
 }

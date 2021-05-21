@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mwwm/mwwm.dart';
@@ -187,14 +188,27 @@ class _ListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () => showSightDetails(context),
-      leading: Container(
+      leading: SizedBox(
         width: 56.0,
         height: 56.0,
-        decoration: BoxDecoration(
-          color: placeholderColor,
+        child: ClipRRect(
           borderRadius: allBorderRadius12,
-          image: DecorationImage(
-            image: NetworkImage(sight.urls.first),
+          child: CachedNetworkImage(
+            imageUrl: sight.urls.first,
+            progressIndicatorBuilder: (context, url, downloadProgress) {
+              return Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(AppIcons.placeholder),
+                  ),
+                ),
+                child: Center(
+                  child: CircularProgressIndicator(
+                      value: downloadProgress.progress),
+                ),
+              );
+            },
+            fadeInDuration: const Duration(milliseconds: 350),
             fit: BoxFit.cover,
           ),
         ),
