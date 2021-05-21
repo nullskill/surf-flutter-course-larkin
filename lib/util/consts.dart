@@ -1,5 +1,5 @@
 /// Набор констант
-const isReleaseMode = false,
+const isReleaseMode = true,
     loudApi = false,
     lat = 55.754093,
     lng = 37.620407,

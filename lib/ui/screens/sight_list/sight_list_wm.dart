@@ -66,7 +66,7 @@ class SightListWidgetModel extends WidgetModel {
   }
 
   /// При тапе кнопки фильтров переход на FiltersScreen
-  Future<void> _showFiltersScreen() async {
+  void _showFiltersScreen() {
     doFuture<bool>(navigator.push(FiltersScreenRoute()), _reloadSights);
   }
 

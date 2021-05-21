@@ -76,7 +76,7 @@ class SearchInteractor {
   Future<void> initSelectedFilters() async {
     final filters = _filtersInteractor.filters;
 
-    if (filters != null) {
+    if (filters != null && filters.types != null) {
       selectedMinRadius = filters.minRadius;
       selectedMaxRadius = filters.maxRadius;
 
