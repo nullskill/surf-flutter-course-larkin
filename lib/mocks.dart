@@ -2,7 +2,6 @@ import 'package:places/domain/favorite_sight.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/domain/sight_type.dart';
 import 'package:places/domain/visited_sight.dart';
-import 'package:places/util/consts.dart';
 
 /// Список интересных мест
 final mocks = <Sight>[
@@ -106,7 +105,9 @@ final newSight = Sight(
   name: 'Пицца от птицы',
   lat: 45.008986,
   lng: 41.922057,
-  urls: [tempImgUrl],
+  urls: [
+    'https://vogazeta.ru/uploads/full_size_1575545015-c59f0314cb936df655a6a19ca760f02c.jpg'
+  ],
   details: 'Yum yum yum ',
   type: SightType.cafe,
 );

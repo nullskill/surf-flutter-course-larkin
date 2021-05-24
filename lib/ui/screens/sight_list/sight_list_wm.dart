@@ -73,7 +73,12 @@ class SightListWidgetModel extends WidgetModel {
   /// При тапе кнопки создания нового места переход на AddSightScreen
   void _showAddSightScreen() {
     doFuture<void>(
-        navigator.push(AddSightScreenRoute()), (_) => _reloadSights());
+      navigator.push(AddSightScreenRoute()),
+      (_) => Future<void>.delayed(
+          // delay for the server to save new place
+          const Duration(milliseconds: 600),
+          _reloadSights),
+    );
   }
 
   /// Получение списка всех мест (с учетом фильтров)

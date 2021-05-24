@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mwwm/mwwm.dart';
@@ -119,8 +121,8 @@ class _ImageCards extends StatelessWidget {
     return SizedBox(
       height: 96.0,
       child: StreamedStateBuilder<List<String>>(
-          streamedState: wm.imgUrlsState,
-          builder: (context, imgUrls) {
+          streamedState: wm.imagesState,
+          builder: (context, images) {
             return ListView(
               scrollDirection: Axis.horizontal,
               clipBehavior: Clip.none,
@@ -131,10 +133,16 @@ class _ImageCards extends StatelessWidget {
               ),
               children: [
                 _AddImageCard(
+                  key: const ValueKey('+'),
                   onAddImageCard: () => wm.addImageAction(context),
                 ),
-                for (final imgUrl in imgUrls)
-                  _ImageCard(imgUrl: imgUrl, wm: wm),
+                for (final image in images)
+                  _ImageCard(
+                    key: ValueKey(image),
+                    image: File(image),
+                    imageIdx: images.indexOf(image),
+                    wm: wm,
+                  ),
               ],
             );
           }),
@@ -154,6 +162,7 @@ class _AddImageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
+      key: key,
       borderRadius: allBorderRadius12,
       clipBehavior: Clip.antiAlias,
       child: InkWell(
@@ -184,13 +193,15 @@ class _AddImageCard extends StatelessWidget {
 
 class _ImageCard extends StatefulWidget {
   const _ImageCard({
-    @required this.imgUrl,
+    @required this.image,
+    @required this.imageIdx,
     @required this.wm,
     Key key,
   }) : super(key: key);
 
   static const _cardSize = 72.0;
-  final String imgUrl;
+  final File image;
+  final int imageIdx;
   final AddSightWidgetModel wm;
 
   @override
@@ -259,29 +270,45 @@ class _ImageCardState extends State<_ImageCard> {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: ValueKey(widget.imgUrl),
+      key: widget.key,
       direction: DismissDirection.up,
-      onDismissed: (_) => widget.wm.removeImageAction(widget.imgUrl),
+      onDismissed: (_) => widget.wm.removeImageAction(widget.imageIdx),
       child: Listener(
         onPointerDown: (_) => onPointerDownOnImageCard(),
         onPointerMove: (_) => onPointerMoveOnImageCard(),
         onPointerUp: (_) => onPointerUpOnImageCard(),
-        child: Container(
-          width: _ImageCard._cardSize,
-          height: _ImageCard._cardSize,
-          margin: const EdgeInsets.only(left: 16.0),
-          decoration: BoxDecoration(
-            color: placeholderColor,
-            borderRadius: allBorderRadius12,
-            boxShadow: getBoxShadow(),
-          ),
-          child: Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: ClearButton(
-                isDeletion: true,
-                onTap: () => widget.wm.removeImageAction(widget.imgUrl),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 16.0),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              borderRadius: allBorderRadius12,
+              color: placeholderColor,
+              boxShadow: getBoxShadow(),
+            ),
+            child: ClipRRect(
+              borderRadius: allBorderRadius12,
+              child: SizedBox(
+                width: _ImageCard._cardSize,
+                height: _ImageCard._cardSize,
+                child: Stack(children: [
+                  Positioned.fill(
+                    child: Image.file(
+                      widget.image,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: ClearButton(
+                        isDeletion: true,
+                        onTap: () =>
+                            widget.wm.removeImageAction(widget.imageIdx),
+                      ),
+                    ),
+                  ),
+                ]),
               ),
             ),
           ),

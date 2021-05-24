@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' hide Action;
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:places/ui/res/app_color_scheme.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/border_radiuses.dart';
@@ -12,13 +13,11 @@ import 'package:relation/relation.dart';
 /// Диалог выбора картинки
 class SelectPictureDialog extends StatelessWidget {
   const SelectPictureDialog({
-    @required this.getCameraImageAction,
-    @required this.getGalleryImageAction,
+    @required this.getImageAction,
     Key key,
   }) : super(key: key);
 
-  final Action getCameraImageAction;
-  final Action getGalleryImageAction;
+  final Action getImageAction;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +53,7 @@ class SelectPictureDialog extends StatelessWidget {
                         title: addSightCamera,
                         isDialog: true,
                         paddingValue: 12.0,
-                        onTap: getCameraImageAction,
+                        onTap: () => getImageAction(ImageSource.camera),
                       ),
                       SettingsItem(
                         leading: SvgPicture.asset(
@@ -67,20 +66,8 @@ class SelectPictureDialog extends StatelessWidget {
                         title: addSightPicture,
                         isDialog: true,
                         paddingValue: 12.0,
-                        onTap: getGalleryImageAction,
-                      ),
-                      SettingsItem(
-                        leading: SvgPicture.asset(
-                          AppIcons.file,
-                          width: 24.0,
-                          height: 24.0,
-                          color:
-                              Theme.of(context).colorScheme.appDialogLabelColor,
-                        ),
-                        title: addSightFile,
-                        isDialog: true,
                         isLast: true,
-                        paddingValue: 12.0,
+                        onTap: () => getImageAction(ImageSource.gallery),
                       ),
                     ],
                   ),
