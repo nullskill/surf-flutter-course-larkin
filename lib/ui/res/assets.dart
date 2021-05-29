@@ -66,8 +66,9 @@ class AppIcons {
   static const String photo = '$_otherPath/photo.svg';
   static const String placeholder = '$_otherPath/placeholder.png';
   static const String plus = '$_otherPath/plus.svg';
-  static const String refresh = '$_otherPath/refresh';
+  static const String refresh = '$_otherPath/refresh.svg';
   static const String search = '$_otherPath/search.svg';
+  static const String selfPlacemark = '$_otherPath/self_placemark.png';
   static const String share = '$_otherPath/share.svg';
   static const String tick = '$_otherPath/tick.svg';
   static const String view = '$_otherPath/view.svg';

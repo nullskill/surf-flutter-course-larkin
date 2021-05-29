@@ -12,6 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # A Flutter plugin for opening iOS and Android phone settings from an app
+  app_settings: ^4.1.0
   # Utility classes to work with asynchronous computations
   async: ^2.6.1
   # Widget that automatically resizes text to fit perfectly within its bounds
@@ -23,9 +25,13 @@ dependencies:
   # A powerful Http client for Dart
   dio: ^4.0.0
   # Package to compare objects in Dart w/o == operator & hash code
-  equatable: ^2.0.2
+  equatable: ^1.1.1
   # SVG image
   flutter_svg: ^0.22.0
+  # A Flutter plugin which provides easy geocoding
+  geocoding: ^2.0.0
+  # A Flutter geolocation plugin
+  geolocator: ^7.0.3
   # A Flutter plugin for iOS and Android for picking images
   image_picker: ^0.7.5+2
   # Package provides internationalization and localization facilities
@@ -56,6 +62,8 @@ dependencies:
   sqlite3_flutter_libs: ^0.4.3
   # Simple, fast generation of RFC4122 UUIDs
   uuid: ^3.0.4
+  # A flutter plugin for displaying yandex maps on iOS and Android
+  yandex_mapkit: ^0.5.1
 
 dev_dependencies:
   flutter_test:

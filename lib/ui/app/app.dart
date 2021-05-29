@@ -1,7 +1,9 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:mwwm/mwwm.dart';
 import 'package:places/common/error/error_handler.dart';
 import 'package:places/data/interactor/filters_interactor.dart';
+import 'package:places/data/interactor/location_interactor.dart';
 import 'package:places/data/interactor/onboarding_interactor.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
@@ -13,9 +15,11 @@ import 'package:places/data/repository/search_repository.dart';
 import 'package:places/data/repository/search_requests_repository.dart';
 import 'package:places/data/repository/visited_repository.dart';
 import 'package:places/ui/res/app_routes.dart';
+import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/res/themes.dart';
 import 'package:places/ui/screens/error_screen.dart';
+import 'package:places/ui/screens/map/map_route.dart';
 import 'package:places/ui/screens/onboarding_screen.dart';
 import 'package:places/ui/screens/settings_screen.dart';
 import 'package:places/ui/screens/sight_list/sight_list_route.dart';
@@ -32,6 +36,9 @@ class App extends StatelessWidget {
 
     OnboardingInteractor initOnboardingInteractor(BuildContext context) =>
         OnboardingInteractor();
+
+    LocationInteractor initLocationInteractor(BuildContext context) =>
+        LocationInteractor();
 
     FiltersInteractor initFiltersInteractor(BuildContext context) =>
         FiltersInteractor();
@@ -69,6 +76,7 @@ class App extends StatelessWidget {
       providers: [
         Provider<AppDatabase>(create: initAppDatabase),
         Provider<OnboardingInteractor>(create: initOnboardingInteractor),
+        Provider<LocationInteractor>(create: initLocationInteractor),
         Provider<FiltersInteractor>(create: initFiltersInteractor),
         Provider<SearchRepository>(create: initSearchRepository),
         Provider<SearchRequestsRepository>(
@@ -85,10 +93,16 @@ class App extends StatelessWidget {
       child: Consumer<SettingsInteractor>(
         builder: (context, notifier, child) {
           return MaterialApp(
+            builder: (context, child) {
+              return ScrollConfiguration(
+                behavior: AppScrollBehavior(),
+                child: child,
+              );
+            },
             debugShowCheckedModeBanner: false,
             theme: lightTheme,
             darkTheme: darkTheme,
-            themeMode: notifier.darkTheme ? ThemeMode.dark : ThemeMode.light,
+            themeMode: notifier.isDarkTheme ? ThemeMode.dark : ThemeMode.light,
             title: appTitle,
             routes: _routesMap,
             onGenerateRoute: onGenerateRoute,
@@ -99,20 +113,43 @@ class App extends StatelessWidget {
   }
 }
 
+/// Remove splash afterglow on the lists, 'cause looks weird
+class AppScrollBehavior extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
+  }
+}
+
 final _routesMap = <String, Widget Function(BuildContext)>{
   AppRoutes.home: (_) => const SplashScreen(),
-  AppRoutes.map: (_) => const Scaffold(),
   AppRoutes.settings: (_) => const SettingsScreen(),
   AppRoutes.onboarding: (_) => const OnboardingScreen(),
-  AppRoutes.error: (_) => ErrorScreen(),
+  AppRoutes.error: (_) => const ErrorScreen(),
 };
 
 Route<dynamic> onGenerateRoute(RouteSettings routeSettings) {
+  final link = <String, void Function()>{};
+  link[settingsAppBarTitle] = AppSettings.openLocationSettings;
+
   switch (routeSettings.name) {
     case AppRoutes.start:
       return SightListScreenRoute();
+    case AppRoutes.map:
+      return MapScreenRoute();
     case AppRoutes.visiting:
       return VisitingScreenRoute();
+    case AppRoutes.locationError:
+      return MaterialPageRoute<ErrorScreen>(
+        builder: (context) {
+          return ErrorScreen(
+            iconName: AppIcons.emptyMap,
+            message: locationErrorMessage,
+            link: link,
+          );
+        },
+      );
     default:
       throw Exception('Unknown route name: ${routeSettings.name}');
   }

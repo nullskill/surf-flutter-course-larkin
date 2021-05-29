@@ -233,9 +233,12 @@ class _CardImage extends StatelessWidget {
                 image: AssetImage(AppIcons.placeholder),
               ),
             ),
-            child: Center(
-              child:
-                  CircularProgressIndicator(value: downloadProgress.progress),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: LinearProgressIndicator(
+                color: Theme.of(context).buttonColor,
+                value: downloadProgress.progress,
+              ),
             ),
           );
         },

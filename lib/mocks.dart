@@ -10,7 +10,7 @@ final mocks = <Sight>[
     name: 'Центр современного искусства «Винзавод»',
     lat: 55.75569,
     lng: 37.66458,
-    urls: [
+    urls: const [
       'https://kudago.com/media/thumbs/xl/images/place/04/bf/04bf605cb52a1ad2bf1502ff864736fd.jpg'
     ],
     details:
@@ -23,7 +23,7 @@ final mocks = <Sight>[
     name: 'Центр творческих индустрий «Фабрика»',
     lat: 55.77908,
     lng: 37.68887,
-    urls: [
+    urls: const [
       'https://kudago.com/media/thumbs/xl/images/place/0d/1c/0d1cd06407b0e88b865a5e45ba7aec0b.jpg'
     ],
     details: 'В центре «Фабрика», объединяющем выставочные пространства, '
@@ -37,7 +37,7 @@ final mocks = <Sight>[
     name: 'Смотровая площадка PANORAMA360',
     lat: 55.74985,
     lng: 37.53772,
-    urls: [
+    urls: const [
       'https://kudago.com/media/thumbs/xl/images/place/12/af/12afdd8bc989a84bdd0f6373b15f7c5f.jpg'
     ],
     details: 'Здесь можно полюбоваться невероятными видами Москвы, '
@@ -50,7 +50,7 @@ final mocks = <Sight>[
     name: 'Музеи Московского Кремля',
     lat: 55.7520233,
     lng: 37.6174994,
-    urls: [
+    urls: const [
       'https://mos-holidays.ru/wp-content/uploads/2015/10/oruzheinaya-palata.jpg'
     ],
     details:
@@ -63,7 +63,7 @@ final mocks = <Sight>[
     name: 'Александровский сад',
     lat: 55.7506648,
     lng: 37.612579,
-    urls: ['https://i.msmap.ru/3/9/4/6/thumbs/700_467_fix.jpg'],
+    urls: const ['https://i.msmap.ru/3/9/4/6/thumbs/700_467_fix.jpg'],
     details:
         'От Красной площади до Кремлевской набережной вдоль западной стены Московского Кремля '
         'протянулся парк, история которого насчитывает почти два столетия.',
@@ -74,7 +74,9 @@ final mocks = <Sight>[
     name: 'Ритц-Карлтон Москва',
     lat: 55.7575378,
     lng: 37.6138343,
-    urls: ['https://cf.bstatic.com/images/hotel/max1280x900/140/140256156.jpg'],
+    urls: const [
+      'https://cf.bstatic.com/images/hotel/max1280x900/140/140256156.jpg'
+    ],
     details: 'Отель Ritz-Carlton расположен возле Красной площади и Кремля. '
         'К услугам гостей просторные и стильные номера, оформленные в роскошном стиле '
         'и оснащенные современными удобствами.',
@@ -105,7 +107,7 @@ final newSight = Sight(
   name: 'Пицца от птицы',
   lat: 45.008986,
   lng: 41.922057,
-  urls: [
+  urls: const [
     'https://vogazeta.ru/uploads/full_size_1575545015-c59f0314cb936df655a6a19ca760f02c.jpg'
   ],
   details: 'Yum yum yum ',

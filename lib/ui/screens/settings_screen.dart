@@ -74,7 +74,7 @@ class _SettingsBody extends StatelessWidget {
                 paddingValue: 10,
                 onTap: () => _onChanged(notifier),
                 trailing: CupertinoSwitch(
-                  value: notifier.darkTheme,
+                  value: notifier.isDarkTheme,
                   onChanged: (_) => _onChanged(notifier),
                 ),
               ),

@@ -11,4 +11,6 @@ BorderRadius rightBorderRadius8 = const BorderRadius.only(
     allBorderRadius12 = const BorderRadius.all(Radius.circular(12.0)),
     allBorderRadius16 = const BorderRadius.all(Radius.circular(16.0)),
     allBorderRadius18 = const BorderRadius.all(Radius.circular(18.0)),
-    allBorderRadius40 = const BorderRadius.all(Radius.circular(40.0));
+    allBorderRadius40 = const BorderRadius.all(Radius.circular(40.0)),
+    allBorderRadius50 = const BorderRadius.all(Radius.circular(50.0)),
+    allBorderRadius100 = const BorderRadius.all(Radius.circular(100.0));

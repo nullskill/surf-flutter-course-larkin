@@ -4,21 +4,21 @@ import 'package:places/data/storage/app_storage.dart';
 /// Класс интерактора настроек
 class SettingsInteractor extends ChangeNotifier {
   SettingsInteractor() {
-    _darkTheme = AppStorage.getBool(_themeKey) ?? true;
+    _isDarkTheme = AppStorage.getBool(_themeKey) ?? true;
     notifyListeners();
   }
 
   static const _themeKey = 'theme';
 
-  bool _darkTheme;
+  bool _isDarkTheme;
 
-  /// Возвращает сохраненную тему
-  bool get darkTheme => _darkTheme;
+  /// Возвращает true, если текущая тема темная
+  bool get isDarkTheme => _isDarkTheme;
 
   /// Переключает тему приложения и сохраняет выбранное значение
   void toggleTheme() {
-    _darkTheme = !_darkTheme;
-    AppStorage.setBool(_themeKey, _darkTheme);
+    _isDarkTheme = !_isDarkTheme;
+    AppStorage.setBool(_themeKey, _isDarkTheme);
     notifyListeners();
   }
 }
