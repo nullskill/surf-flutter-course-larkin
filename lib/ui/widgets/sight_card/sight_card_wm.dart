@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart' hide Action;
 import 'package:mwwm/mwwm.dart';
 import 'package:places/data/interactor/place_interactor.dart';
-import 'package:places/domain/base/visiting_sight.dart';
 import 'package:places/domain/favorite_sight.dart';
 import 'package:places/domain/sight.dart';
 import 'package:places/domain/visited_sight.dart';
@@ -14,10 +13,14 @@ class SightCardWidgetModel extends WidgetModel {
     WidgetModelDependencies baseDependencies, {
     @required this.placeInteractor,
     @required this.sight,
+    @required this.isPreview,
+    this.showRoute,
   }) : super(baseDependencies);
 
   final PlaceInteractor placeInteractor;
   final Sight sight;
+  final bool isPreview;
+  final void Function() showRoute;
 
   // Actions
 
@@ -45,9 +48,11 @@ class SightCardWidgetModel extends WidgetModel {
   void onLoad() {
     super.onLoad();
 
-    sightState.accept(SightData(sight));
+    sightState.accept(SightData(sight, isPreview: isPreview));
     doFuture<bool>(
-        placeInteractor.isFavorite(sight), isFavoriteSightState.accept);
+      placeInteractor.isFavorite(sight),
+      isFavoriteSightState.accept,
+    );
   }
 
   @override
@@ -55,13 +60,21 @@ class SightCardWidgetModel extends WidgetModel {
     super.onBind();
 
     subscribe<void>(
-        toggleFavoriteSightAction.stream, (_) => _toggleFavoriteSight());
+      toggleFavoriteSightAction.stream,
+      (_) => _toggleFavoriteSight(),
+    );
     subscribe<void>(
-        removeFavoriteSightAction.stream, (_) => _removeFromFavorites());
+      removeFavoriteSightAction.stream,
+      (_) => _removeFromFavorites(),
+    );
     subscribe<void>(
-        checkIsFavoriteSightAction.stream, (_) => _checkIsFavoriteSight());
+      checkIsFavoriteSightAction.stream,
+      (_) => _checkIsFavoriteSight(),
+    );
     subscribe<void>(
-        removeVisitedSightAction.stream, (_) => _removeFromVisited());
+      removeVisitedSightAction.stream,
+      (_) => _removeFromVisited(),
+    );
   }
 
   /// Добавляет/удаляет место в/из избранное
@@ -91,18 +104,27 @@ class SightCardWidgetModel extends WidgetModel {
 }
 
 /// Билдер для [SightCardWidgetModel]
-SightCardWidgetModel createSightCardWm(BuildContext context, Sight sight) =>
+SightCardWidgetModel createSightCardWm(
+  BuildContext context,
+  Sight sight, {
+  @required bool isPreview,
+  void Function() showRoute,
+}) =>
     SightCardWidgetModel(
       context.read<WidgetModelDependencies>(),
       placeInteractor: context.read<PlaceInteractor>(),
       sight: sight,
+      isPreview: isPreview,
+      showRoute: showRoute,
     );
 
 /// Данные интересного места
 class SightData {
-  SightData(this.sight);
+  SightData(this.sight, {@required this.isPreview, this.showRoute});
 
   final Sight sight;
+  final bool isPreview;
+  final void Function() showRoute;
 
   bool get isSightCard => sight.runtimeType == Sight;
 
@@ -111,7 +133,7 @@ class SightData {
 
   bool get isFavoriteCard => sight.runtimeType == FavoriteSight;
 
-  DateTime get openHour => (sight as VisitingSight).openHour;
+  DateTime get openHour => sight.openHour;
 
   DateTime get plannedDate => (sight as FavoriteSight).plannedDate;
 

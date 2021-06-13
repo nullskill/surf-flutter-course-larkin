@@ -25,7 +25,7 @@ dependencies:
   # A powerful Http client for Dart
   dio: ^4.0.0
   # Package to compare objects in Dart w/o == operator & hash code
-  equatable: ^1.1.1
+  equatable: ^2.0.2
   # SVG image
   flutter_svg: ^0.22.0
   # A Flutter plugin which provides easy geocoding
@@ -36,6 +36,8 @@ dependencies:
   image_picker: ^0.7.5+2
   # Package provides internationalization and localization facilities
   intl: ^0.17.0
+  # A flutter plugin to find available maps installed on a device and launch them
+  map_launcher: ^2.0.0
   # Library to get MIME type from a file name or a file path and get the file extension from a MIME
   mime_type: ^1.0.0
   # Support for inside scrollview + dragging down to close (showModalBottomSheet cannot)
@@ -63,7 +65,7 @@ dependencies:
   # Simple, fast generation of RFC4122 UUIDs
   uuid: ^3.0.4
   # A flutter plugin for displaying yandex maps on iOS and Android
-  yandex_mapkit: ^0.5.1
+  yandex_mapkit: ^1.0.0
 
 dev_dependencies:
   flutter_test:

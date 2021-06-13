@@ -33,7 +33,7 @@ class VisitingScreen extends CoreMwwmWidget {
 class _VisitingScreenState extends WidgetState<VisitingWidgetModel>
     with SingleTickerProviderStateMixin {
   static const tabDelay = Duration(milliseconds: 350);
-  static const linearCurve = Interval(.003, 1.0);
+  static const linearCurve = Interval(0.003, 1.0);
 
   AppTabController tabController;
   List<Tab> visitingTabs;
@@ -221,6 +221,7 @@ class _VisitingScreenList extends StatelessWidget {
             itemCount: sights.length,
             itemBuilder: (_, index) {
               final Sight sight = sights[index];
+
               return _DismissibleCard(
                 key: ValueKey<int>(sight.id),
                 sight: sight,
@@ -231,6 +232,7 @@ class _VisitingScreenList extends StatelessWidget {
           );
   }
 
+  // ignore: avoid-returning-widgets
   Widget proxyDecorator(Widget child, int index, Animation animation) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 24.0),
@@ -320,10 +322,10 @@ class _CardBackground extends StatelessWidget {
         color: Theme.of(context).errorColor,
         borderRadius: resizeValue == 1.0
             ? allBorderRadius18
-            : allBorderRadius18 * (resizeValue - .3),
+            : allBorderRadius18 * (resizeValue - 0.3),
       ),
       duration: duration,
-      child: resizeValue < .5
+      child: resizeValue < 0.5
           ? const SizedBox.shrink()
           : Align(
               alignment: Alignment.centerRight,

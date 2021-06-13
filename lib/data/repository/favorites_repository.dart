@@ -8,7 +8,7 @@ class FavoritesRepository {
 
   final AppDatabase db;
 
-  /// Получает список id всех избранных мест
+  /// Получает список всех избранных мест
   Future<List<FavoriteSight>> getFavorites() => db.favoritesDao.all();
 
   /// Добавляет в избранное

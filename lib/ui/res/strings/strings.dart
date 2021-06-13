@@ -18,6 +18,9 @@ const String appTitle = 'Places',
     sightCardTimePickerCancelLabel = 'Отмена',
     sightCardTimePickerSubmitLabel = 'Готово',
 
+//MapScreen
+    mapAppBarTitle = 'Карта',
+
 //AppSearchBar
     searchBarHintText = 'Поиск',
 

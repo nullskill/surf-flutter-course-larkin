@@ -58,12 +58,17 @@ class VisitingWidgetModel extends WidgetModel {
     super.onBind();
 
     subscribe<void>(loadVisitedSightsAction.stream, (_) => _reloadVisited());
+    subscribe<void>(placeInteractor.visitedStream, (_) => _reloadVisited());
     subscribe<void>(placeInteractor.favoritesStream, (_) => _reloadFavorites());
     subscribe<Sight>(removeFromVisitingAction.stream, removeFromVisiting);
     subscribe<FavoriteSight>(
-        removeFavoriteSightAction.stream, _removeFromFavorites);
+      removeFavoriteSightAction.stream,
+      _removeFromFavorites,
+    );
     subscribe<VisitedSight>(
-        removeVisitedSightAction.stream, _removeFromVisited);
+      removeVisitedSightAction.stream,
+      _removeFromVisited,
+    );
   }
 
   @override
@@ -102,13 +107,17 @@ class VisitingWidgetModel extends WidgetModel {
   Future<void> _removeFromFavorites(FavoriteSight sight) async {
     await placeInteractor.removeFromFavorites(sight);
     doFutureHandleError<List<FavoriteSight>>(
-        placeInteractor.getFavorites(), favoritesState.content);
+      placeInteractor.getFavorites(),
+      favoritesState.content,
+    );
   }
 
   /// Удаляет место из посещенных
   Future<void> _removeFromVisited(VisitedSight sight) async {
     await placeInteractor.removeFromVisited(sight);
     doFutureHandleError<List<VisitedSight>>(
-        placeInteractor.getVisited(), visitedState.content);
+      placeInteractor.getVisited(),
+      visitedState.content,
+    );
   }
 }

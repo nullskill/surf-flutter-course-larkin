@@ -28,6 +28,7 @@ LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbPath = await getApplicationDocumentsDirectory();
     final file = File(join(dbPath.path, 'app_database.sql'));
+
     return VmDatabase(file);
   });
 }

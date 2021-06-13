@@ -10,6 +10,7 @@ import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/repository/database/app_database.dart';
 import 'package:places/data/repository/favorites_repository.dart';
+import 'package:places/data/repository/location_repository.dart';
 import 'package:places/data/repository/place_repository.dart';
 import 'package:places/data/repository/search_repository.dart';
 import 'package:places/data/repository/search_requests_repository.dart';
@@ -30,57 +31,62 @@ import 'package:provider/provider.dart';
 class App extends StatelessWidget {
   const App({Key key}) : super(key: key);
 
+  AppDatabase initAppDatabase(BuildContext context) => AppDatabase();
+
+  OnboardingInteractor initOnboardingInteractor(BuildContext context) =>
+      OnboardingInteractor();
+
+  FiltersInteractor initFiltersInteractor(BuildContext context) =>
+      FiltersInteractor();
+
+  LocationRepository initLocationRepository(BuildContext context) =>
+      LocationRepository();
+  LocationInteractor initLocationInteractor(BuildContext context) =>
+      LocationInteractor(context.read<LocationRepository>());
+
+  SearchRepository initSearchRepository(BuildContext context) =>
+      SearchRepository();
+  SearchRequestsRepository initSearchRequestsRepository(
+    BuildContext context,
+  ) =>
+      SearchRequestsRepository(context.read<AppDatabase>());
+  SearchInteractor initSearchInteractor(BuildContext context) =>
+      SearchInteractor(
+        context.read<SearchRepository>(),
+        context.read<SearchRequestsRepository>(),
+        context.read<FiltersInteractor>(),
+        context.read<LocationInteractor>(),
+      );
+
+  PlaceRepository initPlaceRepository(BuildContext context) =>
+      PlaceRepository();
+  FavoritesRepository initFavoritesRepository(BuildContext context) =>
+      FavoritesRepository(context.read<AppDatabase>());
+  VisitedRepository initVisitedRepository(BuildContext context) =>
+      VisitedRepository(context.read<AppDatabase>());
+  PlaceInteractor initPlaceInteractor(BuildContext context) => PlaceInteractor(
+        context.read<PlaceRepository>(),
+        context.read<FavoritesRepository>(),
+        context.read<VisitedRepository>(),
+        context.read<SearchInteractor>(),
+      );
+
+  WidgetModelDependencies initWmDependencies(BuildContext context) =>
+      WidgetModelDependencies(errorHandler: DefaultErrorHandler());
+
   @override
   Widget build(BuildContext context) {
-    AppDatabase initAppDatabase(BuildContext context) => AppDatabase();
-
-    OnboardingInteractor initOnboardingInteractor(BuildContext context) =>
-        OnboardingInteractor();
-
-    LocationInteractor initLocationInteractor(BuildContext context) =>
-        LocationInteractor();
-
-    FiltersInteractor initFiltersInteractor(BuildContext context) =>
-        FiltersInteractor();
-
-    SearchRepository initSearchRepository(BuildContext context) =>
-        SearchRepository();
-    SearchRequestsRepository initSearchRequestsRepository(
-            BuildContext context) =>
-        SearchRequestsRepository(context.read<AppDatabase>());
-    SearchInteractor initSearchInteractor(BuildContext context) =>
-        SearchInteractor(
-          context.read<SearchRepository>(),
-          context.read<SearchRequestsRepository>(),
-          context.read<FiltersInteractor>(),
-        );
-
-    PlaceRepository initPlaceRepository(BuildContext context) =>
-        PlaceRepository();
-    FavoritesRepository initFavoritesRepository(BuildContext context) =>
-        FavoritesRepository(context.read<AppDatabase>());
-    VisitedRepository initVisitedRepository(BuildContext context) =>
-        VisitedRepository(context.read<AppDatabase>());
-    PlaceInteractor initPlaceInteractor(BuildContext context) =>
-        PlaceInteractor(
-          context.read<PlaceRepository>(),
-          context.read<FavoritesRepository>(),
-          context.read<VisitedRepository>(),
-          context.read<SearchInteractor>(),
-        );
-
-    WidgetModelDependencies initWmDependencies(BuildContext context) =>
-        WidgetModelDependencies(errorHandler: DefaultErrorHandler());
-
     return MultiProvider(
       providers: [
         Provider<AppDatabase>(create: initAppDatabase),
         Provider<OnboardingInteractor>(create: initOnboardingInteractor),
+        Provider<LocationRepository>(create: initLocationRepository),
         Provider<LocationInteractor>(create: initLocationInteractor),
         Provider<FiltersInteractor>(create: initFiltersInteractor),
         Provider<SearchRepository>(create: initSearchRepository),
         Provider<SearchRequestsRepository>(
-            create: initSearchRequestsRepository),
+          create: initSearchRequestsRepository,
+        ),
         Provider<SearchInteractor>(create: initSearchInteractor),
         Provider<PlaceRepository>(create: initPlaceRepository),
         Provider<FavoritesRepository>(create: initFavoritesRepository),
@@ -88,7 +94,8 @@ class App extends StatelessWidget {
         Provider<PlaceInteractor>(create: initPlaceInteractor),
         Provider<WidgetModelDependencies>(create: initWmDependencies),
         ChangeNotifierProvider<SettingsInteractor>(
-            create: (_) => SettingsInteractor()),
+          create: (_) => SettingsInteractor(),
+        ),
       ],
       child: Consumer<SettingsInteractor>(
         builder: (context, notifier, child) {
@@ -115,9 +122,13 @@ class App extends StatelessWidget {
 
 /// Remove splash afterglow on the lists, 'cause looks weird
 class AppScrollBehavior extends ScrollBehavior {
+  // ignore: avoid-returning-widgets
   @override
   Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) {
+    BuildContext context,
+    Widget child,
+    AxisDirection axisDirection,
+  ) {
     return child;
   }
 }

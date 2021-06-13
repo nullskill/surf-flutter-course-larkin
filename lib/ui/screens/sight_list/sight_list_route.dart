@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mwwm/mwwm.dart';
+import 'package:places/data/interactor/location_interactor.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/ui/screens/sight_list/sight_list_screen.dart';
@@ -19,5 +20,6 @@ WidgetModel _widgetModelBuilder(BuildContext context) => SightListWidgetModel(
       context.read<WidgetModelDependencies>(),
       placeInteractor: context.read<PlaceInteractor>(),
       searchInteractor: context.read<SearchInteractor>(),
+      locationInteractor: context.read<LocationInteractor>(),
       navigator: Navigator.of(context),
     );

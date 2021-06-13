@@ -4,10 +4,10 @@ import 'package:places/domain/sight.dart';
 /// Класс для желаемого к посещению интересного места
 // ignore: must_be_immutable
 class FavoriteSight extends Sight implements VisitingSight {
-  FavoriteSight.fromSight(
-    Sight sight,
-  )   : plannedDate = DateTime.now(),
-        openHour = DateTime(1970, 1, 1, 9), // 09:00
+  FavoriteSight.fromSight(Sight sight)
+      : plannedDate = DateTime.now(),
+        openHour = DateTime(1970, 1, 1, 9),
+        // 09:00
         super(
           id: sight.id,
           name: sight.name,

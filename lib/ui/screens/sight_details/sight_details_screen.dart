@@ -2,8 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mwwm/mwwm.dart';
+import 'package:places/data/model/location.dart';
 import 'package:places/domain/categories.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/ui/modals/maps_sheet.dart';
 import 'package:places/ui/res/app_color_scheme.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/border_radiuses.dart';
@@ -22,9 +24,9 @@ class SightDetailsScreen extends CoreMwwmWidget {
     @required this.sight,
     Key key,
   }) : super(
-            widgetModelBuilder: (context) =>
-                createSightDetailsWm(context, sight),
-            key: key);
+          widgetModelBuilder: (context) => createSightDetailsWm(context, sight),
+          key: key,
+        );
 
   final Sight sight;
 
@@ -134,7 +136,7 @@ class _GalleryState extends State<_Gallery> {
   @override
   Widget build(BuildContext context) {
     return Hero(
-      tag: 'img${widget.imgUrls.first}',
+      tag: 'img_${widget.imgUrls.first}',
       child: Stack(
         children: [
           PageView(
@@ -156,7 +158,8 @@ class _GalleryState extends State<_Gallery> {
                       ),
                       child: Center(
                         child: CircularProgressIndicator(
-                            value: downloadProgress.progress),
+                          value: downloadProgress.progress,
+                        ),
                       ),
                     );
                   },
@@ -218,19 +221,28 @@ class _SightDetailsBody extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24.0),
-            ActionButton(
-              iconName: AppIcons.go,
-              label: sightDetailsActionButtonLabel,
-              onPressed: () {
-                // TODO: Make ActionButton callback
+            StreamedStateBuilder<Location>(
+              streamedState: wm.locationState,
+              builder: (context, location) {
+                return ActionButton(
+                  iconName: AppIcons.go,
+                  label: sightDetailsActionButtonLabel,
+                  onPressed: () => openMapsSheet(
+                    context,
+                    location,
+                    sight,
+                    wm.addToVisitedAction,
+                  ),
+                );
               },
             ),
             const SizedBox(height: 24.0),
             StreamedStateBuilder<bool>(
               streamedState: wm.isFavoriteSightState,
               builder: (context, isFavoriteSight) => _CardMenu(
-                  isFavoriteSight: isFavoriteSight,
-                  addToFavorites: wm.toggleFavoriteSightAction),
+                isFavoriteSight: isFavoriteSight,
+                addToFavorites: wm.toggleFavoriteSightAction,
+              ),
             ),
           ],
         ),
@@ -298,7 +310,7 @@ class _CardMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Divider(height: .8),
+        const Divider(height: 0.8),
         const SizedBox(height: 8),
         Row(
           children: [
@@ -338,6 +350,7 @@ class _ExpandedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final color =
         selected ? Theme.of(context).colorScheme.appTitleColor : inactiveColor;
+
     return Expanded(
       child: TextButton.icon(
         style: TextButton.styleFrom(

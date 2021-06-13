@@ -15,7 +15,8 @@ class ApiService {
       onRequest: (options, handler) {
         if (loudApi) {
           debugPrint(
-              '>> [${options.method} ${options.path}]: ${options.data ?? ''}');
+            '>> [${options.method} ${options.path}]: ${options.data ?? ''}',
+          );
         }
 
         handler.next(options);
@@ -24,7 +25,8 @@ class ApiService {
         if (loudApi) {
           final req = response.requestOptions;
           debugPrint(
-              '<< ${response.statusCode} [${req.method} ${req.baseUrl}${req.path}]: ${response.data}');
+            '<< ${response.statusCode} [${req.method} ${req.baseUrl}${req.path}]: ${response.data}',
+          );
         }
 
         handler.next(response);

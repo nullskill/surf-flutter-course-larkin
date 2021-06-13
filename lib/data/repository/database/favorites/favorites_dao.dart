@@ -20,6 +20,7 @@ class FavoritesDao extends DatabaseAccessor<AppDatabase>
             [(t) => OrderingTerm.asc(t.orderId)],
           ))
         .get();
+
     return entries
         .map((e) =>
             FavoriteSight.fromJson(jsonDecode(e.sight) as Map<String, dynamic>))
@@ -58,6 +59,7 @@ class FavoritesDao extends DatabaseAccessor<AppDatabase>
             (tbl) => tbl.sightId.equals(id),
           ))
         .getSingleOrNull();
+
     return item != null;
   }
 }

@@ -4,9 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:places/data/model/place.dart';
+import 'package:places/data/repository/common/error_handler.dart';
 import 'package:places/data/repository/common/json_parsing.dart';
 import 'package:places/data/repository/network/api_service.dart';
-import 'package:places/data/repository/network/error_handler.dart';
 import 'package:uuid/uuid.dart';
 
 /// Репозиторий для интересного места
@@ -19,7 +19,7 @@ class PlaceRepository {
   /// GET /place
   /// Получение списка всех мест
   Future<List<Place>> getPlaces() async {
-    final String response = await handleError(
+    final String response = await handleError<String>(
       () => _api.get<String>(placePath),
       message: 'Error getting places',
     );
@@ -30,7 +30,7 @@ class PlaceRepository {
   /// GET /place/:id
   /// Получение места по [id]
   Future<Place> getPlaceDetails(int id) async {
-    final String response = await handleError(
+    final String response = await handleError<String>(
       () => _api.get<String>('$placePath/$id'),
       message: 'Error getting place details',
     );
@@ -43,7 +43,7 @@ class PlaceRepository {
   Future<Place> addNewPlace(Place place) async {
     place.urls = await uploadImages(place.urls);
 
-    final String response = await handleError(
+    final String response = await handleError<String>(
       () => _api.post<String>(placePath, place.toJson()),
       message: 'Error adding new place',
     );
@@ -67,6 +67,7 @@ class PlaceRepository {
           final mimeType = mime(file.path) ?? jpegMime;
           final mimeExt =
               mimeType == jpegMime ? jpegExt : extensionFromMime(mimeType);
+
           return MapEntry(
             'files',
             MultipartFile.fromFileSync(
@@ -79,7 +80,7 @@ class PlaceRepository {
       ),
     );
 
-    final String response = await handleError(
+    final String response = await handleError<String>(
       () => _api.postFiles<String>(uploadPath, formData),
       message: 'Error uploading images',
     );

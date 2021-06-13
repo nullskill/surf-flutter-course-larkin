@@ -71,6 +71,7 @@ class _SightListScreenState extends WidgetState<SightListWidgetModel> {
       body: NotificationListener<ScrollEndNotification>(
         onNotification: (_) {
           snapAppBar();
+
           return false;
         },
         child: CustomScrollView(
@@ -202,6 +203,7 @@ class _Header extends StatelessWidget {
         (constraints.maxHeight - minHeight) / (maxHeight - minHeight);
     if (expandRatio > 1.0) expandRatio = 1.0;
     if (expandRatio < 0.0) expandRatio = 0.0;
+
     return expandRatio;
   }
 
@@ -233,6 +235,7 @@ class _CardColumn extends StatelessWidget {
   Widget build(BuildContext context) {
     final _topPadding = context.isLandscape ? 14.0 : 0.0;
     final _restPadding = context.isLandscape ? 34.0 : 16.0;
+
     return EntityStateBuilder<List<Sight>>(
       streamedState: wm.sightsState,
       child: (context, sights) {
@@ -251,7 +254,7 @@ class _CardColumn extends StatelessWidget {
       loadingChild: SliverFillRemaining(
         child: FractionallySizedBox(
           alignment: Alignment.topCenter,
-          heightFactor: .8,
+          heightFactor: 0.8,
           child: Center(
             child: CircularProgress(
               primaryColor: secondaryColor2,
@@ -275,6 +278,7 @@ class _SliverGrid extends StatelessWidget {
       delegate: SliverChildBuilderDelegate(
         (_, index) {
           final Sight sight = sights[index];
+
           return Padding(
             padding: const EdgeInsets.only(bottom: 16.0),
             child: SightCard(sight: sight),
@@ -303,6 +307,7 @@ class _SliverList extends StatelessWidget {
       delegate: SliverChildBuilderDelegate(
         (_, index) {
           final Sight sight = sights[index];
+
           return Padding(
             padding: const EdgeInsets.only(bottom: 24.0),
             child: SightCard(

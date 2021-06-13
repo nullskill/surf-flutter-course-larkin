@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart' hide Location;
 import 'package:geolocator/geolocator.dart';
-import 'package:places/data/location/exceptions.dart';
 import 'package:places/data/model/base/geo_point.dart';
 import 'package:places/data/model/location.dart';
+import 'package:places/data/repository/location/exceptions.dart';
 
 /// Менеджер геопозиции устройства
 class DeviceLocation {
@@ -29,15 +29,21 @@ class DeviceLocation {
     );
 
     return _getLocationFromGeoPoint(
-        GeoPoint(lat: position.latitude, lng: position.longitude));
+      GeoPoint(lat: position.latitude, lng: position.longitude),
+    );
   }
 
   /// Последняя локация
   static Future<Location> getLastKnownLocation() async {
     final position = await Geolocator.getLastKnownPosition();
 
+    if (position == null) {
+      throw NoLastLocationException();
+    }
+
     return _getLocationFromGeoPoint(
-        GeoPoint(lat: position.latitude, lng: position.longitude));
+      GeoPoint(lat: position.latitude, lng: position.longitude),
+    );
   }
 
   /// Возвращает объект локации
@@ -51,6 +57,7 @@ class DeviceLocation {
     } on Object catch (e) {
       debugPrint('e: $e');
     }
+
     return Location(name: name, lat: geoPoint.lat, lng: geoPoint.lng);
   }
 }

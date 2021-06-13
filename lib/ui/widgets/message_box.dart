@@ -51,12 +51,12 @@ class MessageBox extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                link.isEmpty
+                link == null || link.isEmpty
                     ? const SizedBox.shrink()
                     : Link(
                         label: link.keys.first,
                         onTap: link.values.first,
-                      )
+                      ),
               ],
             ),
           ),
