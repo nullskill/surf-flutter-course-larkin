@@ -55,7 +55,11 @@ class MessageBox extends StatelessWidget {
                     ? const SizedBox.shrink()
                     : Link(
                         label: link.keys.first,
-                        onTap: link.values.first,
+                        onTap: () {
+                          link.values.first();
+
+                          Navigator.of(context).pop();
+                        },
                       ),
               ],
             ),

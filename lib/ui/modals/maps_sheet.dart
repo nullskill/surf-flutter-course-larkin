@@ -32,6 +32,8 @@ Future<void> openMapsSheet(
                       ..showDirections(destination: destination);
 
                     addToVisited();
+
+                    Navigator.of(context).pop();
                   },
                   title: Text(map.mapName),
                   leading: SvgPicture.asset(
