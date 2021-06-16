@@ -6,5 +6,6 @@ class AppRoutes {
       visiting = '/visiting',
       settings = '/settings',
       onboarding = '/onboarding',
+      locationError = '/locationError',
       error = '/error';
 }

@@ -14,7 +14,7 @@ class ErrorScreen extends StatelessWidget {
   }) : super(key: key);
 
   final String title, iconName, message;
-  final Map<String, String> link;
+  final Map<String, void Function()> link;
 
   @override
   Widget build(BuildContext context) {

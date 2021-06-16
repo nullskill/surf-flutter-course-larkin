@@ -18,6 +18,9 @@ const String appTitle = 'Places',
     sightCardTimePickerCancelLabel = 'Отмена',
     sightCardTimePickerSubmitLabel = 'Готово',
 
+//MapScreen
+    mapAppBarTitle = 'Карта',
+
 //AppSearchBar
     searchBarHintText = 'Поиск',
 
@@ -27,6 +30,7 @@ const String appTitle = 'Places',
 //ErrorScreen
     errorTitle = 'Ошибка',
     errorMessage = 'Что-то пошло не так...\nПопробуйте позже.',
+    locationErrorMessage = 'Разрешите доступ к геолокации',
 
 //SightSearchScreen
     sightSearchHistoryTitle = 'Вы искали',

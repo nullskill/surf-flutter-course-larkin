@@ -12,8 +12,10 @@ class FiltersInteractor {
     final String filterString = AppStorage.getString(_filtersKey);
     if (filterString.isNotEmpty) {
       final filtersJson = jsonDecode(filterString) as Map<String, dynamic>;
+
       return SightFilter.fromJson(filtersJson);
     }
+
     return SightFilter();
   }
 

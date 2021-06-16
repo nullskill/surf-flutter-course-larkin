@@ -38,7 +38,7 @@ class Place {
   final double lat;
   final double lng;
   final String name;
-  final List<String> urls;
+  List<String> urls;
   final String placeType;
   final String description;
   double distance = 0.0;

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -26,13 +25,24 @@ import 'package:sized_context/sized_context.dart';
 class SightCard extends CoreMwwmWidget {
   SightCard({
     @required this.sight,
+    this.isPreview = false,
+    this.showRoute,
     Key key,
   }) : super(
-          widgetModelBuilder: (context) => createSightCardWm(context, sight),
+          widgetModelBuilder: (context) => createSightCardWm(
+            context,
+            sight,
+            isPreview: isPreview,
+            showRoute: showRoute,
+          ),
           key: key,
-        );
+        ) {
+    if (isPreview) assert(showRoute != null);
+  }
 
   final Sight sight;
+  final bool isPreview;
+  final void Function() showRoute;
 
   @override
   _SightCardState createState() => _SightCardState();
@@ -63,21 +73,14 @@ class _SightCardState extends WidgetState<SightCardWidgetModel> {
 
   /// Диалог выбора времени
   Future<void> selectTime(BuildContext context) async {
-    TimeOfDay pickedTime;
-
-    if (Platform.isIOS) {
-      pickedTime = await showModalBottomSheet(
-        context: context,
-        builder: (_) {
-          return _CupertinoTimerPicker(selectedTime: selectedTime);
-        },
-      );
-    } else {
-      pickedTime = await showTimePicker(
-        context: context,
-        initialTime: selectedTime,
-      );
-    }
+    final TimeOfDay pickedTime = Platform.isIOS
+        ? await showModalBottomSheet(
+            context: context,
+            builder: (_) {
+              return _CupertinoTimerPicker(selectedTime: selectedTime);
+            },
+          )
+        : await showTimePicker(context: context, initialTime: selectedTime);
 
     if (pickedTime != null && pickedTime != selectedTime) {
       setState(() {
@@ -87,6 +90,7 @@ class _SightCardState extends WidgetState<SightCardWidgetModel> {
   }
 
   @override
+  // ignore: long-method
   Widget build(BuildContext context) {
     return StreamedStateBuilder<SightData>(
       streamedState: wm.sightState,
@@ -94,6 +98,7 @@ class _SightCardState extends WidgetState<SightCardWidgetModel> {
         return AspectRatio(
           aspectRatio: _getAspectRatio(
             context,
+            isPreview: state.isPreview,
             isSightCard: state.isSightCard,
           ),
           child: ClipRRect(
@@ -127,17 +132,20 @@ class _SightCardState extends WidgetState<SightCardWidgetModel> {
                                 duration: const Duration(milliseconds: 250),
                                 firstCurve: Curves.easeIn,
                                 firstChild: _CardIcon(
-                                    iconName: AppIcons.heart,
-                                    onTap: wm.toggleFavoriteSightAction),
+                                  iconName: AppIcons.heart,
+                                  onTap: wm.toggleFavoriteSightAction,
+                                ),
                                 secondCurve: Curves.easeOut,
                                 secondChild: _CardIcon(
-                                    iconName: AppIcons.heartFull,
-                                    onTap: wm.toggleFavoriteSightAction),
+                                  iconName: AppIcons.heartFull,
+                                  onTap: wm.toggleFavoriteSightAction,
+                                ),
                                 crossFadeState: isFavoriteSight
                                     ? CrossFadeState.showSecond
                                     : CrossFadeState.showFirst,
                               );
-                            })
+                            },
+                          )
                         : _CardIcon(
                             iconName: AppIcons.close,
                             onTap: state.isFavoriteCard
@@ -155,6 +163,43 @@ class _SightCardState extends WidgetState<SightCardWidgetModel> {
                                 ? AppIcons.calendar
                                 : AppIcons.share,
                             onTap: () => selectTime(context),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                  state.isPreview
+                      ? Positioned(
+                          bottom: 16.0,
+                          right: 16.0,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              borderRadius: allBorderRadius12,
+                              boxShadow: <BoxShadow>[
+                                BoxShadow(
+                                  offset: const Offset(0.0, 4.0),
+                                  blurRadius: 4.0,
+                                  color: blackColor.withOpacity(0.25),
+                                ),
+                              ],
+                            ),
+                            child: Material(
+                              color: Theme.of(context).buttonColor,
+                              borderRadius: allBorderRadius12,
+                              clipBehavior: Clip.antiAlias,
+                              child: InkWell(
+                                onTap: wm.showRoute,
+                                child: SizedBox(
+                                  height: 40.0,
+                                  width: 40.0,
+                                  child: Center(
+                                    child: SvgPicture.asset(
+                                      AppIcons.go,
+                                      height: 24.0,
+                                      width: 24.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         )
                       : const SizedBox.shrink(),
@@ -192,8 +237,8 @@ class _CardTop extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  LightMode.primaryColor.withOpacity(.3),
-                  secondaryColor.withOpacity(.08),
+                  LightMode.primaryColor.withOpacity(0.3),
+                  secondaryColor.withOpacity(0.08),
                 ],
                 stops: const [0.0, 1.0],
               ),
@@ -224,7 +269,7 @@ class _CardImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Hero(
-      tag: 'img$imgUrl',
+      tag: 'img_$imgUrl',
       child: CachedNetworkImage(
         imageUrl: imgUrl,
         progressIndicatorBuilder: (context, url, downloadProgress) {
@@ -234,9 +279,12 @@ class _CardImage extends StatelessWidget {
                 image: AssetImage(AppIcons.placeholder),
               ),
             ),
-            child: Center(
-              child:
-                  CircularProgressIndicator(value: downloadProgress.progress),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: LinearProgressIndicator(
+                color: Theme.of(context).buttonColor,
+                value: downloadProgress.progress,
+              ),
             ),
           );
         },
@@ -354,8 +402,10 @@ class _CardBottom extends StatelessWidget {
   final SightData sightData;
 
   @override
+  // ignore: long-method
   Widget build(BuildContext context) {
     final openHours = _getOpenHours(sightData);
+
     return Padding(
       padding: const EdgeInsets.only(
         top: 16.0,
@@ -364,32 +414,40 @@ class _CardBottom extends StatelessWidget {
       ),
       child: Align(
         alignment: Alignment.topLeft,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              sightData.sight.name,
-              maxLines: 1,
-              softWrap: false,
-              overflow: TextOverflow.fade,
-              style: textMedium16.copyWith(
-                height: lineHeight1_25,
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
-            const SizedBox(height: 2.0),
-            _getDescriptionText(context, sightData),
-            const SizedBox(height: 2.0),
-            openHours == ''
-                ? const SizedBox.shrink()
-                : Text(
-                    openHours,
-                    style: textRegular14.copyWith(
-                      height: lineHeight1_3,
-                      color: secondaryColor2,
+        child: FractionallySizedBox(
+          widthFactor: sightData.isPreview ? 0.8 : 1,
+          child: Row(
+            children: [
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      sightData.sight.name,
+                      maxLines: 1,
+                      softWrap: false,
+                      overflow: TextOverflow.fade,
+                      style: textMedium16.copyWith(
+                        height: lineHeight1_25,
+                        color: Theme.of(context).primaryColor,
+                      ),
                     ),
-                  ),
-          ],
+                    _getDescriptionText(context, sightData),
+                    const SizedBox(height: 2.0),
+                    openHours == ''
+                        ? const SizedBox.shrink()
+                        : Text(
+                            openHours,
+                            style: textRegular14.copyWith(
+                              height: lineHeight1_3,
+                              color: secondaryColor2,
+                            ),
+                          ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -397,72 +455,73 @@ class _CardBottom extends StatelessWidget {
 }
 
 /// Получить соотношение ширины и высоты карточки
-double _getAspectRatio(BuildContext context, {bool isSightCard}) {
+double _getAspectRatio(
+  BuildContext context, {
+  @required bool isPreview,
+  @required bool isSightCard,
+}) {
+  if (isPreview) return 2;
+
   if (isSightCard) {
     if (context.diagonalInches > 7) {
-      if (context.widthPx > 500) {
-        return 21 / 9;
-      } else {
-        return 2;
-      }
+      return context.widthPx > 500 ? 21 / 9 : 2;
     }
     if (context.diagonalInches > 5) {
-      if (context.heightPx > 700) {
-        return 3 / 2;
-      } else {
-        return 5 / 3;
-      }
+      return context.heightPx > 700 ? 3 / 2 : 5 / 3;
     }
-    return 4 / 3;
   } else {
-    if (context.diagonalInches > 7) {
-      return 5 / 2;
-    }
-    if (context.diagonalInches > 5) {
-      return 16 / 9;
-    }
-    return 4 / 3;
+    if (context.diagonalInches > 7) return 5 / 2;
+    if (context.diagonalInches > 5) return 16 / 9;
   }
+
+  return 4 / 3;
 }
 
+// ignore: avoid-returning-widgets
 /// Получить виджет с описанием
 Widget _getDescriptionText(BuildContext context, SightData sightData) {
+  if (sightData.isPreview) {
+    return const SizedBox.shrink();
+  }
+
   final int maxLines = _getMaxLines(context);
 
   if (sightData.isVisitingCard) {
-    return Text(
-      _getVisitingDate(sightData),
-      style: textRegular14.copyWith(
-        height: lineHeight1_3,
-        color: sightData.isFavoriteCard
-            ? Theme.of(context).buttonColor
-            : secondaryColor2,
+    return Padding(
+      padding: const EdgeInsets.only(top: 2.0),
+      child: Text(
+        _getVisitingDate(sightData),
+        style: textRegular14.copyWith(
+          height: lineHeight1_3,
+          color: sightData.isFavoriteCard
+              ? Theme.of(context).buttonColor
+              : secondaryColor2,
+        ),
       ),
     );
   }
-  return AutoSizeText(
-    sightData.sight.details,
-    minFontSize: 14,
-    maxLines: maxLines,
-    overflow: TextOverflow.ellipsis,
-    style: textRegular14.copyWith(
-      // height: lineHeight1_3, // don't auto size with line height!
-      color: secondaryColor2,
+
+  return Padding(
+    padding: const EdgeInsets.only(top: 2.0),
+    child: AutoSizeText(
+      sightData.sight.details,
+      minFontSize: 14,
+      maxLines: maxLines,
+      overflow: TextOverflow.ellipsis,
+      style: textRegular14.copyWith(
+        // height: lineHeight1_3, // don't auto size with line height!
+        color: secondaryColor2,
+      ),
     ),
   );
 }
 
 /// Получить максимальное число строк описания
 int _getMaxLines(BuildContext context) {
-  if (context.diagonalInches > 7) {
-    return 5;
-  }
-  if (context.diagonalInches > 4) {
-    return 4;
-  }
-  if (context.diagonalInches > 3) {
-    return 3;
-  }
+  if (context.diagonalInches > 7) return 5;
+  if (context.diagonalInches > 4) return 4;
+  if (context.diagonalInches > 3) return 3;
+
   return 2;
 }
 
@@ -471,13 +530,15 @@ String _getVisitingDate(SightData sightData) {
   if (sightData.isFavoriteCard) {
     return '$sightCardPlanned ${DateFormat.yMMMd().format(sightData.plannedDate)}';
   }
+
   return '$sightCardVisited ${DateFormat.yMMMd().format(sightData.visitedDate)}';
 }
 
 /// Получить часы открытия
 String _getOpenHours(SightData sightData) {
-  if (sightData.isVisitingCard) {
+  if (sightData.isVisitingCard || sightData.isPreview) {
     return '$sightDetailsOpenHours ${DateFormat.Hm().format(sightData.openHour)}';
   }
+
   return '';
 }

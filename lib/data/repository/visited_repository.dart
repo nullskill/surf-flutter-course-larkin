@@ -8,15 +8,12 @@ class VisitedRepository {
 
   final AppDatabase db;
 
-  /// Получает список id всех посещенных мест
+  /// Получает список всех посещенных мест
   Future<List<VisitedSight>> getVisited() => db.visitedDao.all();
 
   /// Добавляет в посещенные места
   Future<int> addVisited(Sight sight) =>
-      db.visitedDao.add(VisitedSight.fromSight(
-        sight: sight,
-        visitedDate: DateTime.now(),
-      ));
+      db.visitedDao.add(VisitedSight.fromSight(sight));
 
   /// Удаляет из посещенных мест
   Future<int> removeVisited(Sight sight) => db.visitedDao.remove(sight.id);

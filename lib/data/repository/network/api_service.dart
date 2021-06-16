@@ -15,7 +15,8 @@ class ApiService {
       onRequest: (options, handler) {
         if (loudApi) {
           debugPrint(
-              '>> [${options.method} ${options.path}]: ${options.data ?? ''}');
+            '>> [${options.method} ${options.path}]: ${options.data ?? ''}',
+          );
         }
 
         handler.next(options);
@@ -24,7 +25,8 @@ class ApiService {
         if (loudApi) {
           final req = response.requestOptions;
           debugPrint(
-              '<< ${response.statusCode} [${req.method} ${req.baseUrl}${req.path}]: ${response.data}');
+            '<< ${response.statusCode} [${req.method} ${req.baseUrl}${req.path}]: ${response.data}',
+          );
         }
 
         handler.next(response);
@@ -43,7 +45,6 @@ class ApiService {
     sendTimeout: _timeOut,
     followRedirects: false,
     validateStatus: (status) => status < 300,
-    headers: <String, String>{'Accept': 'application/json'},
     responseType: ResponseType.plain,
   );
 
@@ -54,6 +55,17 @@ class ApiService {
 
   Future<String> post<T>(String path, Map<String, dynamic> data) async {
     final response = await _dio.post<T>(path, data: data);
+    return response.data.toString();
+  }
+
+  Future<String> postFiles<T>(String path, FormData data) async {
+    final response = await _dio.post<T>(path, data: data);
+
+    if (response.headers.map.containsKey('location') &&
+        response.headers.map['location'].isNotEmpty) {
+      return '{"urls":["${response.headers.map['location'].first}"]}';
+    }
+
     return response.data.toString();
   }
 

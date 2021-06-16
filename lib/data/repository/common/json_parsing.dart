@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:path/path.dart' as p;
 import 'package:places/data/model/place.dart';
+import 'package:places/util/consts.dart';
 
 /// Парсит интересные места
 List<Place> parsePlaces(String rawJson) {
@@ -20,4 +22,16 @@ Place parsePlace(String rawJson) {
   final Place place = Place.fromJson(placeJson);
 
   return place;
+}
+
+/// Парсит список URL файлов
+List<String> parseFilesUrls(String rawJson) {
+  final Map<String, dynamic> urlsJson =
+      jsonDecode(rawJson) as Map<String, dynamic>;
+  final List<String> urls = (urlsJson['urls'] as List<dynamic>)
+      .cast<String>()
+      .map((e) => p.join(baseUrl, e))
+      .toList();
+
+  return urls;
 }

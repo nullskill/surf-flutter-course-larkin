@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:places/ui/res/colors.dart';
 import 'package:places/ui/res/text_styles.dart';
+import 'package:places/ui/widgets/link.dart';
 
 /// Виджет для показа сообщения пользователю
 class MessageBox extends StatelessWidget {
@@ -9,12 +10,12 @@ class MessageBox extends StatelessWidget {
     @required this.title,
     @required this.iconName,
     @required this.message,
-    this.link = const <String, String>{},
+    this.link = const <String, void Function()>{},
     Key key,
   }) : super(key: key);
 
   final String title, iconName, message;
-  final Map<String, String> link;
+  final Map<String, void Function()> link;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +51,16 @@ class MessageBox extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
+                link == null || link.isEmpty
+                    ? const SizedBox.shrink()
+                    : Link(
+                        label: link.keys.first,
+                        onTap: () {
+                          link.values.first();
+
+                          Navigator.of(context).pop();
+                        },
+                      ),
               ],
             ),
           ),

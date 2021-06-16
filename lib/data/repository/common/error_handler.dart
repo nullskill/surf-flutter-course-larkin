@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
-Future<String> handleError(
-  Future<String> Function() future, {
+Future<T> handleError<T extends Object>(
+  Future<T> Function() future, {
   String message = 'Error',
 }) {
   try {

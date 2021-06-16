@@ -48,6 +48,7 @@ class VisitedDao extends DatabaseAccessor<AppDatabase> with _$VisitedDaoMixin {
             (tbl) => tbl.sightId.equals(id),
           ))
         .getSingle();
+
     return item != null;
   }
 }

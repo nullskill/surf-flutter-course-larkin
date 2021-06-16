@@ -1,4 +1,3 @@
-import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:places/data/storage/app_storage.dart';
 import 'package:places/ui/app/app.dart';
@@ -12,10 +11,5 @@ Future<void> main() async {
     debugPrint = (message, {wrapWidth}) {};
   }
 
-  runApp(
-    DevicePreview(
-      enabled: !isReleaseMode,
-      builder: (_) => const App(),
-    ),
-  );
+  runApp(const App());
 }

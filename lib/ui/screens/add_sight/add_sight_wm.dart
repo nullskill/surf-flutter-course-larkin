@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart' hide Action;
+import 'package:flutter/material.dart' hide Action, TextEditingAction;
+import 'package:image_picker/image_picker.dart';
 import 'package:mwwm/mwwm.dart';
 import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/domain/category.dart';
@@ -7,7 +8,6 @@ import 'package:places/domain/sight_form.dart';
 import 'package:places/ui/res/strings/strings.dart';
 import 'package:places/ui/screens/select_category_screen.dart';
 import 'package:places/ui/widgets/select_picture_dialog.dart';
-import 'package:places/util/consts.dart';
 import 'package:relation/relation.dart';
 
 /// WM для AddSightScreen
@@ -20,6 +20,12 @@ class AddSightWidgetModel extends WidgetModel {
 
   final PlaceInteractor placeInteractor;
   final NavigatorState navigator;
+
+  /// Выбиратель картинок
+  final imagePicker = ImagePicker();
+
+  /// Список картинок места
+  final images = <String>[];
 
   // Fields
 
@@ -44,7 +50,7 @@ class AddSightWidgetModel extends WidgetModel {
   final addImageAction = Action<BuildContext>();
 
   /// При удалении картинки
-  final removeImageAction = Action<String>();
+  final removeImageAction = Action<int>();
 
   /// При выборе категории
   final selectCategoryAction = Action<BuildContext>();
@@ -57,6 +63,9 @@ class AddSightWidgetModel extends WidgetModel {
 
   /// Перемещает фокус на следующий TextFormField
   final moveFocusAction = Action<BuildContext>();
+
+  /// При тапе на пунтке в диалоге выбора фото
+  final getImageAction = Action<ImageSource>();
 
   // StreamedStates
 
@@ -76,7 +85,7 @@ class AddSightWidgetModel extends WidgetModel {
   final selectedCategoryState = StreamedState<Category>();
 
   /// Список URL картинок места
-  final imgUrlsState = StreamedState<List<String>>(const []);
+  final imagesState = StreamedState<List<String>>(const []);
 
   /// Флаг заполнения всех полей
   final isAllDoneState = StreamedState<bool>(false);
@@ -138,11 +147,12 @@ class AddSightWidgetModel extends WidgetModel {
     }
 
     subscribe<BuildContext>(addImageAction.stream, _addImage);
-    subscribe<String>(removeImageAction.stream, _removeImage);
+    subscribe<int>(removeImageAction.stream, _removeImage);
     subscribe<BuildContext>(selectCategoryAction.stream, _selectCategory);
     subscribe<BuildContext>(moveFocusAction.stream, _moveFocus);
     subscribe<void>(actionButtonAction.stream, (_) => _saveForm());
     subscribe<void>(backButtonAction.stream, (_) => navigator.pop());
+    subscribe<ImageSource>(getImageAction.stream, _getImage);
   }
 
   @override
@@ -231,17 +241,16 @@ class AddSightWidgetModel extends WidgetModel {
 
   /// Добавляет новую картинку (временная реализация)
   void _addImage(BuildContext context) {
-    // TODO: В дальнейшем, после прохождения 16.1 сделать реализацию
     const barrierLabel = 'barrierLabel';
 
-    final Future<void> selectPictureDialog = showGeneralDialog(
+    final Future<String> selectPictureDialog = showGeneralDialog(
       barrierLabel: barrierLabel,
       barrierDismissible: true,
       barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: const Duration(milliseconds: 250),
       context: context,
       pageBuilder: (context, anim1, anim2) {
-        return const SelectPictureDialog();
+        return SelectPictureDialog(getImageAction: getImageAction);
       },
       transitionBuilder: (context, anim1, anim2, child) {
         return SlideTransition(
@@ -254,18 +263,26 @@ class AddSightWidgetModel extends WidgetModel {
       },
     );
 
-    // Теоретически, возможны какие-то ошибки в процессе добавления картинки (в будущем)
-    doFutureHandleError<void>(selectPictureDialog, (_) {
-      imgUrlsState.accept(
-          [...imgUrlsState.value, (imgUrlsState.value.length + 2).toString()]);
+    doFutureHandleError<String>(selectPictureDialog, (file) {
+      if (file != null) {
+        images.insert(0, file);
+        imagesState.accept(images);
+      }
     }, onError: (e) {
       debugPrint('Error while adding new picture: $e');
     });
   }
 
+  /// Получает фото с камеры или картинку из галереи
+  void _getImage(ImageSource imageSource) {
+    doFutureHandleError<PickedFile>(imagePicker.getImage(source: imageSource),
+        (image) => navigator.pop(image?.path));
+  }
+
   /// Удаляет картинку
-  void _removeImage(String imgUrl) {
-    imgUrlsState.accept([...imgUrlsState.value.where((e) => e != imgUrl)]);
+  void _removeImage(int index) {
+    images.removeAt(index);
+    imagesState.accept(images);
   }
 
   /// Открывает выбор категории
@@ -308,7 +325,7 @@ class AddSightWidgetModel extends WidgetModel {
       ..lat = double.tryParse(latitudeEditingAction.value)
       ..lng = double.tryParse(longitudeEditingAction.value)
       ..details = descriptionEditingAction.value
-      ..urls = [tempImgUrl]
+      ..urls = images
       ..type = selectedCategoryState.value.type;
   }
 }

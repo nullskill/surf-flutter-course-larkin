@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart' hide Action;
 import 'package:mwwm/mwwm.dart';
+import 'package:places/data/interactor/location_interactor.dart';
 import 'package:places/data/interactor/place_interactor.dart';
+import 'package:places/data/model/location.dart';
 import 'package:places/domain/sight.dart';
 import 'package:provider/provider.dart';
 import 'package:relation/relation.dart';
@@ -9,10 +11,12 @@ import 'package:relation/relation.dart';
 class SightDetailsWidgetModel extends WidgetModel {
   SightDetailsWidgetModel(
     WidgetModelDependencies baseDependencies, {
+    @required this.locationInteractor,
     @required this.placeInteractor,
     @required this.sight,
   }) : super(baseDependencies);
 
+  final LocationInteractor locationInteractor;
   final PlaceInteractor placeInteractor;
   final Sight sight;
 
@@ -24,6 +28,9 @@ class SightDetailsWidgetModel extends WidgetModel {
   /// Проверяет принадлежность избранному
   final checkIsFavoriteSightAction = Action<void>();
 
+  /// При добавлении места в посещенные
+  final addToVisitedAction = Action<void>();
+
   // StreamedStates
 
   /// Стейт детальных данных интересного места
@@ -32,12 +39,19 @@ class SightDetailsWidgetModel extends WidgetModel {
   /// Возвращает флаг наличия места в избранном
   final isFavoriteSightState = StreamedState<bool>();
 
+  // StreamedStates
+
+  /// Текущая локация
+  final StreamedState<Location> locationState = StreamedState();
+
   @override
   void onLoad() {
     super.onLoad();
 
     _loadSightDetails();
     _checkIsFavoriteSight();
+
+    locationState.accept(locationInteractor.location);
   }
 
   @override
@@ -45,9 +59,14 @@ class SightDetailsWidgetModel extends WidgetModel {
     super.onBind();
 
     subscribe<void>(
-        toggleFavoriteSightAction.stream, (_) => _toggleFavoriteSight());
+      toggleFavoriteSightAction.stream,
+      (_) => _toggleFavoriteSight(),
+    );
     subscribe<void>(
-        checkIsFavoriteSightAction.stream, (_) => _checkIsFavoriteSight());
+      checkIsFavoriteSightAction.stream,
+      (_) => _checkIsFavoriteSight(),
+    );
+    subscribe<void>(addToVisitedAction.stream, (_) => _addToVisited());
   }
 
   /// Загружает актуальные детальные данные
@@ -55,7 +74,9 @@ class SightDetailsWidgetModel extends WidgetModel {
     sightDetailsState.loading();
 
     doFutureHandleError(
-        placeInteractor.getSightDetails(sight.id), sightDetailsState.content);
+      placeInteractor.getSightDetails(sight.id),
+      sightDetailsState.content,
+    );
   }
 
   /// Добавляет/удаляет место в/из избранное
@@ -69,13 +90,21 @@ class SightDetailsWidgetModel extends WidgetModel {
   Future<void> _checkIsFavoriteSight() async {
     await isFavoriteSightState.accept(await placeInteractor.isFavorite(sight));
   }
+
+  /// Добавляет место в посещенные
+  void _addToVisited() {
+    placeInteractor.addToVisited(sight);
+  }
 }
 
 /// Билдер для [SightDetailsWidgetModel]
 SightDetailsWidgetModel createSightDetailsWm(
-        BuildContext context, Sight sight) =>
+  BuildContext context,
+  Sight sight,
+) =>
     SightDetailsWidgetModel(
       context.read<WidgetModelDependencies>(),
+      locationInteractor: context.read<LocationInteractor>(),
       placeInteractor: context.read<PlaceInteractor>(),
       sight: sight,
     );

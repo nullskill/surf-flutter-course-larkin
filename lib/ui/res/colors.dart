@@ -8,7 +8,8 @@ const whiteColor = Colors.white,
     secondaryColor2 = Color(0xFF7C7E92),
     inactiveColor = Color.fromRGBO(124, 126, 146, 0.56),
     backgroundColor = Color(0xFFF5F5F5),
-    placeholderColor = secondaryColor2;
+    placeholderColor = secondaryColor2,
+    accuracyCircleFillColor = Color(0xFF71D675);
 
 /// Класс цветовых констант для светлой темы
 class LightMode {

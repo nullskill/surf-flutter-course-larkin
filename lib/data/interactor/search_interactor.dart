@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:places/data/interactor/filters_interactor.dart';
+import 'package:places/data/interactor/location_interactor.dart';
 import 'package:places/data/model/location.dart';
 import 'package:places/data/model/place.dart';
 import 'package:places/data/model/places_filter_dto.dart';
@@ -19,9 +20,10 @@ class SearchInteractor {
     this._searchRepo,
     this._searchRequestsRepo,
     this._filtersInteractor,
+    this._locationInteractor,
   );
 
-  /// Минимальный и максимальный радиус
+  /// Минимальный и максимальный радиус по умолчанию (в метрах)
   static const double minRadius = 100.0, maxRadius = 5000.0;
 
   /// Выбранные минимальный и максимальный радиус
@@ -30,18 +32,12 @@ class SearchInteractor {
   final SearchRepository _searchRepo;
   final SearchRequestsRepository _searchRequestsRepo;
   final FiltersInteractor _filtersInteractor;
+  final LocationInteractor _locationInteractor;
   final List<Category> _categories = <Category>[...categories];
 
   List<Sight> _sights = [];
   List<Sight> _filteredSights = [];
   List<Sight> _foundSights = [];
-
-  // Временно
-  final Location _location = Location(
-    name: 'Москва, Красная площадь',
-    lat: lat,
-    lng: lng,
-  );
 
   /// Минимальная дистанция
   double get minDistance => selectedMinRadius / kilometer;
@@ -50,7 +46,7 @@ class SearchInteractor {
   double get maxDistance => selectedMaxRadius / kilometer;
 
   /// Дефолтная локация (временно)
-  Location get location => _location;
+  Location get location => _locationInteractor.location;
 
   /// Категории мест
   List<Category> get getCategories => _categories;
@@ -76,7 +72,7 @@ class SearchInteractor {
   Future<void> initSelectedFilters() async {
     final filters = _filtersInteractor.filters;
 
-    if (filters != null) {
+    if (filters != null && filters.types != null) {
       selectedMinRadius = filters.minRadius;
       selectedMaxRadius = filters.maxRadius;
 
@@ -125,6 +121,12 @@ class SearchInteractor {
 
   /// Сортирует модели [Sight] по удаленности и возвращает список [Sight]
   List<T> getSortedSights<T extends Sight>(List<T> sights) {
+    // Если локацию определить не удалось, то сортируем по имени
+    if (location == null) {
+      return sights..sort((a, b) => a.name.compareTo(b.name));
+    }
+
+    // Если локация определена, то сортируем по удаленности
     return sights.map(_setSightDistance).where(_isSightNear).toList()
       ..sort((a, b) => a.distance.compareTo(b.distance));
   }
@@ -155,7 +157,9 @@ class SearchInteractor {
     final allRequests = await _searchRequestsRepo.allRequests();
 
     return allRequests.sublist(
-        0, min(maxSearchHistoryLength, allRequests.length));
+      0,
+      min(maxSearchHistoryLength, allRequests.length),
+    );
   }
 
   /// Добавляет элемент истории

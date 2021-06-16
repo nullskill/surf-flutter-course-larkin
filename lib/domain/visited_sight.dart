@@ -1,15 +1,14 @@
-import 'package:flutter/material.dart';
 import 'package:places/domain/base/visiting_sight.dart';
 import 'package:places/domain/sight.dart';
 
 /// Класс посещенного интересного места
 // ignore: must_be_immutable
 class VisitedSight extends Sight implements VisitingSight {
-  VisitedSight.fromSight({
-    @required Sight sight,
-    @required this.visitedDate,
-    this.openHour,
-  }) : super(
+  VisitedSight.fromSight(Sight sight)
+      : visitedDate = DateTime.now(),
+        openHour = DateTime(1970, 1, 1, 9),
+        super(
+          id: sight.id,
           name: sight.name,
           lat: sight.lat,
           lng: sight.lng,
@@ -19,8 +18,8 @@ class VisitedSight extends Sight implements VisitingSight {
         );
 
   VisitedSight.fromJson(Map<String, dynamic> json)
-      : visitedDate = json['visitedDate'] as DateTime,
-        openHour = json['openHour'] as DateTime,
+      : visitedDate = DateTime.tryParse(json['visitedDate'].toString()),
+        openHour = DateTime.tryParse(json['openHour'].toString()),
         super.fromJson(json);
 
   DateTime visitedDate;

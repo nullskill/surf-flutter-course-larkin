@@ -28,20 +28,27 @@ class PlaceInteractor {
   final StreamController<List<FavoriteSight>> _favoritesController =
       StreamController.broadcast();
 
+  final StreamController<List<VisitedSight>> _visitedController =
+      StreamController.broadcast();
+
   Stream<List<FavoriteSight>> get favoritesStream =>
       _favoritesController.stream;
+
+  Stream<List<VisitedSight>> get visitedStream => _visitedController.stream;
 
   /// Отсортированный список мест
   List<Sight> get sights {
     if (_searchInteractor.filteredNumber > 0) {
       return _searchInteractor.filteredSights;
     }
+
     return _sights;
   }
 
   /// Закрывает все, что необходимо закрыть
   void dispose() {
     _favoritesController.close();
+    _visitedController.close();
   }
 
   // Sights
@@ -105,8 +112,10 @@ class PlaceInteractor {
   Future<void> addToVisited(Sight sight) => _visitedRepo.addVisited(sight);
 
   /// Удаление места из посещенных
-  Future<void> removeFromVisited(Sight sight) =>
-      _visitedRepo.removeVisited(sight);
+  Future<void> removeFromVisited(Sight sight) async {
+    await _visitedRepo.removeVisited(sight);
+    _visitedController.add(await getVisited());
+  }
 
   // Sorting
 

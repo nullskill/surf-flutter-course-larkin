@@ -17,6 +17,9 @@ extension AppColorScheme on ColorScheme {
   Color get appPrimaryGradientColor =>
       getColorByBrightness(LightMode.yellowColor, DarkMode.yellowColor);
 
+  Color get appMapButtonColor =>
+      getColorByBrightness(whiteColor, secondaryColor);
+
   /// Метод возвращает либо lightThemeColor, либо darkThemeColor,
   /// в зависимости от свойства brightness
   Color getColorByBrightness(Color lightThemeColor, Color darkThemeColor) {

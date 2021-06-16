@@ -4,7 +4,7 @@ import 'package:moor/moor.dart';
 class Favorites extends Table {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get sightId => integer().customConstraint('type UNIQUE')();
-  // TODO: Make sorting by user order
+  // TODO(me): Make sorting by user order
   IntColumn get orderId => integer().customConstraint('type UNIQUE')();
   TextColumn get sight => text()();
 }
