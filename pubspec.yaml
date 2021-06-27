@@ -73,10 +73,17 @@ dev_dependencies:
 
   # Provides a concrete way of generating files
   build_runner: ^2.0.3
+  # A command-line tool for updating Flutter app's launcher icon
+  flutter_launcher_icons: ^0.9.0
   # Generates table and dataclasses together with the moor package
   moor_generator: ^4.3.0
   # linter rules
   surf_lint_rules: any
+
+flutter_icons:
+  image_path: "res/icons/app/dev.png"
+  android: true
+  ios: false
 
 flutter:
   uses-material-design: true
