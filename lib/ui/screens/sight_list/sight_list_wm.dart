@@ -6,6 +6,7 @@ import 'package:places/data/interactor/place_interactor.dart';
 import 'package:places/data/interactor/search_interactor.dart';
 import 'package:places/data/repository/location/exceptions.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/env/env.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/screens/add_sight/add_sight_route.dart';
 import 'package:places/ui/screens/filters/filters_screen_route.dart';
@@ -40,6 +41,9 @@ class SightListWidgetModel extends WidgetModel {
 
   // StreamedStates
 
+  /// Надпись дебаг-режима
+  final StreamedState<String> debugModeState = StreamedState('');
+
   /// Список найденных мест
   final EntityStreamedState<List<Sight>> sightsState =
       EntityStreamedState(EntityState.content(const []));
@@ -56,6 +60,10 @@ class SightListWidgetModel extends WidgetModel {
   @override
   void onBind() {
     super.onBind();
+
+    if (Environment.instance.buildType == BuildType.dev) {
+      debugModeState.accept(Environment.instance.buildConfig.envString);
+    }
 
     subscribe<void>(searchBarTapAction.stream, (_) => _showSearchScreen());
     subscribe<void>(

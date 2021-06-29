@@ -56,9 +56,10 @@ class _RotatedLogo extends State<RotatedLogo>
   @override
   Widget build(BuildContext context) {
     return RotationTransition(
-      turns: animation,
-      // Tween<double>(begin: 1.0, end: 0.0)
-      //     .animate(CurvedAnimation(parent: controller, curve: Curves.easeIn)),
+      turns:
+          // animation,
+          Tween<double>(begin: 1.0, end: 0.0).animate(
+              CurvedAnimation(parent: controller, curve: Curves.easeInOut)),
       child: Center(
         child: SvgPicture.asset(
           AppIcons.logo,

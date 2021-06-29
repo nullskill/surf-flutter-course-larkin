@@ -86,8 +86,7 @@ class _SightListScreenState extends WidgetState<SightListWidgetModel> {
               flexibleSpace: _Header(
                 maxHeight: maxHeight,
                 minHeight: minHeight,
-                onTap: wm.searchBarTapAction,
-                onFilter: wm.searchBarFilterTapAction,
+                wm: wm,
               ),
               expandedHeight: maxHeight - context.mq.padding.top,
             ),
@@ -116,15 +115,13 @@ class _Header extends StatelessWidget {
   const _Header({
     this.maxHeight,
     this.minHeight,
-    this.onFilter,
-    this.onTap,
+    this.wm,
     Key key,
   }) : super(key: key);
 
   final double maxHeight;
   final double minHeight;
-  final void Function() onTap;
-  final void Function() onFilter;
+  final SightListWidgetModel wm;
 
   @override
   Widget build(BuildContext context) {
@@ -147,6 +144,10 @@ class _Header extends StatelessWidget {
                 height:
                     Tween<double>(begin: context.isLandscape ? 16 : 0, end: 24)
                         .evaluate(animation),
+                child: StreamedStateBuilder<String>(
+                  streamedState: wm.debugModeState,
+                  builder: (_, envString) => Text(envString),
+                ),
               ),
               Align(
                 alignment: AlignmentTween(
@@ -187,8 +188,8 @@ class _Header extends StatelessWidget {
                 height: Tween<double>(begin: 0, end: 52).evaluate(animation),
                 child: SearchBar(
                   readOnly: true,
-                  onTap: onTap,
-                  onFilter: onFilter,
+                  onTap: wm.searchBarTapAction,
+                  onFilter: wm.searchBarFilterTapAction,
                 ),
               ),
             ],

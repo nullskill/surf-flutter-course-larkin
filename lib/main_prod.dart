@@ -10,13 +10,15 @@ Future<void> main() async {
 
   defineEnvironment(_setUpConfig());
 
+  debugPrint = (message, {wrapWidth}) {};
+
   runApp(const App());
 }
 
 void defineEnvironment(BuildConfig buildConfig) {
-  Environment.init(BuildType.dev, buildConfig);
+  Environment.init(BuildType.prod, buildConfig);
 }
 
 BuildConfig _setUpConfig() {
-  return BuildConfig(envString: 'Debug-mode');
+  return BuildConfig(envString: '');
 }
