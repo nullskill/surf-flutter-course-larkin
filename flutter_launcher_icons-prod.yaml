@@ -1,4 +1,4 @@
 flutter_icons:
   image_path: "res/icons/app/prod.png"
   android: true
-  ios: false
+  ios: true
