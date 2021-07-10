@@ -23,6 +23,15 @@
 This is a training project for the Surf practical Flutter development course. It is built using clean architecture approach with the help of MVVM pattern in reactive state management style.
 
 
+### Built With
+
+* [MWWM](https://pub.dev/packages/mwwm)
+* [Relation](https://pub.dev/packages/relation)
+* [RxDart](https://pub.dev/packages/rxdart)
+* [SQLite](https://pub.dev/packages/sqlite3_flutter_libs)
+* [Moor](https://pub.dev/packages/moor)
+
+
 
 <!-- CURRICULUM -->
 ## Curriculum covered by this project
