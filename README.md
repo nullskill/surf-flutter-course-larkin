@@ -8,12 +8,19 @@
   <h3 align="center">Places</h3>
 
   <p align="center">
-    A training project for the Surf practical Flutter development course
+    The Surf Flutter development course training project
     <br />
     <a href="https://education.surf.ru/"><strong>Course description »</strong></a>
     <br />
   </p>
 </p>
+
+
+
+<!-- ABOUT THE PROJECT -->
+## About The Project
+
+This is a training project for the Surf practical Flutter development course. It is built using clean architecture approach with the help of MVVM pattern in reactive state management style.
 
 
 
