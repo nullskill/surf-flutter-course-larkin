@@ -14,3 +14,85 @@
     <br />
   </p>
 </p>
+
+
+
+<!-- CURRICULUM -->
+## Curriculum covered by this project
+
+<ol>
+    <li>First steps
+      <ul>
+        <li>Course overview</li>
+        <li>Setting up the environment</li>
+      </ul>
+    </li>
+    <li>Dart language
+      <ul>
+        <li>Dart intro</li>
+        <li>Variables in Flutter</li>
+        <li>Essential data types</li>
+        <li>Conditional statements and loops</li>
+        <li>Functions</li>
+        <li>Classes and interfaces</li>
+        <li>Mixins</li>
+        <li>Generics</li>
+        <li>Asynchronous operations</li>
+      </ul>
+    </li>
+    <li>Flutter. The basics of framework and layout
+      <ul>
+        <li>Flutter basics</li>
+        <li>How to make up a layout</li>
+        <li>Handling UI events</li>
+        <li>Lists</li>
+        <li>Adaptation and stylization</li>
+      </ul>
+    </li>
+    <li>Navigation
+      <ul>
+        <li>Diving deep in Route and Navigator</li>
+        <li>Passing parameters</li>
+        <li>Dialogs and bottomsheets</li>
+        <li>Named routes</li>
+      </ul>
+    </li>
+    <li>Networking and asynchronous events
+      <ul>
+        <li>Http, Dio</li>
+        <li>Asynchronous events</li>
+        <li>Data streams</li>
+        <li>Error handling</li>
+      </ul>
+    </li>
+    <li>Architectural patterns
+      <ul>
+        <li>DI</li>
+        <li>Intro to Vanilla, InheritedWidget, Provider architecture</li>
+        <li>MobX</li>
+        <li>Bloc</li>
+        <li>Redux</li>
+        <li>MWWM</li>
+      </ul>
+    </li>
+    <li>Animations
+      <ul>
+        <li>The basics, explicit animations</li>
+        <li>Implicit animations</li>
+        <li>Hero animations, Route animation</li>
+      </ul>
+    </li>
+    <li>Interaction with the platform
+      <ul>
+        <li>Data storage</li>
+        <li>Writing platform plugins</li>
+      </ul>
+    </li>
+    <li>Preparing for release
+      <ul>
+        <li>App signing</li>
+        <li>Features of the Android project</li>
+        <li>Features of the iOS project</li>
+      </ul>
+    </li>
+  </ol>
