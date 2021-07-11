@@ -27,6 +27,10 @@
 ## About The Project
 
 This is a training project for the Surf practical Flutter development course. It is built using clean architecture approach with the help of MVVM pattern in reactive state management style.
+
+
+### Features
+
 Places is for the sight-seeing. You can browse a list of local places to visit, read descriptions and see the photos. You can search for places of interest in the nearby location. Find restaurants, museums, monuments and other. There is a search history on the search screen. Filtering by category and distance is also available. You are able to add your own places of interest with description, coordinates and photos either taken from the camera or album. By selecting the place of choise on the map you can see the card of it, open details or get directions. Every place can be add to or removed from the favorites list. After directions are get on the map the place is included in visited list. Light and dark mode themes can be switched on the settings screen.
 
 
