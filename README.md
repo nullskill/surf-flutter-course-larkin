@@ -1,3 +1,9 @@
+<!-- PROJECT SHIELDS -->
+[![Surf course](https://img.shields.io/badge/Surf-course-blue.svg)](https://education.surf.ru/)
+[![Completeness](https://img.shields.io/badge/completeness-100%-blue.svg)]
+[![Flutter Platform](https://img.shields.io/badge/flutter-android%20%7C%20ios-blue)]
+
+
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
