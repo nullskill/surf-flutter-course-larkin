@@ -35,8 +35,8 @@ Places is for the sight-seeing. You can browse a list of local places to visit, 
 * [MWWM](https://pub.dev/packages/mwwm) :muscle:
 * [Relation](https://pub.dev/packages/relation) :muscle:
 * [RxDart](https://pub.dev/packages/rxdart) :muscle:
-* [SQLite](https://pub.dev/packages/sqlite3_flutter_libs)
-* [Moor](https://pub.dev/packages/moor)
+* [SQLite](https://pub.dev/packages/sqlite3_flutter_libs) :fire:
+* [Moor](https://pub.dev/packages/moor) :fire:
 
 
 
