@@ -32,8 +32,7 @@ class SightListScreen extends CoreMwwmWidget {
 class _SightListScreenState extends WidgetState<SightListWidgetModel> {
   final ScrollController controller = ScrollController();
   // expanded height = 196 + status bar height
-  double get maxHeight =>
-      context.isLandscape ? 140 : 196 + context.mq.padding.top;
+  double get maxHeight => context.isLandscape ? 140 : 196 + context.mq.padding.top;
 
   // global constant kToolbarHeight from material + status bar height
   double get minHeight => kToolbarHeight + context.mq.padding.top;
@@ -52,8 +51,7 @@ class _SightListScreenState extends WidgetState<SightListWidgetModel> {
     final scrollDistance = maxHeight - minHeight;
 
     if (controller.offset > 0 && controller.offset < scrollDistance) {
-      final double snapOffset =
-          controller.offset / scrollDistance > 0.5 ? scrollDistance : 0;
+      final double snapOffset = controller.offset / scrollDistance > 0.5 ? scrollDistance : 0;
 
       Future.microtask(
         () => controller.animateTo(
@@ -129,9 +127,7 @@ class _Header extends StatelessWidget {
       builder: (context, constraints) {
         final expandRatio = _calculateExpandRatio(constraints);
         final animation = AlwaysStoppedAnimation(expandRatio);
-        final listTitle = expandRatio < 1.0
-            ? sightListAppBarTitle
-            : sightListAppBarWrappedTitle;
+        final listTitle = expandRatio < 1.0 ? sightListAppBarTitle : sightListAppBarWrappedTitle;
 
         return Container(
           color: Theme.of(context).canvasColor,
@@ -141,12 +137,13 @@ class _Header extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(
-                height:
-                    Tween<double>(begin: context.isLandscape ? 16 : 0, end: 24)
-                        .evaluate(animation),
+                height: Tween<double>(begin: context.isLandscape ? 16 : 0, end: 24).evaluate(animation),
                 child: StreamedStateBuilder<String>(
                   streamedState: wm.debugModeState,
-                  builder: (_, envString) => Text(envString),
+                  builder: (_, envString) => Text(
+                    envString,
+                    style: textLight.copyWith(color: Theme.of(context).errorColor, letterSpacing: 2.0),
+                  ),
                 ),
               ),
               Align(
@@ -155,8 +152,7 @@ class _Header extends StatelessWidget {
                   end: Alignment.bottomLeft,
                 ).evaluate(animation),
                 child: Padding(
-                  padding:
-                      EdgeInsets.only(left: context.isLandscape ? 34.0 : 16.0),
+                  padding: EdgeInsets.only(left: context.isLandscape ? 34.0 : 16.0),
                   child: context.isLandscape
                       ? Text(
                           sightListAppBarTitle,
@@ -200,8 +196,7 @@ class _Header extends StatelessWidget {
   }
 
   double _calculateExpandRatio(BoxConstraints constraints) {
-    var expandRatio =
-        (constraints.maxHeight - minHeight) / (maxHeight - minHeight);
+    var expandRatio = (constraints.maxHeight - minHeight) / (maxHeight - minHeight);
     if (expandRatio > 1.0) expandRatio = 1.0;
     if (expandRatio < 0.0) expandRatio = 0.0;
 
@@ -209,8 +204,7 @@ class _Header extends StatelessWidget {
   }
 
   FontWeight _getFontWeight(Animation<double> animation) {
-    final listTitleWeight =
-        Tween<double>(begin: 1.0, end: 3.0).evaluate(animation).toInt();
+    final listTitleWeight = Tween<double>(begin: 1.0, end: 3.0).evaluate(animation).toInt();
 
     switch (listTitleWeight) {
       case 1:
@@ -247,9 +241,7 @@ class _CardColumn extends StatelessWidget {
             _restPadding,
             _restPadding,
           ),
-          sliver: context.isLandscape
-              ? _SliverGrid(sights: sights)
-              : _SliverList(sights: sights),
+          sliver: context.isLandscape ? _SliverGrid(sights: sights) : _SliverList(sights: sights),
         );
       },
       loadingChild: SliverFillRemaining(
