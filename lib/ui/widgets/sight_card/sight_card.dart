@@ -63,8 +63,7 @@ class _SightCardState extends WidgetState<SightCardWidgetModel> {
       await Navigator.push<SightDetailsScreen>(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              SafeArea(child: SightDetailsScreen(sight: sight)),
+          builder: (context) => SafeArea(child: SightDetailsScreen(sight: sight)),
         ),
       );
     }
@@ -140,17 +139,13 @@ class _SightCardState extends WidgetState<SightCardWidgetModel> {
                                   iconName: AppIcons.heartFull,
                                   onTap: wm.toggleFavoriteSightAction,
                                 ),
-                                crossFadeState: isFavoriteSight
-                                    ? CrossFadeState.showSecond
-                                    : CrossFadeState.showFirst,
+                                crossFadeState: isFavoriteSight ? CrossFadeState.showSecond : CrossFadeState.showFirst,
                               );
                             },
                           )
                         : _CardIcon(
                             iconName: AppIcons.close,
-                            onTap: state.isFavoriteCard
-                                ? wm.removeFavoriteSightAction
-                                : wm.removeVisitedSightAction,
+                            onTap: state.isFavoriteCard ? wm.removeFavoriteSightAction : wm.removeVisitedSightAction,
                           ),
                   ),
                   //Показываем различные иконки, в зависимости от типа карточки
@@ -159,9 +154,7 @@ class _SightCardState extends WidgetState<SightCardWidgetModel> {
                           top: 16,
                           right: 56,
                           child: _CardIcon(
-                            iconName: state.isFavoriteCard
-                                ? AppIcons.calendar
-                                : AppIcons.share,
+                            iconName: state.isFavoriteCard ? AppIcons.calendar : AppIcons.share,
                             onTap: () => selectTime(context),
                           ),
                         )
@@ -460,6 +453,9 @@ double _getAspectRatio(
   @required bool isPreview,
   @required bool isSightCard,
 }) {
+  debugPrint('diagonalInches: ${context.diagonalInches}');
+  debugPrint('widthPx: ${context.widthPx}');
+  debugPrint('heightPx: ${context.heightPx}');
   if (isPreview) return 2;
 
   if (isSightCard) {
@@ -467,6 +463,7 @@ double _getAspectRatio(
       return context.widthPx > 500 ? 21 / 9 : 2;
     }
     if (context.diagonalInches > 5) {
+      if (context.heightPx > 800) return 5 / 3;
       return context.heightPx > 700 ? 3 / 2 : 5 / 3;
     }
   } else {
@@ -493,9 +490,7 @@ Widget _getDescriptionText(BuildContext context, SightData sightData) {
         _getVisitingDate(sightData),
         style: textRegular14.copyWith(
           height: lineHeight1_3,
-          color: sightData.isFavoriteCard
-              ? Theme.of(context).buttonColor
-              : secondaryColor2,
+          color: sightData.isFavoriteCard ? Theme.of(context).buttonColor : secondaryColor2,
         ),
       ),
     );
