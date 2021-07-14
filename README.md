@@ -45,7 +45,7 @@ Places is for the sight-seeing. You can browse a list of local places to visit, 
 
 
 <!-- CURRICULUM -->
-## Curriculum covered by this project
+## Curriculum
 
 <ol>
     <li>First steps
