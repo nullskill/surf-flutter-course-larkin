@@ -78,7 +78,7 @@ dev_dependencies:
   # Generates table and dataclasses together with the moor package
   moor_generator: ^4.3.0
   # linter rules
-  surf_lint_rules: any
+  flutter_lints: ^1.0.4
 
 flutter_icons:
   image_path: "res/icons/app/dev.png"
