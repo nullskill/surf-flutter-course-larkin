@@ -58,6 +58,11 @@ class AppIcons {
   static const String clear = '$_otherPath/clear.svg';
   static const String close = '$_otherPath/close.svg';
   static const String darkPlacemark = '$_otherPath/dark_placemark.png';
+  static const String darkPlacemarkRestaurant = '$_otherPath/dark_placemark_restaurant.png';
+  static const String darkPlacemarkCafe = '$_otherPath/dark_placemark_cafe.png';
+  static const String darkPlacemarkPark = '$_otherPath/dark_placemark_park.png';
+  static const String darkPlacemarkHotel = '$_otherPath/dark_placemark_hotel.png';
+  static const String darkPlacemarkMuseum = '$_otherPath/dark_placemark_museum.png';
   static const String delete = '$_otherPath/delete.svg';
   static const String file = '$_otherPath/file.svg';
   static const String filter = '$_otherPath/filter.svg';
@@ -65,6 +70,11 @@ class AppIcons {
   static const String go = '$_otherPath/go.svg';
   static const String info = '$_otherPath/info.svg';
   static const String lightPlacemark = '$_otherPath/light_placemark.png';
+  static const String lightPlacemarkRestaurant = '$_otherPath/light_placemark_restaurant.png';
+  static const String lightPlacemarkCafe = '$_otherPath/light_placemark_cafe.png';
+  static const String lightPlacemarkPark = '$_otherPath/light_placemark_park.png';
+  static const String lightPlacemarkHotel = '$_otherPath/light_placemark_hotel.png';
+  static const String lightPlacemarkMuseum = '$_otherPath/light_placemark_museum.png';
   static const String photo = '$_otherPath/photo.svg';
   static const String placeholder = '$_otherPath/placeholder.png';
   static const String plus = '$_otherPath/plus.svg';
