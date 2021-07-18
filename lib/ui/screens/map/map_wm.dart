@@ -8,6 +8,7 @@ import 'package:places/data/interactor/settings_interactor.dart';
 import 'package:places/data/model/location.dart';
 import 'package:places/data/repository/location/exceptions.dart';
 import 'package:places/domain/sight.dart';
+import 'package:places/domain/sight_type.dart';
 import 'package:places/ui/res/app_routes.dart';
 import 'package:places/ui/res/assets.dart';
 import 'package:places/ui/res/colors.dart';
@@ -180,16 +181,46 @@ class MapWidgetModel extends WidgetModel {
     _placemarks.clear();
 
     for (final sight in placeInteractor.sights) {
+      String iconName;
+      switch (sight.type) {
+        case SightType.restaurant:
+          iconName = settingsInteractor.isDarkTheme
+              ? AppIcons.lightPlacemarkRestaurant
+              : AppIcons.darkPlacemarkRestaurant;
+          break;
+        case SightType.cafe:
+          iconName = settingsInteractor.isDarkTheme
+              ? AppIcons.lightPlacemarkCafe
+              : AppIcons.darkPlacemarkCafe;
+          break;
+        case SightType.park:
+          iconName = settingsInteractor.isDarkTheme
+              ? AppIcons.lightPlacemarkPark
+              : AppIcons.darkPlacemarkPark;
+          break;
+        case SightType.hotel:
+          iconName = settingsInteractor.isDarkTheme
+              ? AppIcons.lightPlacemarkHotel
+              : AppIcons.darkPlacemarkHotel;
+          break;
+        case SightType.museum:
+          iconName = settingsInteractor.isDarkTheme
+              ? AppIcons.lightPlacemarkMuseum
+              : AppIcons.darkPlacemarkMuseum;
+          break;
+        default:
+          iconName = settingsInteractor.isDarkTheme
+              ? AppIcons.lightPlacemark
+              : AppIcons.darkPlacemark;
+      }
       final placemark = Placemark(
         point: Point(latitude: sight.lat, longitude: sight.lng),
         style: PlacemarkStyle(
-          scale: 3.0,
+          scale: 0.7,
           opacity: 1.0,
           iconName: selectedSightState.value == sight
               ? AppIcons.selectedPlacemark
-              : settingsInteractor.isDarkTheme
-                  ? AppIcons.lightPlacemark
-                  : AppIcons.darkPlacemark,
+              : iconName,
         ),
         onTap: (_, __) => _selectSight(sight),
       );

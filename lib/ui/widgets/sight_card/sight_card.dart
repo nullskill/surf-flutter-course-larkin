@@ -453,9 +453,6 @@ double _getAspectRatio(
   @required bool isPreview,
   @required bool isSightCard,
 }) {
-  debugPrint('diagonalInches: ${context.diagonalInches}');
-  debugPrint('widthPx: ${context.widthPx}');
-  debugPrint('heightPx: ${context.heightPx}');
   if (isPreview) return 2;
 
   if (isSightCard) {
