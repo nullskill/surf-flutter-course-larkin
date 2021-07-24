@@ -63,7 +63,8 @@ class _SightCardState extends WidgetState<SightCardWidgetModel> {
       await Navigator.push<SightDetailsScreen>(
         context,
         MaterialPageRoute(
-          builder: (context) => SafeArea(child: SightDetailsScreen(sight: sight)),
+          builder: (context) =>
+              SafeArea(child: SightDetailsScreen(sight: sight)),
         ),
       );
     }
@@ -139,13 +140,17 @@ class _SightCardState extends WidgetState<SightCardWidgetModel> {
                                   iconName: AppIcons.heartFull,
                                   onTap: wm.toggleFavoriteSightAction,
                                 ),
-                                crossFadeState: isFavoriteSight ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                                crossFadeState: isFavoriteSight
+                                    ? CrossFadeState.showSecond
+                                    : CrossFadeState.showFirst,
                               );
                             },
                           )
                         : _CardIcon(
                             iconName: AppIcons.close,
-                            onTap: state.isFavoriteCard ? wm.removeFavoriteSightAction : wm.removeVisitedSightAction,
+                            onTap: state.isFavoriteCard
+                                ? wm.removeFavoriteSightAction
+                                : wm.removeVisitedSightAction,
                           ),
                   ),
                   //Показываем различные иконки, в зависимости от типа карточки
@@ -154,7 +159,9 @@ class _SightCardState extends WidgetState<SightCardWidgetModel> {
                           top: 16,
                           right: 56,
                           child: _CardIcon(
-                            iconName: state.isFavoriteCard ? AppIcons.calendar : AppIcons.share,
+                            iconName: state.isFavoriteCard
+                                ? AppIcons.calendar
+                                : AppIcons.share,
                             onTap: () => selectTime(context),
                           ),
                         )
@@ -425,6 +432,7 @@ class _CardBottom extends StatelessWidget {
                         color: Theme.of(context).primaryColor,
                       ),
                     ),
+                    const SizedBox(height: 4.0),
                     _getDescriptionText(context, sightData),
                     const SizedBox(height: 2.0),
                     openHours == ''
@@ -487,7 +495,9 @@ Widget _getDescriptionText(BuildContext context, SightData sightData) {
         _getVisitingDate(sightData),
         style: textRegular14.copyWith(
           height: lineHeight1_3,
-          color: sightData.isFavoriteCard ? Theme.of(context).buttonColor : secondaryColor2,
+          color: sightData.isFavoriteCard
+              ? Theme.of(context).buttonColor
+              : secondaryColor2,
         ),
       ),
     );
