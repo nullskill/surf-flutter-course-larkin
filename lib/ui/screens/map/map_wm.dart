@@ -164,6 +164,8 @@ class MapWidgetModel extends WidgetModel {
     selectedSightState.accept(sight..openHour = DateTime(1970, 1, 1, 9));
 
     _refreshPlacemarks();
+
+    _mapCtrl.move(point: Point(latitude: sight.lat, longitude: sight.lng));
   }
 
   /// Снимает выделение выбранного места на карте
