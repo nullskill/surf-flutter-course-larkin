@@ -30,10 +30,10 @@ This is a training project for the Surf practical Flutter development course. It
 
 ### Screenshots
 
-<br />
-<img src="https://github.com/nullskill/surf-flutter-course-larkin/blob/master/screenshots/splash_and_onboarding.gif" alt="Splash and Onboarding screens" width="220" height="439">
-<img src="https://github.com/nullskill/surf-flutter-course-larkin/blob/master/screenshots/dark_listview.gif" alt="Dark theme Sight list screen" width="220" height="439">
-<br />
+<div>
+  <img src="https://github.com/nullskill/surf-flutter-course-larkin/blob/master/screenshots/splash_and_onboarding.gif" alt="Splash and Onboarding screens" width="220" height="439">
+  <img src="https://github.com/nullskill/surf-flutter-course-larkin/blob/master/screenshots/dark_listview.gif" alt="Dark theme Sight list screen" width="220" height="439">
+</div>
 
 ### Features
 
