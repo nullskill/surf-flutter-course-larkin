@@ -28,6 +28,12 @@
 
 This is a training project for the Surf practical Flutter development course. It is built using clean architecture approach with the help of MVVM pattern in reactive state management style.
 
+### Screenshots
+
+<br />
+<img src="https://github.com/nullskill/surf-flutter-course-larkin/blob/master/screenshots/splash_and_onboarding.gif" alt="Splash and Onboarding screens">
+<img src="https://github.com/nullskill/surf-flutter-course-larkin/blob/master/screenshots/dark_listview.gif" alt="Dark theme Sight list screen">
+<br />
 
 ### Features
 
