@@ -26,7 +26,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This is a training project for the Surf practical Flutter development course. It is built using clean architecture approach with the help of MVVM pattern in reactive state management style.
+This is a training project for the Surf practical Flutter development course. It is built using clean architecture approach with the help of MVVM pattern in reactive state management style. The app utilizes CRUD as well as Rest API operations.
 
 ### Screenshots
 
