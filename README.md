@@ -28,17 +28,25 @@
 
 This is a training project for the Surf practical Flutter development course. It is built using clean architecture approach with the help of MVVM pattern in reactive state management style. The app utilizes CRUD as well as Rest API operations.
 
-### Screenshots
+### Demo
 
+#### Splash, onboarding and sight list screens (dark theme)
 <div>
   <img src="https://github.com/nullskill/surf-flutter-course-larkin/blob/master/screenshots/splash_and_onboarding.gif" alt="Splash and Onboarding screens" width="220" height="439">
   <img src="https://github.com/nullskill/surf-flutter-course-larkin/blob/master/screenshots/dark_listview.gif" alt="Dark theme Sight list screen" width="220" height="439">
 </div>
-<div>
-  <img src="https://github.com/nullskill/surf-flutter-course-larkin/blob/master/screenshots/favorites.gif" alt="Favorites screen" width="220" height="439">
-  <img src="https://github.com/nullskill/surf-flutter-course-larkin/blob/master/screenshots/search.gif" alt="Search screen" width="220" height="439">
-  <img src="https://github.com/nullskill/surf-flutter-course-larkin/blob/master/screenshots/filter.gif" alt="Filter screen" width="220" height="439">
-</div>
+
+<br />
+<details>
+  <summary>More demo</summary>
+  
+  #### Favorites, search and filter screens
+  <div>
+    <img src="https://github.com/nullskill/surf-flutter-course-larkin/blob/master/screenshots/favorites.gif" alt="Favorites screen" width="220" height="439">
+    <img src="https://github.com/nullskill/surf-flutter-course-larkin/blob/master/screenshots/search.gif" alt="Search screen" width="220" height="439">
+    <img src="https://github.com/nullskill/surf-flutter-course-larkin/blob/master/screenshots/filter.gif" alt="Filter screen" width="220" height="439">
+  </div>
+</details>
 
 ### Features
 
