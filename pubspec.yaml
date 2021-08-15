@@ -43,7 +43,7 @@ dependencies:
   # Support for inside scrollview + dragging down to close (showModalBottomSheet cannot)
   modal_bottom_sheet: ^2.0.0
   # A reactive persistence library for Flutter and Dart, built on top of sqlite
-  moor: ^4.3.0
+  moor: 4.3.2
   # MVVM-inspired framework with respect for Clean Architecture
   mwwm: ^1.1.0
   # A string-based path manipulation library
