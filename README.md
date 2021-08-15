@@ -47,6 +47,15 @@ This is a training project for the Surf practical Flutter development course. It
     <img src="https://github.com/nullskill/surf-flutter-course-larkin/blob/master/screenshots/filter.gif" alt="Filter screen" width="220" height="439">
   </div>
 </details>
+<details>
+  <summary>Real device demo</summary>
+  
+  #### Add sight and map screens
+  <div>
+    <img src="https://github.com/nullskill/surf-flutter-course-larkin/blob/master/screenshots/add_sight_screen.gif" alt="Add sight screen" width="362" height="768">
+    <img src="https://github.com/nullskill/surf-flutter-course-larkin/blob/master/screenshots/map_screen.gif" alt="Map screen" width="362" height="768">
+  </div>
+</details>
 
 ### Features
 
